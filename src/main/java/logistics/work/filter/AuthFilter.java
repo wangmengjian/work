@@ -1,5 +1,6 @@
 package logistics.work.filter;
 
+import logistics.work.models.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,11 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest)request;
         HttpServletResponse res = (HttpServletResponse)response;
         HttpSession session = req.getSession();
+        User user=new User();
+        user.setId(1);
+        user.setUsername("wangwu");
+        user.setPassword("123");
+        session.setAttribute("USER_SESSION",user);
         String url = req.getRequestURI();
         if (url.startsWith("/api")) {
             filterChain.doFilter(request, response);

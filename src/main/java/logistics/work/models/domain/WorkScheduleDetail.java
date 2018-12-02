@@ -1,13 +1,15 @@
 package logistics.work.models.domain;
 
-public class WorkScheduleDesc {
+/**
+ * 日工作计划明细
+ */
+public class WorkScheduleDetail {
     private Integer id;
     private Integer scheduleId;
     private Integer workId;
     private String workFrom;
     private String finishPicture;
     private String finishCondition;
-    private String unfinishedReason;
     private String finishStatus;
 
     public Integer getId() {
@@ -56,14 +58,6 @@ public class WorkScheduleDesc {
 
     public void setFinishCondition(String finishCondition) {
         this.finishCondition = finishCondition;
-    }
-
-    public String getUnfinishedReason() {
-        return unfinishedReason;
-    }
-
-    public void setUnfinishedReason(String unfinishedReason) {
-        this.unfinishedReason = unfinishedReason;
     }
 
     public String getFinishStatus() {

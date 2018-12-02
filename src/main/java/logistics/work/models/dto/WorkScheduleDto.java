@@ -1,6 +1,6 @@
 package logistics.work.models.dto;
 
-import logistics.work.models.domain.WorkScheduleDesc;
+import logistics.work.models.domain.WorkScheduleDetail;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +13,7 @@ public class WorkScheduleDto {
     private Date date;
     private Date submitTime;
     private String submitStatus;
-    private List<WorkScheduleDesc> workScheduleDescList;
+    private List<WorkScheduleDetail> workScheduleDetailList;
 
     public Integer getId() {
         return id;
@@ -47,11 +47,11 @@ public class WorkScheduleDto {
         this.submitStatus = submitStatus;
     }
 
-    public List<WorkScheduleDesc> getWorkScheduleDescList() {
-        return workScheduleDescList;
+    public List<WorkScheduleDetail> getWorkScheduleDetailList() {
+        return workScheduleDetailList;
     }
 
-    public void setWorkScheduleDescList(List<WorkScheduleDesc> workScheduleDescList) {
-        this.workScheduleDescList = workScheduleDescList;
+    public void setWorkScheduleDetailList(List<WorkScheduleDetail> workScheduleDetailList) {
+        this.workScheduleDetailList = workScheduleDetailList;
     }
 }

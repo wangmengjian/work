@@ -8,14 +8,21 @@ import java.util.Date;
 public class WorkAudit {
     private Integer id;
     private Integer auditUserId;
-    private Integer auditDescId;
+    private Integer auditDetailId;
+    private Integer auditSubmitterId;
     private Date auditSubmitTime;
     private Date auditSuccessTime;
     private Date auditFailTime;
     private String auditFailReason;
     private String auditStatus;
-    private String readStatus;
-    private String deleteStatus;
+
+    public Integer getAuditSubmitterId() {
+        return auditSubmitterId;
+    }
+
+    public void setAuditSubmitterId(Integer auditSubmitterId) {
+        this.auditSubmitterId = auditSubmitterId;
+    }
 
     public Integer getId() {
         return id;
@@ -33,12 +40,12 @@ public class WorkAudit {
         this.auditUserId = auditUserId;
     }
 
-    public Integer getAuditDescId() {
-        return auditDescId;
+    public Integer getAuditDetailId() {
+        return auditDetailId;
     }
 
-    public void setAuditDescId(Integer auditDescId) {
-        this.auditDescId = auditDescId;
+    public void setAuditDetailId(Integer auditDetailId) {
+        this.auditDetailId = auditDetailId;
     }
 
     public Date getAuditSubmitTime() {
@@ -81,19 +88,4 @@ public class WorkAudit {
         this.auditStatus = auditStatus;
     }
 
-    public String getReadStatus() {
-        return readStatus;
-    }
-
-    public void setReadStatus(String readStatus) {
-        this.readStatus = readStatus;
-    }
-
-    public String getDeleteStatus() {
-        return deleteStatus;
-    }
-
-    public void setDeleteStatus(String deleteStatus) {
-        this.deleteStatus = deleteStatus;
-    }
 }

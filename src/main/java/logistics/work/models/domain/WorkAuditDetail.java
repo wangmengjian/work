@@ -1,13 +1,14 @@
 package logistics.work.models.domain;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.constraints.NotNull;
 
 /**
- * 工作池
+ * 审核详情
  */
-public class WorkPool {
+public class WorkAuditDetail {
     private Integer id;
-    private Integer useId;
     @NotNull(message = "请填写作名称")
     private String workName;
     @NotNull(message="请填写工作内容工作内容")
@@ -17,6 +18,25 @@ public class WorkPool {
     private Integer workMinutes;
     @NotNull(message="工作项来源")
     private String workFrom;
+    private String auditStatus;
+    private MultipartFile file;
+    private Integer workUserId;
+
+    public Integer getWorkUserId() {
+        return workUserId;
+    }
+
+    public void setWorkUserId(Integer workUserId) {
+        this.workUserId = workUserId;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
 
     public Integer getId() {
         return id;
@@ -24,14 +44,6 @@ public class WorkPool {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getUseId() {
-        return useId;
-    }
-
-    public void setUseId(Integer useId) {
-        this.useId = useId;
     }
 
     public String getWorkName() {
@@ -66,11 +78,33 @@ public class WorkPool {
         this.workMinutes = workMinutes;
     }
 
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
+    }
+
     public String getWorkFrom() {
         return workFrom;
     }
 
     public void setWorkFrom(String workFrom) {
         this.workFrom = workFrom;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkAuditDetail{" +
+                "id=" + id +
+                ", workName='" + workName + '\'' +
+                ", workContent='" + workContent + '\'' +
+                ", workInstructor='" + workInstructor + '\'' +
+                ", workMinutes=" + workMinutes +
+                ", workFrom='" + workFrom + '\'' +
+                ", auditStatus='" + auditStatus + '\'' +
+                ", file=" + file +
+                '}';
     }
 }

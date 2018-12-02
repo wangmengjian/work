@@ -1,5 +1,8 @@
 package logistics.work.models.domain;
 
+/**
+ * 数据字典
+ */
 public class SysConfig {
     private Integer id;
     private String code;
