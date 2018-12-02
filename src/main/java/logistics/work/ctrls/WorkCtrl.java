@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class WorkCtrl extends BaseCtrl {
     @Autowired
     private WorkAuditService workAuditService;
-    @PostMapping("/generalWork")
+    @PostMapping("/work")
     public Result addGeneralWork(@Valid WorkAuditDto workAuditDto,HttpSession session){
         User user= (User) session.getAttribute("USER_SESSION");
         try{
