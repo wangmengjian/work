@@ -1,8 +1,6 @@
 package logistics.work.models.dto;
 
 import logistics.work.models.domain.WorkScheduleDetail;
-
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,10 +8,10 @@ import java.util.List;
  */
 public class WorkScheduleDto {
     private Integer id;
-    private Date date;
-    private Date submitTime;
+    private String date;
+    private String submitTime;
     private String submitStatus;
-    private List<WorkScheduleDetail> workScheduleDetailList;
+    private List<WorkScheduleDetailDto> workScheduleDetailDtoList;
 
     public Integer getId() {
         return id;
@@ -23,19 +21,19 @@ public class WorkScheduleDto {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Date getSubmitTime() {
+    public String getSubmitTime() {
         return submitTime;
     }
 
-    public void setSubmitTime(Date submitTime) {
+    public void setSubmitTime(String submitTime) {
         this.submitTime = submitTime;
     }
 
@@ -47,11 +45,11 @@ public class WorkScheduleDto {
         this.submitStatus = submitStatus;
     }
 
-    public List<WorkScheduleDetail> getWorkScheduleDetailList() {
-        return workScheduleDetailList;
+    public List<WorkScheduleDetailDto> getWorkScheduleDetailDtoList() {
+        return workScheduleDetailDtoList;
     }
 
-    public void setWorkScheduleDetailList(List<WorkScheduleDetail> workScheduleDetailList) {
-        this.workScheduleDetailList = workScheduleDetailList;
+    public void setWorkScheduleDetailDtoList(List<WorkScheduleDetailDto> workScheduleDetailDtoList) {
+        this.workScheduleDetailDtoList = workScheduleDetailDtoList;
     }
 }

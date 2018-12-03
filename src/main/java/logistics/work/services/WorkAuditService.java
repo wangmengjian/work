@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,10 +26,13 @@ public class WorkAuditService {
      * @return
      */
     @Transactional
-    public int audit(User user, WorkAuditDto workAuditDto) throws Exception {
+    public int submitAuditDetail(User user, WorkAuditDto workAuditDto) throws Exception {
         List<WorkAuditDetail> workAuditDetailList=workAuditDto.getWorkAuditDetails();
         for(WorkAuditDetail workAuditDetail:workAuditDetailList){
-            String instructor=FileUtils.upload(workAuditDetail.getFile(),user.getId()+workAuditDetail.getWorkName()+"指导书");
+            String instructor=null;
+            if(workAuditDetail.getFile()!=null) {
+                instructor = FileUtils.upload(workAuditDetail.getFile());
+            }
             workAuditDetail.setWorkUserId(user.getId());
             workAuditDetail.setWorkInstructor(instructor);
         }
@@ -43,7 +47,9 @@ public class WorkAuditService {
             WorkAudit workAudit=new WorkAudit();
             workAudit.setAuditDetailId(beginIndex+i);
             workAudit.setAuditSubmitterId(user.getId());
-            workAudit.setAuditSubmitTime(new Date(System.currentTimeMillis()));
+            Date d=new Date();
+            Timestamp timeStamep = new Timestamp(d.getTime());
+            workAudit.setAuditSubmitTime(timeStamep);
             workAuditList.add(workAudit);
         }
         System.out.println(workAuditList);

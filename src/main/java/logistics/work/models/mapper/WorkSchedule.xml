@@ -3,11 +3,38 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="logistics.work.models.dao.WorkScheduleDao">
-    <insert id="add" parameterType="logistics.work.models.domain.WorkSchedule">
-        insert into work_schedule(user_id)
-        values
-        <foreach collection="list" item="workSchedule" separator=",">
-            (#{userId})
-        </foreach>
-    </insert>
+    <select id="queryWorkScheduleByDate" parameterType="java.util.Map"
+            resultType="logistics.work.models.dto.WorkScheduleDto">
+        select *
+        from work_schedule
+        where user_id=#{userId} and `date`=#{date}
+    </select>
+    <select id="queryWorkScheduleDetailByScheduleId" parameterType="Integer"
+            resultType="logistics.work.models.dto.WorkScheduleDetailDto">
+        select
+        wsd.id,
+        wp.work_name,
+        wp.work_content,
+        wp.work_instructor,
+        wp.work_minutes,
+        sc1.name as work_from,
+        wsd.finish_status,
+        wsd.finish_picture,
+        wsd.finish_condition
+        from work_schedule_detail as wsd
+        left join sys_config as sc1
+        on wsd.work_from=sc1.`code`
+        left join work_pool as wp
+        on wsd.work_id=wp.id
+        <where>
+            user_id=#{userId}
+            and schedule_id=#{scheduleId}
+            <if test="workFrom!=null">
+                and wsd.work_from=#{workFrom}
+            </if>
+            <if test="workName!=null">
+                and work_name like "%"#{workName}"%"
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -11,7 +11,7 @@ public class WorkSchedule {
     private Date date;
     private Date submitTime;
     private String submitStatus;
-    private Integer auditId;
+    private Integer assessId;
 
     public Integer getId() {
         return id;
@@ -53,11 +53,11 @@ public class WorkSchedule {
         this.submitStatus = submitStatus;
     }
 
-    public Integer getAuditId() {
-        return auditId;
+    public Integer getAssessId() {
+        return assessId;
     }
 
-    public void setAuditId(Integer auditId) {
-        this.auditId = auditId;
+    public void setAssessId(Integer assessId) {
+        this.assessId = assessId;
     }
 }
