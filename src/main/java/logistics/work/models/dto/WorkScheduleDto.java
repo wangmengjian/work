@@ -1,6 +1,4 @@
 package logistics.work.models.dto;
-
-import logistics.work.models.domain.WorkScheduleDetail;
 import java.util.List;
 
 /**
@@ -12,7 +10,6 @@ public class WorkScheduleDto {
     private String submitTime;
     private String submitStatus;
     private List<WorkScheduleDetailDto> workScheduleDetailDtoList;
-
     public Integer getId() {
         return id;
     }

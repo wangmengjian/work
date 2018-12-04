@@ -1,5 +1,7 @@
 package logistics.work.models.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * 日计划明细
  */
@@ -13,6 +15,15 @@ public class WorkScheduleDetailDto {
     private String finishStatus;
     private String finishPicture;
     private String finishCondition;
+    private MultipartFile[] pictures;
+
+    public MultipartFile[] getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(MultipartFile[] pictures) {
+        this.pictures = pictures;
+    }
 
     public Integer getId() {
         return id;

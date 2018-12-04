@@ -2,6 +2,8 @@ package logistics.work.models.domain;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,11 +17,13 @@ public class WorkAuditDetail {
     private String workContent;
     private String workInstructor;
     @NotNull(message="请填写标准工时")
+    @Max(message = "标准工时有误，请重新输入",value = 720)
+    @Min(message = "标准工时有误，请重新输入",value = 0)
     private Integer workMinutes;
     @NotNull(message="工作项来源")
     private String workFrom;
     private String auditStatus;
-    private MultipartFile file;
+    private MultipartFile[] file;
     private Integer workUserId;
 
     public Integer getWorkUserId() {
@@ -30,11 +34,11 @@ public class WorkAuditDetail {
         this.workUserId = workUserId;
     }
 
-    public MultipartFile getFile() {
+    public MultipartFile[] getFile() {
         return file;
     }
 
-    public void setFile(MultipartFile file) {
+    public void setFile(MultipartFile[] file) {
         this.file = file;
     }
 
@@ -92,19 +96,5 @@ public class WorkAuditDetail {
 
     public void setWorkFrom(String workFrom) {
         this.workFrom = workFrom;
-    }
-
-    @Override
-    public String toString() {
-        return "WorkAuditDetail{" +
-                "id=" + id +
-                ", workName='" + workName + '\'' +
-                ", workContent='" + workContent + '\'' +
-                ", workInstructor='" + workInstructor + '\'' +
-                ", workMinutes=" + workMinutes +
-                ", workFrom='" + workFrom + '\'' +
-                ", auditStatus='" + auditStatus + '\'' +
-                ", file=" + file +
-                '}';
     }
 }

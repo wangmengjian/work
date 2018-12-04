@@ -39,6 +39,7 @@ public class ScheduleCtrl extends BaseCtrl {
         }
     }
 
+
     /**
      * 员工根据时间查询日工作计划
      * @param date
@@ -58,5 +59,14 @@ public class ScheduleCtrl extends BaseCtrl {
         params.put("date",date);
         Map<String,Object> result=workScheduleService.querySchedule(params);
         return this.send(result);
+    }
+
+    @PostMapping("/employee/submit")
+    public Result submitSchedule(WorkScheduleDto workScheduleDto){
+        try {
+            return this.send(workScheduleService.submitSchedule(workScheduleDto));
+        } catch (Exception e) {
+            return this.send(-1,"操作失败");
+        }
     }
 }

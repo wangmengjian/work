@@ -37,4 +37,32 @@
             </if>
         </where>
     </select>
+    <update id="updateScheduleDetail" parameterType="logistics.work.models.dto.WorkScheduleDetailDto">
+        update work_schedule_detail
+        set finish_status=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.finishStatus}
+        </foreach>,
+        finish_picture=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.finishPicture}
+        </foreach>,
+        finish_condition=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.finishCondition}
+        </foreach>
+        where id in
+        <foreach collection="list" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+    <update id="updateSchedule" parameterType="logistics.work.models.dto.WorkScheduleDto">
+        update work_schedule
+        set submit_time=NOW(),submit_status='submitted'
+        where id=#{scheduleId}
+    </update>
 </mapper>
