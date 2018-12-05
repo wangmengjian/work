@@ -1,6 +1,7 @@
 package logistics.work.ctrls;
 
 import logistics.work.common.Constants;
+import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
 import logistics.work.models.domain.WorkAuditDetail;
@@ -9,6 +10,7 @@ import logistics.work.models.dto.WorkScheduleDetailDto;
 import logistics.work.models.dto.WorkScheduleDto;
 import logistics.work.services.WorkAuditService;
 import logistics.work.services.WorkScheduleService;
+import logistics.work.services.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,8 @@ public class ScheduleCtrl extends BaseCtrl {
     private WorkAuditService workAuditService;
     @Autowired
     private WorkScheduleService workScheduleService;
+    @Autowired
+    private WorkService workService;
     /**
      * 员工添加工作项
      * @param workAuditDto
@@ -98,7 +102,13 @@ public class ScheduleCtrl extends BaseCtrl {
         }
     }
     @GetMapping("/employee/queryWork")
-    public Result employeeQueryWork(@RequestParam("workName")String workName){
-return null;
+    public Result employeeQueryWork(@RequestParam(value="workName",required = false)String workName,
+                                    @RequestParam(value="pageNumber",required = false)Integer pageNumber,
+                                    @RequestParam(value = "pageSize",required = false)Integer pageSize,HttpSession session){
+        Map<String,Object> params=ParamUtils.setPageInfo(pageNumber,pageSize);
+        params.put("workName",workName);
+        User user= (User) session.getAttribute(Constants.userSession);
+        params.put("userId",user.getId());
+        return this.send(workService.queryWorkByWorkName(params));
     }
 }

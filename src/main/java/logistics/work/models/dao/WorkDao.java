@@ -8,5 +8,6 @@ import java.util.Map;
 
 public interface WorkDao {
     /*查询所有提交的工作*/
-    public List<ShowWorkAuditConditionDto> queryWork(Map<String,Object> params);
+    public List<ShowWorkAuditConditionDto> queryWorkByPage(Map<String,Object> params);
+    public Integer queryWorkCount(Map<String,Object> params);
 }
