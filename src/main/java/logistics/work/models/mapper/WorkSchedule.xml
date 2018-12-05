@@ -53,6 +53,11 @@
         <foreach collection="list" item="item" index="index"
                  separator=" " open="case id" close="end">
             when #{item.id} then #{item.finishCondition}
+        </foreach>,
+        finish_feedback=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.finishFeedback}
         </foreach>
         where id in
         <foreach collection="list" index="index" item="item"

@@ -3,7 +3,9 @@ package logistics.work.ctrls;
 import logistics.work.common.Constants;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
+import logistics.work.models.domain.WorkAuditDetail;
 import logistics.work.models.dto.WorkAuditDto;
+import logistics.work.models.dto.WorkScheduleDetailDto;
 import logistics.work.models.dto.WorkScheduleDto;
 import logistics.work.services.WorkAuditService;
 import logistics.work.services.WorkScheduleService;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,7 +34,7 @@ public class ScheduleCtrl extends BaseCtrl {
      * @return
      */
     @PostMapping("/employee/work")
-    public Result addWork(@Valid WorkAuditDto workAuditDto,HttpSession session){
+    public Result employeeAddWork(@Valid WorkAuditDto workAuditDto,HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
         try{
             return this.send(workAuditService.submitAuditDetail(user,workAuditDto));
@@ -47,7 +51,7 @@ public class ScheduleCtrl extends BaseCtrl {
      * @return
      */
     @GetMapping("/employee/work")
-    public Result queryWorkByDate(@RequestParam(value = "date",required = false)String date,
+    public Result employeeQueryWorkByDate(@RequestParam(value = "date",required = false)String date,
                                   @RequestParam(value="workFrom",required = false)String workFrom,
                                   @RequestParam(value="workName",required = false)String workName,
                                   HttpSession session){
@@ -61,11 +65,29 @@ public class ScheduleCtrl extends BaseCtrl {
         return this.send(result);
     }
 
+    /**
+     * 员工提交日计划
+     * @param workScheduleDto
+     * @return
+     */
     @PostMapping("/employee/submit")
     public Result submitSchedule(WorkScheduleDto workScheduleDto){
         try {
             return this.send(workScheduleService.submitSchedule(workScheduleDto));
         } catch (Exception e) {
+            return this.send(-1,"操作失败");
+        }
+    }
+    @PostMapping("/employee/update")
+    public Result employeeUpdateWork(@Valid WorkAuditDetail workAuditDetail,HttpSession session){
+        User user= (User) session.getAttribute(Constants.userSession);
+        WorkAuditDto workAuditDto=new WorkAuditDto();
+        List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
+        workAuditDetailList.add(workAuditDetail);
+        workAuditDto.setWorkAuditDetails(workAuditDetailList);
+        try{
+            return this.send(workAuditService.submitAuditDetail(user,workAuditDto));
+        }catch(Exception e){
             return this.send(-1,"操作失败");
         }
     }

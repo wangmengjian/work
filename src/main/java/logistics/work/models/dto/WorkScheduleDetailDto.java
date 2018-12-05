@@ -14,6 +14,16 @@ public class WorkScheduleDetailDto {
     private String workFrom;
     private String finishStatus;
     private String finishPicture;
+    private String finishFeedback;
+
+    public String getFinishFeedback() {
+        return finishFeedback;
+    }
+
+    public void setFinishFeedback(String finishFeedback) {
+        this.finishFeedback = finishFeedback;
+    }
+
     private String finishCondition;
     private MultipartFile[] pictures;
 

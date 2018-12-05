@@ -25,6 +25,11 @@ public class WorkAuditDetail {
     private String auditStatus;
     private MultipartFile[] file;
     private Integer workUserId;
+    private Integer originWorkId;
+
+    public void setOriginWorkId(Integer originWorkId) {
+        this.originWorkId = originWorkId;
+    }
 
     public Integer getWorkUserId() {
         return workUserId;
