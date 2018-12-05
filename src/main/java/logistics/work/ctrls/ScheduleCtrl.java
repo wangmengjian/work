@@ -33,7 +33,7 @@ public class ScheduleCtrl extends BaseCtrl {
      * @param session
      * @return
      */
-    @PostMapping("/employee/work")
+    @PostMapping("/employee/addWork")
     public Result employeeAddWork(@Valid WorkAuditDto workAuditDto,HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
         try{
@@ -50,8 +50,8 @@ public class ScheduleCtrl extends BaseCtrl {
      * @param session
      * @return
      */
-    @GetMapping("/employee/work")
-    public Result employeeQueryWorkByDate(@RequestParam(value = "date",required = false)String date,
+    @GetMapping("/employee/querySchedule")
+    public Result employeeQueryScheduleByDate(@RequestParam(value = "date",required = false)String date,
                                   @RequestParam(value="workFrom",required = false)String workFrom,
                                   @RequestParam(value="workName",required = false)String workName,
                                   HttpSession session){
@@ -70,7 +70,7 @@ public class ScheduleCtrl extends BaseCtrl {
      * @param workScheduleDto
      * @return
      */
-    @PostMapping("/employee/submit")
+    @PostMapping("/employee/submitSchedule")
     public Result submitSchedule(WorkScheduleDto workScheduleDto){
         try {
             return this.send(workScheduleService.submitSchedule(workScheduleDto));
@@ -78,7 +78,13 @@ public class ScheduleCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
-    @PostMapping("/employee/update")
+    /**
+     * 更改工作项
+     * @param workAuditDetail
+     * @param session
+     * @return
+     */
+    @PostMapping("/employee/updateWork")
     public Result employeeUpdateWork(@Valid WorkAuditDetail workAuditDetail,HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
         WorkAuditDto workAuditDto=new WorkAuditDto();

@@ -7,7 +7,7 @@
         insert into work_audit_detail(work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id)
         values
         <foreach collection="list" separator="," item="detail">
-            (#{detail.workName},#{detail.workContent},#{detail.workInstructor},#{detail.workMinutes},#{detail.workFrom},#{detail.workUserId},#{originWorkId})
+            (#{detail.workName},#{detail.workContent},#{detail.workInstructor},#{detail.workMinutes},#{detail.workFrom},#{detail.workUserId},#{detail.originWorkId})
         </foreach>
     </insert>
     <select id="queryMaxIdByWorkUserId" parameterType="Integer" resultType="Integer">
