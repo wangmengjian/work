@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="logistics.work.models.dao.WorkDao">
+    <select id="queryWork" parameterType="java.util.Map" resultType="logistics.work.models.dto.ShowWorkAuditConditionDto">
+        select *
+from
+(select
+wp.id,
+sc.`name` as audit_status,
+wp.work_name,
+wp.work_content,
+wp.work_instructor,
+wp.work_minutes,
+'old' as flag
+from work_pool as wp
+left join work_audit_detail as wad
+on wp.id=wad.origin_work_id
+left join sys_config as sc
+on wad.audit_status=sc.`code`
+where user_id=#{userId}
+union
+select
+wad.id,
+sc.name as audit_status,
+wad.work_name,
+wad.work_content,
+wad.work_instructor,
+wad.work_minutes,
+'new' as flag
+from work_audit_detail as wad
+left join sys_config as sc
+on wad.audit_status=sc.`code`
+where wad.work_user_id=#{userId} and wad.origin_work_id is null
+order by audit_status desc) as a
+where work_name=#{workName}
+    </select>
+</mapper>

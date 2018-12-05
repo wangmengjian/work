@@ -1,7 +1,12 @@
 package logistics.work.models.dao;
 
-import logistics.work.models.domain.WorkPool;
+
+import logistics.work.models.dto.ShowWorkAuditConditionDto;
+
+import java.util.List;
+import java.util.Map;
 
 public interface WorkDao {
-    public int add(WorkPool workPool);
+    /*查询所有提交的工作*/
+    public List<ShowWorkAuditConditionDto> queryWork(Map<String,Object> params);
 }

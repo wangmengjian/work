@@ -97,4 +97,8 @@ public class ScheduleCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
+    @GetMapping("/employee/queryWork")
+    public Result employeeQueryWork(@RequestParam("workName")String workName){
+return null;
+    }
 }

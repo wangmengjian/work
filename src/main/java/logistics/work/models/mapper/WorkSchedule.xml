@@ -18,7 +18,7 @@
         wp.work_instructor,
         wp.work_minutes,
         sc1.name as work_from,
-        wsd.finish_status,
+        sc.name as finish_status,
         wsd.finish_picture,
         wsd.finish_condition
         from work_schedule_detail as wsd
@@ -26,6 +26,8 @@
         on wsd.work_from=sc1.`code`
         left join work_pool as wp
         on wsd.work_id=wp.id
+        left join sys_config as sc
+        on wsd.finish_status=sc.`code`
         <where>
             user_id=#{userId}
             and schedule_id=#{scheduleId}
