@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Link, Route, Switch, withRouter } from 'react-router-dom';
 import { Layout, Menu, Icon} from 'antd';
-import DetailStockInOut from './apps/detail-stockInOut/detailStockInOut'
+import NormalItems from './apps/staff/normalItems/normalItems'
+import NewItems from './apps/staff/newItems/newItems'
+import DailyPlan from './apps/staff/dailyPlan/dailyPlan'
+import PlanHistory from './apps/staff/planHistory/planHistory'
 import menus from './config/menus'
 
 const { Sider, Content } = Layout;
@@ -30,7 +33,6 @@ const getOpenKeys = () => {
 //返回当前的菜单树
 const getSelectedKeys= () => {
     let path = window.location.pathname
-    console.log(window.location.pathname)
     return path.split('/').slice(2).join('/')
 }
 
@@ -39,12 +41,11 @@ class SideMenu extends Component {
     navigate = (item) => {
         window.scrollTo(0, 0)
         this.props.history.push(`/${item.key}`)
-        console.log(this.props.history.location.pathname)
     }
 
     render() {
         let mu = []
-        menus.warehouse.map( m => {
+        menus.staff.map( m => {
             mu.push(renderMenu(m))
         })
 
@@ -84,7 +85,10 @@ class Work extends Component {
                         <div style={{ padding: 30, background: '#fff', minHeight: 700 }}>
                             <Switch>
                                 <Route path="/" exact><span style={{fontSize: 50, marginLeft: 900}}></span></Route>
-                                <Route path="/warehouse/stockHistory"><DetailStockInOut /></Route>
+                                <Route path="/workItems/normalItems"><NormalItems /></Route>
+                                <Route path="/workItems/newItems"><NewItems /></Route>
+                                <Route path="/dailyPlan"><DailyPlan /></Route>
+                                <Route path="/planHistory"><PlanHistory /></Route>
                             </Switch>
                         </div>
                     </Content>
