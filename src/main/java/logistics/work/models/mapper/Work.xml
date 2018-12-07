@@ -80,4 +80,38 @@
             </if>
         </where>
     </select>
+    <select id="leaderQueryWorkByPage" parameterType="java.util.Map" resultType="logistics.work.models.domain.WorkPool">
+        select
+        wp.id,
+        wp.work_name,
+        wp.work_content,
+        wp.work_instructor,
+        wp.work_minutes,
+        `user`.username
+        from work_pool as wp
+        LEFT JOIN `user`
+        on `user`.id=wp.user_id
+        <where>
+            <if test="employeeId!=null">
+                wp.user_id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="leaderQueryWorkCount" parameterType="java.util.Map" resultType="Integer">
+        select
+        count(*)
+        from work_pool as wp
+        <where>
+            <if test="employeeId!=null">
+                wp.user_id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -40,6 +40,13 @@ public class WorkScheduleService {
         result.put("total",1);
         return result;
     }
+
+    /**
+     * 员工提交日工作计划
+     * @param workScheduleDto
+     * @return
+     * @throws Exception
+     */
     @Transactional
     public int submitSchedule(WorkScheduleDto workScheduleDto) throws Exception {
         workScheduleDao.updateSchedule(workScheduleDto.getId());
@@ -53,5 +60,14 @@ public class WorkScheduleService {
         }
         int result=workScheduleDao.updateScheduleDetail(workScheduleDto.getWorkScheduleDetailDtoList());
         return result;
+    }
+
+    /**
+     * 员工生成日工作计划
+     * @param params
+     * @return
+     */
+    public int newSchedule(Map<String,Object> params){
+        return 0;
     }
 }

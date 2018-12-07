@@ -1,6 +1,7 @@
 package logistics.work.models.dao;
 
 
+import logistics.work.models.domain.WorkPool;
 import logistics.work.models.dto.ShowWorkAuditConditionDto;
 
 import java.util.List;
@@ -10,4 +11,6 @@ public interface WorkDao {
     /*查询所有提交的工作*/
     public List<ShowWorkAuditConditionDto> queryWorkByPage(Map<String,Object> params);
     public Integer queryWorkCount(Map<String,Object> params);
+    public List<WorkPool> leaderQueryWorkByPage(Map<String,Object> params);
+    public Integer leaderQueryWorkCount(Map<String,Object> params);
 }
