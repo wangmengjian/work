@@ -10,14 +10,14 @@ public class ShowWorkAuditConditionDto {
     private String workContent;
     private String workInstructor;
     private Integer workMinutes;
-    private Integer origin_work_id;
+    private String time;
 
-    public Integer getOrigin_work_id() {
-        return origin_work_id;
+    public String getTime() {
+        return time;
     }
 
-    public void setOrigin_work_id(Integer origin_work_id) {
-        this.origin_work_id = origin_work_id;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getId() {
