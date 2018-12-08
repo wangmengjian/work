@@ -16,7 +16,7 @@
         wp.work_minutes,
         'old' as flag
         from work_pool as wp
-        left join work_audit_detail as wad
+        left join work_audit as wad
         on wp.id=wad.origin_work_id
         left join sys_config as sc
         on wad.audit_status=sc.`code`
@@ -30,7 +30,7 @@
         wad.work_instructor,
         wad.work_minutes,
         'new' as flag
-        from work_audit_detail as wad
+        from work_audit as wad
         left join sys_config as sc
         on wad.audit_status=sc.`code`
         where wad.work_user_id=#{userId} and wad.origin_work_id is null
@@ -55,7 +55,7 @@
         wp.work_minutes,
         'old' as flag
         from work_pool as wp
-        left join work_audit_detail as wad
+        left join work_audit as wad
         on wp.id=wad.origin_work_id
         left join sys_config as sc
         on wad.audit_status=sc.`code`
@@ -69,7 +69,7 @@
         wad.work_instructor,
         wad.work_minutes,
         'new' as flag
-        from work_audit_detail as wad
+        from work_audit as wad
         left join sys_config as sc
         on wad.audit_status=sc.`code`
         where wad.work_user_id=#{userId} and wad.origin_work_id is null
