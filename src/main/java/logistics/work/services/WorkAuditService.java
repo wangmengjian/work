@@ -52,4 +52,13 @@ public class WorkAuditService {
         workAuditDao.addWorkAuditDetail(workAuditDetailList);
         return workAuditList.size();
     }
+
+    /**
+     * 查询本部门未审核的工作
+     * @param params
+     * @return
+     */
+    public Map<String,Object> queryUnAuditedWork(Map<String,Object> params){
+        return null;
+    }
 }

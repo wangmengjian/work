@@ -1,6 +1,7 @@
 package logistics.work.ctrls;
 
 import logistics.work.common.Constants;
+import logistics.work.common.FileUtils;
 import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
@@ -13,8 +14,11 @@ import logistics.work.services.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -185,5 +189,14 @@ public class ScheduleCtrl extends BaseCtrl {
         }catch(Exception e){
             return this.send(-1,"操作失败");
         }
+    }
+
+    @GetMapping("/download")
+    public Result download(HttpServletRequest request, HttpServletResponse response){
+        try {
+            FileUtils.download(response,"m22126EpUGGU");
+        } catch (Exception e) {
+        }
+        return null;
     }
 }

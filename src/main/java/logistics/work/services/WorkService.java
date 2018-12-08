@@ -22,11 +22,11 @@ public class WorkService {
         return result;
     }
     public Map<String,Object> queryWorkPool(Map<String,Object> params){
-        List<WorkPool> workPoolList=workDao.leaderQueryWorkByPage(params);
+        List<WorkPool> workPoolList=workDao.queryWorkPoolByPage(params);
         Map<String,Object> result=new HashMap<>();
         result.put("data",workPoolList);
         result.put("total",workPoolList.size());
-        result.put("all",workDao.leaderQueryWorkCount(params));
+        result.put("all",workDao.queryWorkPoolCount(params));
         return result;
     }
 }
