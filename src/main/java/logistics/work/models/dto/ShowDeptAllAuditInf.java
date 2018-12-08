@@ -1,39 +1,21 @@
 package logistics.work.models.dto;
 
-/**
- * 显示员工各项工作的审核情况
- */
-public class ShowWorkAuditConditionDto {
-    private String id;
-    private String auditStatus;
+public class ShowDeptAllAuditInf {
+    private Integer id;
     private String workName;
     private String workContent;
+    private String submitter;
     private String workInstructor;
     private Integer workMinutes;
-    private Integer origin_work_id;
+    private String workFrom;
+    private String auditSubmitTime;
 
-    public Integer getOrigin_work_id() {
-        return origin_work_id;
-    }
-
-    public void setOrigin_work_id(Integer origin_work_id) {
-        this.origin_work_id = origin_work_id;
-    }
-
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getAuditStatus() {
-        return auditStatus;
-    }
-
-    public void setAuditStatus(String auditStatus) {
-        this.auditStatus = auditStatus;
     }
 
     public String getWorkName() {
@@ -52,6 +34,14 @@ public class ShowWorkAuditConditionDto {
         this.workContent = workContent;
     }
 
+    public String getSubmitter() {
+        return submitter;
+    }
+
+    public void setSubmitter(String submitter) {
+        this.submitter = submitter;
+    }
+
     public String getWorkInstructor() {
         return workInstructor;
     }
@@ -66,5 +56,21 @@ public class ShowWorkAuditConditionDto {
 
     public void setWorkMinutes(Integer workMinutes) {
         this.workMinutes = workMinutes;
+    }
+
+    public String getWorkFrom() {
+        return workFrom;
+    }
+
+    public void setWorkFrom(String workFrom) {
+        this.workFrom = workFrom;
+    }
+
+    public String getAuditSubmitTime() {
+        return auditSubmitTime;
+    }
+
+    public void setAuditSubmitTime(String auditSubmitTime) {
+        this.auditSubmitTime = auditSubmitTime;
     }
 }

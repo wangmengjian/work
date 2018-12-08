@@ -25,7 +25,17 @@ public class WorkAudit {
     private String auditStatus;
     private MultipartFile[] file;
     private Integer workUserId;
+    private String auditSubmitTime;
+
     private Integer originWorkId;
+    public String getAuditSubmitTime() {
+        return auditSubmitTime;
+    }
+
+    public void setAuditSubmitTime(String auditSubmitTime) {
+        this.auditSubmitTime = auditSubmitTime;
+    }
+
 
     public Integer getOriginWorkId() {
         return originWorkId;

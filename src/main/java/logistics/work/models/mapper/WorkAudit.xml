@@ -3,18 +3,88 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="logistics.work.models.dao.WorkAuditDao">
-    <insert id="addWorkAudit" parameterType="logistics.work.models.domain.WorkAudit" useGeneratedKeys="true" keyProperty="id">
-        insert into work_audit(work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id)
+    <insert id="addWorkAudit" parameterType="logistics.work.models.domain.WorkAudit" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into
+        work_audit(work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id,audit_submit_time)
         values
         <foreach collection="list" separator="," item="item">
-            (#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.workUserId},#{item.originWorkId})
+            (#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.workUserId},#{item.originWorkId},NOW())
         </foreach>
     </insert>
     <insert id="addWorkAuditDetail" parameterType="logistics.work.models.domain.WorkAuditDetail" useGeneratedKeys="true" keyProperty="id">
-        insert into work_audit_detail(audit_submitter_id,audit_item_id,audit_submit_time)
+        insert into work_audit_detail(audit_item_id)
         values
         <foreach collection="list" separator="," item="detail">
-            (#{detail.auditSubmitterId},#{detail.auditItemId},NOW())
+            (#{detail.auditItemId})
         </foreach>
     </insert>
+    <select id="queryDeptAllAuditInfByPage" parameterType="java.util.Map"
+            resultType="logistics.work.models.dto.ShowDeptAllAuditInf">
+        select
+        wa.id,
+        wa.work_name,
+        wa.work_content,
+        employee.emp_name as submitter,
+        wa.work_instructor,
+        wa.work_minutes,
+        sc.`name` as workFrom,
+        wad.audit_submit_time
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join `user`
+        on wa.work_user_id=`user`.id
+        left join employee
+        on employee.id=`user`.employee_id
+        left join sys_config as sc
+        on wa.work_from=sc.code
+        where wa.work_user_id in(
+        select `user`.id
+        from `user`
+        left join employee
+        on employee.id=`user`.employee_id
+        <where>
+            employee.dept_number like #{deptNumber} and employee.emp_job not like '经理') and wad.audit_status='unaudited'
+            <if test="workName!=null">
+                and wa.work_name like "%"#{workName}"%"
+            </if>
+        </where>
+        order by audit_submit_time desc
+    </select>
+    <select id="queryDeptAllAuditInfCount" parameterType="java.util.Map"
+            resultType="Integer">
+        select count(*)
+        from (
+        select
+        wa.id,
+        wa.work_name,
+        wa.work_content,
+        employee.emp_name as submitter,
+        wa.work_instructor,
+        wa.work_minutes,
+        sc.`name` as workFrom,
+        wad.audit_submit_time
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join `user`
+        on wa.work_user_id=`user`.id
+        left join employee
+        on employee.id=`user`.employee_id
+        left join sys_config as sc
+        on wa.work_from=sc.code
+        where wa.work_user_id in(
+        select `user`.id
+        from `user`
+        left join employee
+        on employee.id=`user`.employee_id
+        <where>
+            employee.dept_number like #{deptNumber} and employee.emp_job not like '经理') and wad.audit_status='unaudited'
+            <if test="workName!=null">
+                and wa.work_name like "%"#{workName}"%"
+            </if>
+        </where>
+        ) a
+    </select>
 </mapper>

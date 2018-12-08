@@ -1,24 +1,24 @@
 package logistics.work.services;
 
 import logistics.work.common.FileUtils;
+import logistics.work.models.dao.UserDao;
 import logistics.work.models.dao.WorkAuditDao;
 import logistics.work.models.domain.WorkAudit;
 import logistics.work.models.domain.WorkAuditDetail;
+import logistics.work.models.dto.ShowDeptAllAuditInf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class WorkAuditService {
     @Autowired
     private WorkAuditDao workAuditDao;
-
+    @Autowired
+    private UserDao userDao;
     /**
      * 提交审核
      * @param params
@@ -45,7 +45,6 @@ public class WorkAuditService {
             for (WorkAudit workAudit : workAuditList) {
                 WorkAuditDetail workAuditDetail = new WorkAuditDetail();
                 workAuditDetail.setAuditItemId(workAudit.getId());
-                workAuditDetail.setAuditSubmitterId(userId);
                 workAuditDetailList.add(workAuditDetail);
             }
         }
@@ -58,7 +57,13 @@ public class WorkAuditService {
      * @param params
      * @return
      */
-    public Map<String,Object> queryUnAuditedWork(Map<String,Object> params){
-        return null;
+    public Map<String,Object> queryDeptAllAuditInf(Map<String,Object> params){
+        String deptNumber=userDao.queryDeptNumberByUserId((Integer) params.get("userId"));
+        params.put("deptNumber",deptNumber);
+        List<ShowDeptAllAuditInf> showDeptAllAuditInfList=workAuditDao.queryDeptAllAuditInfByPage(params);
+        Map<String,Object> result=new HashMap<>();
+        result.put("data",showDeptAllAuditInfList);
+        result.put("total",showDeptAllAuditInfList.size());
+        return result;
     }
 }

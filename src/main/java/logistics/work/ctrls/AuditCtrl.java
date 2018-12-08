@@ -4,10 +4,9 @@ import logistics.work.common.Constants;
 import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import logistics.work.services.WorkAuditService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -15,6 +14,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/work/audit")
 public class AuditCtrl extends BaseCtrl{
+    @Autowired
+    private WorkAuditService workAuditService;
     @GetMapping("/leader/queryUnAuditedWork")
     public Result queryUnAuditedWork(@RequestParam(value="workName",required = false)String workName,
                                      @RequestParam(value="pageNumber", required = false)Integer pageNumber,
@@ -24,6 +25,6 @@ public class AuditCtrl extends BaseCtrl{
         Map<String,Object> params=ParamUtils.setPageInfo(pageNumber,pageSize);
         params.put("workName",workName);
         params.put("userId",user.getId());
-        return null;
+        return this.send(workAuditService.queryDeptAllAuditInf(params));
     }
 }

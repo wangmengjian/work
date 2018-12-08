@@ -6,74 +6,79 @@
     <select id="queryWorkByPage" parameterType="java.util.Map"
             resultType="logistics.work.models.dto.ShowWorkAuditConditionDto">
         select *
-        from
-        (select
-        wp.id,
-        IFNULL(sc.`name`,'已通过')as audit_status,
-        wp.work_name,
-        wp.work_content,
-        wp.work_instructor,
-        wp.work_minutes,
-        'old' as flag
-        from work_pool as wp
-        left join work_audit as wad
-        on wp.id=wad.origin_work_id
-        left join sys_config as sc
-        on wad.audit_status=sc.`code`
-        where user_id=#{userId}
-        union
+        from(select
+        wad.id,
+        sc1.`name` as audit_status,
+        wa.work_name,
+        wa.work_content,
+        wa.work_instructor,
+        wa.work_minutes,
+        wa.origin_work_id,
+        wad.audit_time as time
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join sys_config as sc1
+        on wad.audit_status=sc1.code
+        where wad.audit_time is not null
+        UNION
         select
         wad.id,
-        sc.name as audit_status,
-        wad.work_name,
-        wad.work_content,
-        wad.work_instructor,
-        wad.work_minutes,
-        'new' as flag
-        from work_audit as wad
-        left join sys_config as sc
-        on wad.audit_status=sc.`code`
-        where wad.work_user_id=#{userId} and wad.origin_work_id is null
-        order by audit_status desc) as a
+        sc1.`name` as audit_status,
+        wa.work_name,
+        wa.work_content,
+        wa.work_instructor,
+        wa.work_minutes,
+        wa.origin_work_id,
+        wa.audit_submit_time as time
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join sys_config as sc1
+        on wad.audit_status=sc1.code
+        where wad.audit_time is null)a
         <where>
             <if test="workName!=null">
                 work_name like "%"#{workName}"%"
             </if>
         </where>
+        order by time desc
         limit #{pageStart},#{pageSize}
     </select>
     <select id="queryWorkCount" parameterType="java.util.Map"
             resultType="Integer">
         select count(*)
-        from
-        (select
-        wp.id,
-        IFNULL(sc.`name`,'已通过')as audit_status,
-        wp.work_name,
-        wp.work_content,
-        wp.work_instructor,
-        wp.work_minutes,
-        'old' as flag
-        from work_pool as wp
-        left join work_audit as wad
-        on wp.id=wad.origin_work_id
-        left join sys_config as sc
-        on wad.audit_status=sc.`code`
-        where user_id=#{userId}
-        union
+        from(select
+        wad.id,
+        sc1.`name` as audit_status,
+        wa.work_name,
+        wa.work_content,
+        wa.work_instructor,
+        wa.work_minutes,
+        wa.origin_work_id,
+        wad.audit_time as time
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join sys_config as sc1
+        on wad.audit_status=sc1.code
+        where wad.audit_time is not null
+        UNION
         select
         wad.id,
-        sc.name as audit_status,
-        wad.work_name,
-        wad.work_content,
-        wad.work_instructor,
-        wad.work_minutes,
-        'new' as flag
-        from work_audit as wad
-        left join sys_config as sc
-        on wad.audit_status=sc.`code`
-        where wad.work_user_id=#{userId} and wad.origin_work_id is null
-        ) as a
+        sc1.`name` as audit_status,
+        wa.work_name,
+        wa.work_content,
+        wa.work_instructor,
+        wa.work_minutes,
+        wa.origin_work_id,
+        wa.audit_submit_time as time
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join sys_config as sc1
+        on wad.audit_status=sc1.code
+        where wad.audit_time is null)a
         <where>
             <if test="workName!=null">
                 work_name like "%"#{workName}"%"
