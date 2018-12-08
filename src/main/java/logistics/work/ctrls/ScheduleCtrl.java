@@ -4,7 +4,7 @@ import logistics.work.common.Constants;
 import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
-import logistics.work.models.domain.WorkAuditDetail;
+import logistics.work.models.domain.WorkAudit;
 import logistics.work.models.dto.WorkAuditDto;
 import logistics.work.models.dto.WorkScheduleDto;
 import logistics.work.services.WorkAuditService;
@@ -41,9 +41,9 @@ public class ScheduleCtrl extends BaseCtrl {
         User user= (User) session.getAttribute(Constants.userSession);
         Map<String,Object> params=new HashMap<>();
         params.put("userId",user.getId());
-        params.put("workAuditDetailList",workAuditDto.getWorkAuditDetails());
+        params.put("workAuditList",workAuditDto.getWorkAudits());
         try{
-            return this.send(workAuditService.submitAuditDetail(params));
+            return this.send(workAuditService.submitAudit(params));
         }catch(Exception e){
             return this.send(-1,"操作失败");
         }
@@ -85,20 +85,20 @@ public class ScheduleCtrl extends BaseCtrl {
     }
     /**
      * 员工更改工作项
-     * @param workAuditDetail
+     * @param workAudit
      * @param session
      * @return
      */
     @PostMapping("/employee/updateWork")
-    public Result employeeUpdateWork(@Valid WorkAuditDetail workAuditDetail,HttpSession session){
+    public Result employeeUpdateWork(@Valid WorkAudit workAudit, HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
-        List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
-        workAuditDetailList.add(workAuditDetail);
+        List<WorkAudit> workAuditList =new ArrayList<>();
+        workAuditList.add(workAudit);
         Map<String,Object> params=new HashMap<>();
         params.put("userId",user.getId());
-        params.put("workAuditDetailList",workAuditDetailList);
+        params.put("workAuditList", workAuditList);
         try{
-            return this.send(workAuditService.submitAuditDetail(params));
+            return this.send(workAuditService.submitAudit(params));
         }catch(Exception e){
             return this.send(-1,"操作失败");
         }

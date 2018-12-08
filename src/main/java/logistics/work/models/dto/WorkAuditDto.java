@@ -1,6 +1,6 @@
 package logistics.work.models.dto;
 
-import logistics.work.models.domain.WorkAuditDetail;
+import logistics.work.models.domain.WorkAudit;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class WorkAuditDto {
     @Valid
-    private List<WorkAuditDetail> workAuditDetails;
+    private List<WorkAudit> workAudits;
 
-    public List<WorkAuditDetail> getWorkAuditDetails() {
-        return workAuditDetails;
+    public List<WorkAudit> getWorkAudits() {
+        return workAudits;
     }
 
-    public void setWorkAuditDetails(List<WorkAuditDetail> workAuditDetails) {
-        this.workAuditDetails = workAuditDetails;
+    public void setWorkAudits(List<WorkAudit> workAudits) {
+        this.workAudits = workAudits;
     }
 }
 

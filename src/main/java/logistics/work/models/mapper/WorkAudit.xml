@@ -3,21 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="logistics.work.models.dao.WorkAuditDao">
-    <insert id="addWorkAuditDetail" parameterType="logistics.work.models.domain.WorkAuditDetail" useGeneratedKeys="true" keyProperty="id">
-        insert into work_audit_detail(work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id)
+    <insert id="addWorkAudit" parameterType="logistics.work.models.domain.WorkAudit" useGeneratedKeys="true" keyProperty="id">
+        insert into work_audit(work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id)
         values
-        <foreach collection="list" separator="," item="detail">
-            (#{detail.workName},#{detail.workContent},#{detail.workInstructor},#{detail.workMinutes},#{detail.workFrom},#{detail.workUserId},#{detail.originWorkId})
+        <foreach collection="list" separator="," item="item">
+            (#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.workUserId},#{item.originWorkId})
         </foreach>
     </insert>
-    <select id="queryMaxIdByWorkUserId" parameterType="Integer" resultType="Integer">
-        select max(id) from work_audit_detail where work_user_id=#{workUesrId};
-    </select>
-    <insert id="addWorkAudit" parameterType="logistics.work.models.domain.WorkAudit" useGeneratedKeys="true" keyProperty="id">
-        insert into work_audit(audit_submitter_id,audit_detail_id,audit_submit_time)
+    <insert id="addWorkAuditDetail" parameterType="logistics.work.models.domain.WorkAuditDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into work_audit_detail(audit_submitter_id,audit_item_id,audit_submit_time)
         values
-        <foreach collection="list" separator="," item="audit">
-            (#{audit.auditSubmitterId},#{audit.auditDetailId},#{audit.auditSubmitTime})
+        <foreach collection="list" separator="," item="detail">
+            (#{detail.auditSubmitterId},#{detail.auditItemId},NOW())
         </foreach>
     </insert>
 </mapper>

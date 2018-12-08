@@ -26,33 +26,30 @@ public class WorkAuditService {
      * @throws Exception
      */
     @Transactional
-    public int submitAuditDetail(Map<String,Object> params) throws Exception {
-        List<WorkAuditDetail> workAuditDetailList= (List<WorkAuditDetail>) params.get("workAuditDetailList");
+    public int submitAudit(Map<String,Object> params) throws Exception {
+        List<WorkAudit> workAuditList= (List<WorkAudit>) params.get("workAuditList");
         Integer userId= (Integer) params.get("userId");
-        if(workAuditDetailList!=null&&workAuditDetailList.size()>0) {
-            for (WorkAuditDetail workAuditDetail : workAuditDetailList) {
+        if(workAuditList!=null&&workAuditList.size()>0) {
+            for (WorkAudit workAudit : workAuditList) {
                 String instructor = null;
-                if (workAuditDetail.getFile() != null) {
-                    instructor = FileUtils.upload(workAuditDetail.getFile());
+                if (workAudit.getFile() != null) {
+                    instructor = FileUtils.upload(workAudit.getFile());
                 }
-                workAuditDetail.setWorkUserId(userId);
-                workAuditDetail.setWorkInstructor(instructor);
-            }
-        }
-        workAuditDao.addWorkAuditDetail(workAuditDetailList);
-        List<WorkAudit> workAuditList=new ArrayList<>();
-        if(workAuditDetailList!=null&&workAuditDetailList.size()>0) {
-            for (WorkAuditDetail workAuditDetail : workAuditDetailList) {
-                WorkAudit workAudit = new WorkAudit();
-                workAudit.setAuditDetailId(workAuditDetail.getId());
-                workAudit.setAuditSubmitterId(userId);
-                Date d = new Date();
-                Timestamp timeStamep = new Timestamp(d.getTime());
-                workAudit.setAuditSubmitTime(timeStamep);
-                workAuditList.add(workAudit);
+                workAudit.setWorkUserId(userId);
+                workAudit.setWorkInstructor(instructor);
             }
         }
         workAuditDao.addWorkAudit(workAuditList);
+        List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
+        if(workAuditList!=null&&workAuditList.size()>0) {
+            for (WorkAudit workAudit : workAuditList) {
+                WorkAuditDetail workAuditDetail = new WorkAuditDetail();
+                workAuditDetail.setAuditItemId(workAudit.getId());
+                workAuditDetail.setAuditSubmitterId(userId);
+                workAuditDetailList.add(workAuditDetail);
+            }
+        }
+        workAuditDao.addWorkAuditDetail(workAuditDetailList);
         return workAuditList.size();
     }
 }

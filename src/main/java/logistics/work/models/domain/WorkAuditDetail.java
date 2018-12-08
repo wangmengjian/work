@@ -1,50 +1,27 @@
 package logistics.work.models.domain;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
- * 审核详情
+ * 审核记录
  */
 public class WorkAuditDetail {
     private Integer id;
-    @NotNull(message = "请填写作名称")
-    private String workName;
-    @NotNull(message="请填写工作内容工作内容")
-    private String workContent;
-    private String workInstructor;
-    @NotNull(message="请填写标准工时")
-    @Max(message = "标准工时有误，请重新输入",value = 720)
-    @Min(message = "标准工时有误，请重新输入",value = 0)
-    private Integer workMinutes;
-    @NotNull(message="工作项来源")
-    private String workFrom;
+    private Integer auditUserId;
+    private Integer auditItemId;
+    private Integer auditSubmitterId;
+    private Date auditSubmitTime;
+    private Date auditSuccessTime;
+    private Date auditFailTime;
+    private String auditFailReason;
     private String auditStatus;
-    private MultipartFile[] file;
-    private Integer workUserId;
-    private Integer originWorkId;
 
-    public void setOriginWorkId(Integer originWorkId) {
-        this.originWorkId = originWorkId;
+    public Integer getAuditSubmitterId() {
+        return auditSubmitterId;
     }
 
-    public Integer getWorkUserId() {
-        return workUserId;
-    }
-
-    public void setWorkUserId(Integer workUserId) {
-        this.workUserId = workUserId;
-    }
-
-    public MultipartFile[] getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile[] file) {
-        this.file = file;
+    public void setAuditSubmitterId(Integer auditSubmitterId) {
+        this.auditSubmitterId = auditSubmitterId;
     }
 
     public Integer getId() {
@@ -55,36 +32,52 @@ public class WorkAuditDetail {
         this.id = id;
     }
 
-    public String getWorkName() {
-        return workName;
+    public Integer getAuditUserId() {
+        return auditUserId;
     }
 
-    public void setWorkName(String workName) {
-        this.workName = workName;
+    public void setAuditUserId(Integer auditUserId) {
+        this.auditUserId = auditUserId;
     }
 
-    public String getWorkContent() {
-        return workContent;
+    public Integer getAuditItemId() {
+        return auditItemId;
     }
 
-    public void setWorkContent(String workContent) {
-        this.workContent = workContent;
+    public void setAuditItemId(Integer auditItemId) {
+        this.auditItemId = auditItemId;
     }
 
-    public String getWorkInstructor() {
-        return workInstructor;
+    public Date getAuditSubmitTime() {
+        return auditSubmitTime;
     }
 
-    public void setWorkInstructor(String workInstructor) {
-        this.workInstructor = workInstructor;
+    public void setAuditSubmitTime(Date auditSubmitTime) {
+        this.auditSubmitTime = auditSubmitTime;
     }
 
-    public Integer getWorkMinutes() {
-        return workMinutes;
+    public Date getAuditSuccessTime() {
+        return auditSuccessTime;
     }
 
-    public void setWorkMinutes(Integer workMinutes) {
-        this.workMinutes = workMinutes;
+    public void setAuditSuccessTime(Date auditSuccessTime) {
+        this.auditSuccessTime = auditSuccessTime;
+    }
+
+    public Date getAuditFailTime() {
+        return auditFailTime;
+    }
+
+    public void setAuditFailTime(Date auditFailTime) {
+        this.auditFailTime = auditFailTime;
+    }
+
+    public String getAuditFailReason() {
+        return auditFailReason;
+    }
+
+    public void setAuditFailReason(String auditFailReason) {
+        this.auditFailReason = auditFailReason;
     }
 
     public String getAuditStatus() {
@@ -95,11 +88,4 @@ public class WorkAuditDetail {
         this.auditStatus = auditStatus;
     }
 
-    public String getWorkFrom() {
-        return workFrom;
-    }
-
-    public void setWorkFrom(String workFrom) {
-        this.workFrom = workFrom;
-    }
 }
