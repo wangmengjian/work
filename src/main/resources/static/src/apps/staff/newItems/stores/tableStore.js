@@ -14,6 +14,8 @@ class tableStore {
 
     @observable visible = false
 
+    @observable loading = false
+
     actions = {
 
         // 监听文件变化

@@ -25,7 +25,7 @@ class modal extends Component {
         const { visible, actions, fileData } = this.props.store
         const props = {
             name: 'file',
-            action: '/api/work/schedule/employee/work',
+            action: '/api/work/schedule/employee/addWork',
             beforeUpload: actions.beforeUploadHandle,
             fileList: fileData,
             onChange: actions.fileChange,

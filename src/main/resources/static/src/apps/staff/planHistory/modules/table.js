@@ -21,11 +21,15 @@ class table extends Component {
             {   title: '类型', dataIndex: 'workFrom', width: 120},
             {   title: '名称', dataIndex: 'workName', width: 150},
             {   title: '内容', dataIndex: 'workContent', width: 180},
-            {   title: '完成情况', dataIndex: 'finishCondition', width: 180},
-            {   title: '心得', dataIndex: 'finishFeedback', width: 180},
+            {   title: '完成情况', dataIndex: 'finishCondition', width: 180, render: (text) => {
+                    if (text === null) { return '无' } else { return text }
+                }},
+            {   title: '心得', dataIndex: 'finishFeedback', width: 180, render: (text) => {
+                    if (text === null) { return '无' } else { text }
+                }},
             {   title: '作业指导书', dataIndex: 'workInstructor', width: 200, render: (text, record) => {
                     // console.log(text.lastIndexOf('\\'))
-                    return <a href={text}>{text}</a>
+                    if (text === '') { return '无' } else { return <a href={text}>{text}</a> }
                 }},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 100, render: (text) => {
                     return <span>{text}&nbsp;分钟</span>

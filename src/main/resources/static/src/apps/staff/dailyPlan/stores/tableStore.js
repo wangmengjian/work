@@ -14,6 +14,7 @@ class tableStore {
     @observable isAlter = undefined
     @observable visible = false
     @observable loading = false
+    @observable loadingButton = false
 
     actions = {
 
@@ -110,8 +111,6 @@ class tableStore {
             this.fileData = []
             console.log(this.formData)
 
-            // console.log(this.formData)
-            // console.log(newData)
             // isAlter 有值，意味着是通过修改表格触发的该函数
             dataSource[isAlter].finishStatus = values['finishStatus']
             dataSource[isAlter].finishCondition = values['finishCondition']

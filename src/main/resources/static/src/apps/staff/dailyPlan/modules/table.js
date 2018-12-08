@@ -15,9 +15,11 @@ class table extends Component {
     submit = () => {
         const store = this.props.store
         const { dataSource, actions } = this.props.store
+
+        store.loadingButton = true
+
         const form = new FormData()
         let finishStatus = null
-
         form.append('id', store.id)
         for (let i=0; i < dataSource.length; i++) {
             if (dataSource[i].finishStatus === '已完成') {
@@ -30,10 +32,14 @@ class table extends Component {
                     form.append('workScheduleDetailDtoList['+i+'].pictures', store.formData[i][j])
                 }
             }
-            form.append('workScheduleDetailDtoList['+i+'].finishCondition', dataSource[i].finishCondition)
             form.append('workScheduleDetailDtoList['+i+'].id', dataSource[i].id)
-            form.append('workScheduleDetailDtoList['+i+'].finishFeedback', dataSource[i].finishFeedback)
             form.append('workScheduleDetailDtoList['+i+'].finishStatus', finishStatus)
+            if (dataSource[i].finishFeedback !== null && dataSource[i].finishFeedback !== '') {
+                form.append('workScheduleDetailDtoList[' + i + '].finishFeedback', dataSource[i].finishFeedback)
+            }
+            if (dataSource[i].finishCondition !== null && dataSource[i].finishCondition !== '') {
+                form.append('workScheduleDetailDtoList['+i+'].finishCondition', dataSource[i].finishCondition)
+            }
         }
 
         axios({
@@ -48,12 +54,14 @@ class table extends Component {
                 } else {
                     message.error("提交失败: " + response.data.status.message)
                 }
+                store.loadingButton = false
             })
     }
 
     // 填写完成情况
     workEnd = (record, index) => {
         const { form, store } = this.props
+        console.log(record)
         form.setFieldsValue({
             // finishStatus: record.finishStatus,
             finishStatus: '已完成',
@@ -107,7 +115,7 @@ class table extends Component {
                 loading={store.loading}
                 rowKey={"id"}
             />
-            <Button type={"primary"} onClick={this.submit}>提交</Button>
+            <Button type={"primary"} onClick={this.submit} loading={store.loadingButton}>提交</Button>
         </Fragment>
     }
 }

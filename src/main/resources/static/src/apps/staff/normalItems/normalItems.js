@@ -1,14 +1,13 @@
 import React, {Component, Fragment} from 'react';
 import {Provider} from 'mobx-react'
-import tableStore from './stores/tableStore'
-import searchStore from './stores/searchStore'
+import store from './stores/tableStore'
 import Table from './modules/table'
 import Search from './modules/search'
 
 class NormalItems extends Component {
 
     render() {
-        return <Provider tableStore={tableStore} searchStore={searchStore}>
+        return <Provider store={store}>
             <Fragment>
                 <Search/>
                 <Table/>

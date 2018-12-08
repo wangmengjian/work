@@ -9,21 +9,26 @@ class table extends Component {
 
     // 校验表单
     submit = () => {
-        const { dataSource, actions } = this.props.store
+        const store = this.props.store
+        const { dataSource, actions } = store
         const form = new FormData()
+        store.loading = true
 
         for (let i=0; i < dataSource.length; i++) {
-            if (this.props.store.formData[i] !== undefined && this.props.store.formData[i] !== null) {
-                form.append('workAuditDetails['+i+'].file', this.props.store.formData[i])
+            if (store.formData[i] !== undefined && store.formData[i] !== null) {
+                form.append('workAuditDetails['+i+'].file', store.formData[i])
             }
-            form.append('workAuditDetails['+i+'].workFrom', this.props.store.workFrom[i].substring(0,2))
-            form.append('workAuditDetails['+i+'].workName', dataSource[i].workName)
-            form.append('workAuditDetails['+i+'].workContent', dataSource[i].workContent)
-            form.append('workAuditDetails['+i+'].workMinutes', dataSource[i].workMinutes * 60000)
+            form.append('workAudits['+i+'].workFrom', store.workFrom[i].substring(0,2))
+            form.append('workAudits['+i+'].workName', dataSource[i].workName)
+            form.append('workAudits['+i+'].workContent', dataSource[i].workContent)
+            form.append('workAudits['+i+'].workMinutes', dataSource[i].workMinutes)
         }
+        console.log(store.formData)
+        console.log(store.workFrom)
+        console.log(dataSource)
         axios({
             method: 'post',
-            url: '/api/work/schedule/employee/work',
+            url: '/api/work/schedule/employee/addWork',
             data: form
         })
             .then(response => {
@@ -33,6 +38,7 @@ class table extends Component {
                 } else {
                     message.error("提交失败: " + response.data.status.message)
                 }
+                store.loading = false
             })
     }
 
@@ -63,7 +69,8 @@ class table extends Component {
     }
 
     render() {
-        const { actions, dataSource } = this.props.store
+        const store = this.props.store
+        const { actions, dataSource } = store
         const columns = [
             {   title: '#', dataIndex: 'key', width: 50, render: (text, record, index) => {
                     return index + 1
@@ -90,7 +97,7 @@ class table extends Component {
                 <Col className="gutter-row" span={2}>
                     <Button type={"primary"} onClick={this.newItem}>新增</Button>
                 </Col>
-            </Row>
+            </Row><br/>
             <Table
                 dataSource={dataSource}
                 columns={columns}
@@ -99,8 +106,8 @@ class table extends Component {
                 // rowSelection={}
                 // rowKey={"key"}
                 // size={"middle"}
-            />
-            <Button type={"primary"} onClick={this.submit}>提交</Button>
+            /><br/>
+            <Button type={"primary"} onClick={this.submit} loading={store.loading}>提交</Button>
             <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>
         </Fragment>
     }
