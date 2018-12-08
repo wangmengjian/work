@@ -15,6 +15,15 @@ public class WorkScheduleDetailDto {
     private String finishStatus;
     private String finishPicture;
     private String finishFeedback;
+    private String finishTime;
+
+    public String getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(String finishTime) {
+        this.finishTime = finishTime;
+    }
 
     public String getFinishFeedback() {
         return finishFeedback;

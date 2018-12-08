@@ -12,11 +12,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/")
 public class RenderCtrl extends BaseCtrl {
-
-
-    @RequestMapping(value="/warehouse/**", method=RequestMethod.GET)
+    @RequestMapping(value="/work/employee/**", method=RequestMethod.GET)
     public ModelAndView index(Map<String, Object> model, HttpServletRequest request) {
-        Map<String, Object> data = new HashMap<>();
-        return this.render("warehouse", data);
+        return this.render("employee", null);
     }
 }

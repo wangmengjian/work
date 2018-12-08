@@ -2,6 +2,7 @@ package logistics.work.services;
 
 import logistics.work.common.FileUtils;
 import logistics.work.models.dao.WorkScheduleDao;
+import logistics.work.models.domain.WorkSchedule;
 import logistics.work.models.dto.WorkScheduleDetailDto;
 import logistics.work.models.dto.WorkScheduleDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +30,16 @@ public class WorkScheduleService {
             params.put("date",localDate.toString());
         }
         WorkScheduleDto workScheduleDto=workScheduleDao.queryWorkScheduleByDate(params);
+        Map<String,Object> result=new HashMap<>();
         if(workScheduleDto==null){
-            return null;
+            result.put("data",null);
+            result.put("total",1);
+            return result;
         }
         params.put("scheduleId",workScheduleDto.getId());
         List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetailByScheduleId(params);
         workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList);
-        Map<String,Object> result=new HashMap<>();
         result.put("data",workScheduleDto);
-        result.put("total",1);
         return result;
     }
 
@@ -67,7 +69,16 @@ public class WorkScheduleService {
      * @param params
      * @return
      */
+    @Transactional
     public int newSchedule(Map<String,Object> params){
-        return 0;
+        List<Integer> idList= (List<Integer>) params.get("idList");
+        WorkSchedule workSchedule=new WorkSchedule();
+        workSchedule.setUserId((Integer) params.get("userId"));
+        workScheduleDao.addSchedule(workSchedule);
+        int result=0;
+        if(idList!=null&&idList.size()>0) {
+            result = workScheduleDao.addScheduleDetail(idList, workSchedule.getId());
+        }
+        return result;
     }
 }

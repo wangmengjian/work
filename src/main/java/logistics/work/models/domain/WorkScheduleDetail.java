@@ -1,5 +1,7 @@
 package logistics.work.models.domain;
 
+import java.util.Date;
+
 /**
  * 日工作计划明细
  */
@@ -10,7 +12,25 @@ public class WorkScheduleDetail {
     private String workFrom;
     private String finishPicture;
     private String finishCondition;
+    private String finishFeedback;
     private String finishStatus;
+    private String finishTime;
+
+    public String getFinishFeedback() {
+        return finishFeedback;
+    }
+
+    public void setFinishFeedback(String finishFeedback) {
+        this.finishFeedback = finishFeedback;
+    }
+
+    public String getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(String finishTime) {
+        this.finishTime = finishTime;
+    }
 
     public Integer getId() {
         return id;

@@ -10,5 +10,4 @@ public interface WorkAuditDao {
     public int addWorkAuditDetail(List<WorkAuditDetail> workAuditDetail);
     /*添加审核记录*/
     public int addWorkAudit(List<WorkAudit> workAuditList);
-    public Integer queryMaxIdByWorkUserId(Integer workUserId);
 }

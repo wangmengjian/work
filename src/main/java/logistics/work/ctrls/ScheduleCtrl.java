@@ -39,8 +39,11 @@ public class ScheduleCtrl extends BaseCtrl {
     @PostMapping("/employee/addWork")
     public Result employeeAddWork(@Valid WorkAuditDto workAuditDto,HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
+        Map<String,Object> params=new HashMap<>();
+        params.put("userId",user.getId());
+        params.put("workAuditDetailList",workAuditDto.getWorkAuditDetails());
         try{
-            return this.send(workAuditService.submitAuditDetail(user,workAuditDto));
+            return this.send(workAuditService.submitAuditDetail(params));
         }catch(Exception e){
             return this.send(-1,"操作失败");
         }
@@ -89,12 +92,13 @@ public class ScheduleCtrl extends BaseCtrl {
     @PostMapping("/employee/updateWork")
     public Result employeeUpdateWork(@Valid WorkAuditDetail workAuditDetail,HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
-        WorkAuditDto workAuditDto=new WorkAuditDto();
         List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
         workAuditDetailList.add(workAuditDetail);
-        workAuditDto.setWorkAuditDetails(workAuditDetailList);
+        Map<String,Object> params=new HashMap<>();
+        params.put("userId",user.getId());
+        params.put("workAuditDetailList",workAuditDetailList);
         try{
-            return this.send(workAuditService.submitAuditDetail(user,workAuditDto));
+            return this.send(workAuditService.submitAuditDetail(params));
         }catch(Exception e){
             return this.send(-1,"操作失败");
         }

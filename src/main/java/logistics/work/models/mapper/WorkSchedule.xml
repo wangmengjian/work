@@ -20,7 +20,9 @@
         sc1.name as work_from,
         sc.name as finish_status,
         wsd.finish_picture,
-        wsd.finish_condition
+        wsd.finish_feedback,
+        wsd.finish_condition,
+        wsd.finish_time
         from work_schedule_detail as wsd
         left join sys_config as sc1
         on wsd.work_from=sc1.`code`
@@ -60,6 +62,11 @@
         <foreach collection="list" item="item" index="index"
                  separator=" " open="case id" close="end">
             when #{item.id} then #{item.finishFeedback}
+        </foreach>,
+        finish_time=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.finishTime}
         </foreach>
         where id in
         <foreach collection="list" index="index" item="item"
@@ -72,4 +79,15 @@
         set submit_time=NOW(),submit_status='submitted'
         where id=#{scheduleId}
     </update>
+    <insert id="addSchedule" parameterType="logistics.work.models.domain.WorkSchedule" useGeneratedKeys="true" keyProperty="id">
+        insert into work_schedule(user_id,`date`)
+        values(#{userId},NOW())
+    </insert>
+    <insert id="addScheduleDetail">
+        insert into work_schedule_detail(schedule_id,work_id,work_from)
+        values
+        <foreach collection="idList" separator="," item="id">
+            (#{scheduleId},#{id},'w3')
+        </foreach>
+    </insert>
 </mapper>

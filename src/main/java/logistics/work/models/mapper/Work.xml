@@ -92,8 +92,9 @@
         LEFT JOIN `user`
         on `user`.id=wp.user_id
         <where>
+            wp.work_from='w3'
             <if test="employeeId!=null">
-                wp.user_id=#{employeeId}
+                and wp.user_id=#{employeeId}
             </if>
             <if test="workName!=null">
                 and wp.work_name like "%"#{workName}"%"

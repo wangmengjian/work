@@ -13,7 +13,7 @@
     <select id="queryMaxIdByWorkUserId" parameterType="Integer" resultType="Integer">
         select max(id) from work_audit_detail where work_user_id=#{workUesrId};
     </select>
-    <insert id="addWorkAudit" parameterType="logistics.work.models.domain.WorkAudit">
+    <insert id="addWorkAudit" parameterType="logistics.work.models.domain.WorkAudit" useGeneratedKeys="true" keyProperty="id">
         insert into work_audit(audit_submitter_id,audit_detail_id,audit_submit_time)
         values
         <foreach collection="list" separator="," item="audit">
