@@ -29,7 +29,8 @@
         wa.work_instructor,
         wa.work_minutes,
         sc.`name` as workFrom,
-        wa.audit_submit_time
+        wa.audit_submit_time,
+        wa.origin_work_id
         from work_audit_detail as wad
         left join work_audit as wa
         on wad.audit_item_id=wa.id

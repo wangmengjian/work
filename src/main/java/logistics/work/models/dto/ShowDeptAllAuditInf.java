@@ -9,6 +9,15 @@ public class ShowDeptAllAuditInf {
     private Integer workMinutes;
     private String workFrom;
     private String auditSubmitTime;
+    private Integer originWorkId;
+
+    public Integer getOriginWorkId() {
+        return originWorkId;
+    }
+
+    public void setOriginWorkId(Integer originWorkId) {
+        this.originWorkId = originWorkId;
+    }
 
     public Integer getId() {
         return id;
