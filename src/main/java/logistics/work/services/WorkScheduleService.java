@@ -78,8 +78,8 @@ public class WorkScheduleService {
         Integer scheduleId=workScheduleDao.queryTodayScheduleId(userId);
         if(scheduleId==null) {
             workScheduleDao.addSchedule(workSchedule);
+            scheduleId = workSchedule.getId();
         }
-        scheduleId=workSchedule.getId();
         int result=0;
         if(idList!=null&&idList.size()>0) {
             result = workScheduleDao.addScheduleDetail(idList, scheduleId);
