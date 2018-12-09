@@ -71,13 +71,18 @@ public class WorkScheduleService {
      */
     @Transactional
     public int newSchedule(Map<String,Object> params){
+        Integer userId=(Integer) params.get("userId");
         List<Integer> idList= (List<Integer>) params.get("idList");
         WorkSchedule workSchedule=new WorkSchedule();
-        workSchedule.setUserId((Integer) params.get("userId"));
-        workScheduleDao.addSchedule(workSchedule);
+        workSchedule.setUserId(userId);
+        Integer scheduleId=workScheduleDao.queryTodayScheduleId(userId);
+        if(scheduleId==null) {
+            workScheduleDao.addSchedule(workSchedule);
+        }
+        scheduleId=workSchedule.getId();
         int result=0;
         if(idList!=null&&idList.size()>0) {
-            result = workScheduleDao.addScheduleDetail(idList, workSchedule.getId());
+            result = workScheduleDao.addScheduleDetail(idList, scheduleId);
         }
         return result;
     }

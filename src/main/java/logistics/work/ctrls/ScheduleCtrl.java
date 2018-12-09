@@ -143,8 +143,8 @@ public class ScheduleCtrl extends BaseCtrl {
         Map<String,Object> params=ParamUtils.setPageInfo(pageNumber,pageSize);
         params.put("workName",workName);
         User user= (User) session.getAttribute(Constants.userSession);
-        params.put("employeeId",user.getId());
-        return this.send(workService.queryWorkPool(params));
+        params.put("userId",user.getId());
+        return this.send(workService.queryUnAddWork(params));
     }
 
     /**
@@ -175,7 +175,7 @@ public class ScheduleCtrl extends BaseCtrl {
      * @param pageSize
      * @return
      */
-    @GetMapping("/leader/queryWork")
+    /*@GetMapping("/leader/queryWork")
     public Result leaderQueryWork(@RequestParam(value="workName",required = false)String workName,
                                   @RequestParam(value="employeeId",required = false)Integer employeeId,
                                   @RequestParam(value="pageNumber", required = false)Integer pageNumber,
@@ -184,11 +184,11 @@ public class ScheduleCtrl extends BaseCtrl {
         params.put("workName",workName);
         params.put("employeeId",employeeId);
         try{
-            return this.send(workService.queryWorkPool(params));
+            return this.send(workService.(params));
         }catch(Exception e){
             return this.send(-1,"操作失败");
         }
-    }
+    }*/
 
     @GetMapping("/download")
     public Result download(HttpServletRequest request, HttpServletResponse response){

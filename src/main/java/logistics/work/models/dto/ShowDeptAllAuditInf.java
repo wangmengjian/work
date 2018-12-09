@@ -5,11 +5,29 @@ public class ShowDeptAllAuditInf {
     private String workName;
     private String workContent;
     private String submitter;
+    private Integer submitterId;
     private String workInstructor;
     private Integer workMinutes;
     private String workFrom;
     private String auditSubmitTime;
     private Integer originWorkId;
+    private String fromCode;
+
+    public Integer getSubmitterId() {
+        return submitterId;
+    }
+
+    public void setSubmitterId(Integer submitterId) {
+        this.submitterId = submitterId;
+    }
+
+    public String getFromCode() {
+        return fromCode;
+    }
+
+    public void setFromCode(String fromCode) {
+        this.fromCode = fromCode;
+    }
 
     public Integer getOriginWorkId() {
         return originWorkId;

@@ -85,7 +85,7 @@
             </if>
         </where>
     </select>
-    <select id="queryWorkPoolByPage" parameterType="java.util.Map" resultType="logistics.work.models.domain.WorkPool">
+    <select id="queryUnAddWork" parameterType="java.util.Map" resultType="logistics.work.models.domain.WorkPool">
         select
         wp.id,
         wp.work_name,
@@ -97,27 +97,71 @@
         LEFT JOIN `user`
         on `user`.id=wp.user_id
         <where>
-            wp.work_from='w3'
-            <if test="employeeId!=null">
-                and wp.user_id=#{employeeId}
+            <if test="scheduleId!=null">
+                wp.id not in (
+                select work_id
+                from work_schedule_detail as wsd
+                where schedule_id=#{scheduleId})
             </if>
+            and wp.work_from='w3'
+            and wp.user_id=#{userId}
             <if test="workName!=null">
                 and wp.work_name like "%"#{workName}"%"
             </if>
         </where>
-        limit #{pageStart},#{pageSize}
     </select>
     <select id="queryWorkPoolCount" parameterType="java.util.Map" resultType="Integer">
-        select
-        count(*)
-        from work_pool as wp
-        <where>
-            <if test="employeeId!=null">
-                wp.user_id=#{employeeId}
-            </if>
-            <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
-            </if>
-        </where>
-    </select>
+    select
+    count(*)
+    from work_pool as wp
+    <where>
+        <if test="employeeId!=null">
+            wp.user_id=#{employeeId}
+        </if>
+        <if test="workName!=null">
+            and wp.work_name like "%"#{workName}"%"
+        </if>
+    </where>
+</select>
+    <insert id="addAgreeWork" parameterType="logistics.work.models.domain.WorkPool" useGeneratedKeys="true" keyProperty="id">
+        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from)
+        values
+        <foreach collection="list" item="workPool" separator=",">
+            (#{userId},#{workName},#{workContent},#{workInstructor},#{workMinutes},#{workFrom})
+        </foreach>
+    </insert>
+    <update id="updateAgreeWork" parameterType="logistics.work.models.domain.WorkPool">
+        update work_pool
+        set work_name=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workName}
+        </foreach>,
+        work_content=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workContent}
+        </foreach>,
+        work_instructor=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workInstructor}
+        </foreach>,
+        work_minutes=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workMinutes}
+        </foreach>,
+        work_from=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workFrom}
+        </foreach>
+        where id in
+        (
+        <foreach collection="list" item="item" separator=",">
+            #{item.id}
+        </foreach>
+        )
+    </update>
 </mapper>

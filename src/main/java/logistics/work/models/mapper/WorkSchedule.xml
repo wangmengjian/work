@@ -79,7 +79,8 @@
         set submit_time=NOW(),submit_status='submitted'
         where id=#{scheduleId}
     </update>
-    <insert id="addSchedule" parameterType="logistics.work.models.domain.WorkSchedule" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addSchedule" parameterType="logistics.work.models.domain.WorkSchedule" useGeneratedKeys="true"
+            keyProperty="id">
         insert into work_schedule(user_id,`date`)
         values(#{userId},NOW())
     </insert>
@@ -90,4 +91,9 @@
             (#{scheduleId},#{id},'w3')
         </foreach>
     </insert>
+    <select id="queryTodayScheduleId" parameterType="Integer" resultType="Integer">
+        select id
+        from work_schedule as ws
+        where date_format(ws.date,'%e %b %y') = date_format(now(), '%e %b %y') and ws.user_id=#{userId}
+    </select>
 </mapper>

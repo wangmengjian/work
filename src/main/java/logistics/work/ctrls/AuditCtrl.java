@@ -4,11 +4,13 @@ import logistics.work.common.Constants;
 import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
+import logistics.work.models.dto.ShowDeptAllAuditInf;
 import logistics.work.services.WorkAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,5 +28,13 @@ public class AuditCtrl extends BaseCtrl{
         params.put("workName",workName);
         params.put("userId",user.getId());
         return this.send(workAuditService.queryDeptAllAuditInf(params));
+    }
+    @PostMapping("/leader/auditWork")
+    public Result auditWork(@RequestBody List<ShowDeptAllAuditInf> showDeptAllAuditInfList){
+        try{
+            return this.send(workAuditService.auditWork(showDeptAllAuditInfList));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
     }
 }

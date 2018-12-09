@@ -3,8 +3,10 @@ package logistics.work.services;
 import logistics.work.common.FileUtils;
 import logistics.work.models.dao.UserDao;
 import logistics.work.models.dao.WorkAuditDao;
+import logistics.work.models.dao.WorkDao;
 import logistics.work.models.domain.WorkAudit;
 import logistics.work.models.domain.WorkAuditDetail;
+import logistics.work.models.domain.WorkPool;
 import logistics.work.models.dto.ShowDeptAllAuditInf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class WorkAuditService {
     private WorkAuditDao workAuditDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private WorkDao workDao;
     /**
      * 提交审核
      * @param params
@@ -65,5 +69,33 @@ public class WorkAuditService {
         result.put("data",showDeptAllAuditInfList);
         result.put("total",showDeptAllAuditInfList.size());
         return result;
+    }
+
+    /**
+     * 审核员工工作项
+     * @param showDeptAllAuditInfList
+     * @return
+     */
+    @Transactional
+    public int auditWork(List<ShowDeptAllAuditInf> showDeptAllAuditInfList){
+        List<WorkPool> addWorkPool=new ArrayList<>();
+        List<WorkPool> updateWorkPool=new ArrayList<>();
+        for(ShowDeptAllAuditInf showDeptAllAuditInf:showDeptAllAuditInfList){
+            WorkPool workPool=new WorkPool();
+            workPool.setUseId(showDeptAllAuditInf.getSubmitterId());
+            workPool.setWorkName(showDeptAllAuditInf.getWorkName());
+            workPool.setWorkContent(showDeptAllAuditInf.getWorkContent());
+            workPool.setWorkInstructor(showDeptAllAuditInf.getWorkInstructor());
+            workPool.setWorkFrom(showDeptAllAuditInf.getFromCode());
+            workPool.setWorkMinutes(showDeptAllAuditInf.getWorkMinutes());
+            if(showDeptAllAuditInf.getOriginWorkId()==null){
+                addWorkPool.add(workPool);
+            }else{
+                updateWorkPool.add(workPool);
+            }
+        }
+        workDao.addAgreeWork(addWorkPool);
+        workDao.updateAgreeWork(updateWorkPool);
+        return showDeptAllAuditInfList.size();
     }
 }

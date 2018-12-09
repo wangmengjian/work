@@ -30,7 +30,9 @@
         wa.work_minutes,
         sc.`name` as workFrom,
         wa.audit_submit_time,
-        wa.origin_work_id
+        wa.origin_work_id,
+        wa.work_from as fromCode,
+        `user`.id as submitterId
         from work_audit_detail as wad
         left join work_audit as wa
         on wad.audit_item_id=wa.id
@@ -58,14 +60,7 @@
         select count(*)
         from (
         select
-        wa.id,
-        wa.work_name,
-        wa.work_content,
-        employee.emp_name as submitter,
-        wa.work_instructor,
-        wa.work_minutes,
-        sc.`name` as workFrom,
-        wad.audit_submit_time
+        wa.id
         from work_audit_detail as wad
         left join work_audit as wa
         on wad.audit_item_id=wa.id
