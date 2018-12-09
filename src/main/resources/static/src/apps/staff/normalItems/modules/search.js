@@ -13,9 +13,9 @@ class search extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 store.workName = values.workName
-                this.props.store.actions.search(1, store.pageSize)
             }
         })
+        this.props.store.actions.search(1, store.pageSize)
     }
 
     render() {

@@ -22,14 +22,14 @@ class table extends Component {
             {   title: '名称', dataIndex: 'workName', width: 150},
             {   title: '内容', dataIndex: 'workContent', width: 180},
             {   title: '完成情况', dataIndex: 'finishCondition', width: 180, render: (text) => {
-                    if (text === null) { return '无' } else { return text }
+                    if (text === null || text === '') { return '无' } else { return text }
                 }},
             {   title: '心得', dataIndex: 'finishFeedback', width: 180, render: (text) => {
-                    if (text === null) { return '无' } else { text }
+                    if (text === null || text === '') { return '无' } else { return text }
                 }},
             {   title: '作业指导书', dataIndex: 'workInstructor', width: 200, render: (text, record) => {
                     // console.log(text.lastIndexOf('\\'))
-                    if (text === '') { return '无' } else { return <a href={text}>{text}</a> }
+                    if (text === null || text === '') { return '无' } else { return <a href={text}>{text}</a> }
                 }},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 100, render: (text) => {
                     return <span>{text}&nbsp;分钟</span>

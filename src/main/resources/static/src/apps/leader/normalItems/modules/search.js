@@ -5,7 +5,7 @@ import { Input, Select, Button, Row, Col, Form } from 'antd'
 const Option = Select.Option
 const FormItem = Form.Item
 
-@inject('searchStore')
+@inject('store')
 @observer
 class search extends Component {
     render() {

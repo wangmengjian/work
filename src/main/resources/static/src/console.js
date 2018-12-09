@@ -2,10 +2,20 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Link, Route, Switch, withRouter } from 'react-router-dom';
 import { Layout, Menu, Icon} from 'antd';
+
+// 员工
 import NormalItems from './apps/staff/normalItems/normalItems'
 import NewItems from './apps/staff/newItems/newItems'
 import DailyPlan from './apps/staff/dailyPlan/dailyPlan'
 import PlanHistory from './apps/staff/planHistory/planHistory'
+import NewPlan from './apps/staff/newPlan/newPlan'
+
+// 领导
+import DailyPlanLeader from './apps/leader/dailyPlan/dailyPlan'
+import DailyUnfinished from './apps/leader/dailyUnfinished/dailyUnfinished'
+import ItemsReview from './apps/leader/itemsReview/itemsReview'
+import NewItemsLeader from './apps/leader/newItems/newItems'
+import NormalItemsLeader from './apps/leader/normalItems/normalItems'
 import menus from './config/menus'
 
 const { Sider, Content } = Layout;
@@ -78,35 +88,27 @@ class Work extends Component {
         return <Layout style={{height:"100vh"}}>
                 <Sider defaultselectedseys={['1']} collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} >
                     <Link to="/"><div className="logo"><h2 style={{color: '#fff'}}>工作笔记</h2></div></Link>
-                    {/*<SideMenuWrapper/>*/}
-                    <Menu theme="dark" mode="inline">
-                        <SubMenu key="sub1" title={<span><Icon type="user" /><span>工作项管理</span></span>} >
-                            <Menu.Item key="1"><Link to="/work/employee/workItems/normalItems">查询工作项</Link></Menu.Item>
-                            <Menu.Item key="2"><Link to="/work/employee/workItems/newItems">新增工作项</Link></Menu.Item>
-                        </SubMenu>
-                        <Menu.Item key="3">
-                            <Link to="/work/employee/dailyPlan">
-                                <Icon type="pie-chart" />
-                                <span>今日日计划</span>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item key="4">
-                            <Link to="/work/employee/planHistory">
-                                <Icon type="team" />
-                                <span>历史日计划</span>
-                            </Link>
-                        </Menu.Item>
-                    </Menu>
+                    <SideMenuWrapper/>
                 </Sider>
                 <Layout>
                     <Content style={{ margin: '16px 16px 0' }}>
                         <div style={{ padding: 30, background: '#fff', minHeight: 700 }}>
                             <Switch>
                                 <Route path="/" exact></Route>
+                                {/* 员工 */}
                                 <Route path="/work/employee/workItems/normalItems"><NormalItems /></Route>
                                 <Route path="/work/employee/workItems/newItems"><NewItems /></Route>
                                 <Route path="/work/employee/dailyPlan"><DailyPlan /></Route>
                                 <Route path="/work/employee/planHistory"><PlanHistory /></Route>
+                                <Route path="/work/employee/newPlan"><NewPlan /></Route>
+
+                                {/* 领导 */}
+                                <Route path="/work/leader/workItems/normalItems"><NormalItemsLeader /></Route>
+                                <Route path="/work/leader/workItems/newItems"><NewItemsLeader /></Route>
+                                <Route path="/work/leader/workItems/dailyUnfinished"><DailyUnfinished /></Route>
+                                <Route path="/work/leader/workItems/itemsReview"><ItemsReview /></Route>
+                                <Route path="/work/leader/plan/dailyPlan"><DailyPlanLeader /></Route>
+
                             </Switch>
                         </div>
                     </Content>

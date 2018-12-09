@@ -35,7 +35,8 @@ class table extends Component {
                 pagination={false}
                 rowKey={'id'}
                 loading={store.loading}
-                // size={"middle"}
+                size={"middle"}
+                scroll={{ y : 460 }}
             /><br/>
             <Row>
                 <Col className="gutter-row" span={21}>

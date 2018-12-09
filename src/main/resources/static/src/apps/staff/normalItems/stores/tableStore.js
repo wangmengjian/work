@@ -43,7 +43,7 @@ class tableStore {
         // 改变显示条数
         handlePageSizeChange: action((value) => {
             this.pageSize = value
-            this.actions.search(1, this.pageSize)
+            this.actions.search(1, this.pageSize*1)
         }),
     }
 }
