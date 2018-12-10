@@ -55,7 +55,7 @@ class SideMenu extends Component {
 
     render() {
         let mu = []
-        menus.staff.map( m => {
+        menus.leader.map( m => {
             mu.push(renderMenu(m))
         })
 
