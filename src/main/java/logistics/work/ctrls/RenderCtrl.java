@@ -13,7 +13,11 @@ import java.util.Map;
 @RequestMapping("/")
 public class RenderCtrl extends BaseCtrl {
     @RequestMapping(value="/work/employee/**", method=RequestMethod.GET)
-    public ModelAndView index(Map<String, Object> model, HttpServletRequest request) {
+    public ModelAndView employee(Map<String, Object> model, HttpServletRequest request) {
         return this.render("employee", null);
+    }
+    @RequestMapping(value="/work/leader/**", method=RequestMethod.GET)
+    public ModelAndView leader(Map<String, Object> model, HttpServletRequest request) {
+        return this.render("leader", null);
     }
 }

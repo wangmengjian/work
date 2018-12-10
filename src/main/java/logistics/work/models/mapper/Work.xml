@@ -126,8 +126,8 @@
     <insert id="addAgreeWork" parameterType="logistics.work.models.domain.WorkPool" useGeneratedKeys="true" keyProperty="id">
         insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from)
         values
-        <foreach collection="list" item="workPool" separator=",">
-            (#{userId},#{workName},#{workContent},#{workInstructor},#{workMinutes},#{workFrom})
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom})
         </foreach>
     </insert>
     <update id="updateAgreeWork" parameterType="logistics.work.models.domain.WorkPool">
