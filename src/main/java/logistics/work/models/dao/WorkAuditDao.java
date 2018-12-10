@@ -19,4 +19,5 @@ public interface WorkAuditDao {
     public Integer queryDeptAllAuditInfCount(Map<String,Object> params);
     /*更改工作项的完成状态*/
     public int updateAuditStatus(List<WorkAuditDetail> workAuditDetailList);
+    public List<WorkAudit> queryAllAuditById(List<Integer> idList);
 }

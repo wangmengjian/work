@@ -27,9 +27,7 @@ public class AuthFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse)response;
         HttpSession session = req.getSession();
         User user=new User();
-        user.setId(1);
-        user.setUsername("wangwu");
-        user.setPassword("123");
+        user.setId(3);
         session.setAttribute("USER_SESSION",user);
         String url = req.getRequestURI();
         if (url.startsWith("/api")) {

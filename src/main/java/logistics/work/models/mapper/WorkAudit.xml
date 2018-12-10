@@ -29,10 +29,7 @@
         wa.work_instructor,
         wa.work_minutes,
         sc.`name` as workFrom,
-        wa.audit_submit_time,
-        wa.origin_work_id,
-        wa.work_from as fromCode,
-        `user`.id as submitterId
+        wa.audit_submit_time
         from work_audit_detail as wad
         left join work_audit as wa
         on wad.audit_item_id=wa.id
@@ -42,15 +39,17 @@
         on employee.id=`user`.employee_id
         left join sys_config as sc
         on wa.work_from=sc.code
-        where wa.work_user_id in(
-        select `user`.id
-        from `user`
-        left join employee
-        on employee.id=`user`.employee_id
         <where>
-            employee.dept_number like #{deptNumber} and employee.emp_job not like '经理') and wad.audit_status='unaudited'
+            emp_job not like '经理'
+            and wad.audit_status='unaudited'
+            <if test="deptNumber!=null">
+                and dept_number like #{deptNumber}
+            </if>
             <if test="workName!=null">
                 and wa.work_name like "%"#{workName}"%"
+            </if>
+            <if test="employeeId!=null">
+                and employee_id=#{employeeId}
             </if>
         </where>
         order by wa.audit_submit_time desc
@@ -71,53 +70,64 @@
         on employee.id=`user`.employee_id
         left join sys_config as sc
         on wa.work_from=sc.code
-        where wa.work_user_id in(
-        select `user`.id
-        from `user`
-        left join employee
-        on employee.id=`user`.employee_id
         <where>
-            employee.dept_number like #{deptNumber} and employee.emp_job not like '经理') and wad.audit_status='unaudited'
+            emp_job not like '经理'
+            and wad.audit_status='unaudited'
+            <if test="deptNumber!=null">
+                and dept_number like #{deptNumber}
+            </if>
             <if test="workName!=null">
                 and wa.work_name like "%"#{workName}"%"
+            </if>
+            <if test="employeeId!=null">
+                and employee_id=#{employeeId}
             </if>
         </where>
         ) a
     </select>
-    <update id="updateAuditStatus" parameterType="logistics.work.models.dto.ShowDeptAllAuditInf">
+    <update id="updateAuditStatus" parameterType="logistics.work.models.domain.WorkAuditDetail">
         update work_audit_detail
         set
         audit_user_id=
         case audit_item_id
         <foreach collection="list" item="item" index="index"
                  separator=" ">
-            when #{item.audit_item_id} then #{item.auditUserId}
+            when #{item.auditItemId} then #{item.auditUserId}
         </foreach>
         end,
         audit_time=
         case audit_item_id
         <foreach collection="list" item="item" index="index"
                  separator=" ">
-            when #{item.audit_item_id} then NOW()
+            when #{item.auditItemId} then NOW()
         </foreach>
         end,
         audit_fail_reason=
         case audit_item_id
-        <foreach collection="list" item="item" index="index"
+        <foreach collection="list" item="item"
                  separator=" ">
-            when #{item.audit_item_id} then #{item.auditFailReason}
+            when #{item.auditItemId} then #{item.auditFailReason}
         </foreach>
         end,
         audit_status=
         case audit_item_id
         <foreach collection="list" item="item" index="index"
                  separator=" ">
-            when #{item.audit_item_id} then #{item.auditStatus}
+            when #{item.auditItemId} then #{item.auditStatus}
         </foreach>
         end
         where audit_item_id in
         <foreach collection="list" separator="," item="item" open="(" close=")">
-            #{item.audit_item_id}
+            #{item.auditItemId}
         </foreach>
     </update>
+    <select id="queryAllAuditById" parameterType="Integer" resultType="logistics.work.models.domain.WorkAudit">
+        select *
+        from work_audit
+        where id
+        in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

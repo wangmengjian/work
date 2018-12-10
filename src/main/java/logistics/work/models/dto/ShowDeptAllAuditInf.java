@@ -12,42 +12,6 @@ public class ShowDeptAllAuditInf {
     private Integer workMinutes;
     private String workFrom;
     private String auditSubmitTime;
-    private Integer originWorkId;
-    private String fromCode;
-    private Integer submitterId;
-    private String auditFailReason;
-
-    public String getAuditFailReason() {
-        return auditFailReason;
-    }
-
-    public void setAuditFailReason(String auditFailReason) {
-        this.auditFailReason = auditFailReason;
-    }
-
-    public Integer getSubmitterId() {
-        return submitterId;
-    }
-
-    public void setSubmitterId(Integer submitterId) {
-        this.submitterId = submitterId;
-    }
-
-    public String getFromCode() {
-        return fromCode;
-    }
-
-    public void setFromCode(String fromCode) {
-        this.fromCode = fromCode;
-    }
-
-    public Integer getOriginWorkId() {
-        return originWorkId;
-    }
-
-    public void setOriginWorkId(Integer originWorkId) {
-        this.originWorkId = originWorkId;
-    }
 
     public Integer getId() {
         return id;

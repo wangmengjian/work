@@ -74,29 +74,29 @@ public class WorkAuditService {
 
     /**
      * 审核通过员工工作项
-     * @param showDeptAllAuditInfList
+     * @param idList
      * @return
      */
     @Transactional
-    public int agreeAuditWork(List<ShowDeptAllAuditInf> showDeptAllAuditInfList,Integer userId){
+    public int agreeAuditWork(List<Integer> idList,Integer userId){
+        if(idList.size()<=0)return 0;
         List<WorkPool> addWorkPool=new ArrayList<>();
         List<WorkPool> updateWorkPool=new ArrayList<>();
-        if(showDeptAllAuditInfList.size()<=0)return 0;
-        for(ShowDeptAllAuditInf showDeptAllAuditInf:showDeptAllAuditInfList){
+        List<WorkAudit> workAuditList=workAuditDao.queryAllAuditById(idList);
+        for(WorkAudit workAudit:workAuditList){
             WorkPool workPool=new WorkPool();
-            workPool.setUserId(showDeptAllAuditInf.getSubmitterId());
-            workPool.setWorkName(showDeptAllAuditInf.getWorkName());
-            workPool.setWorkContent(showDeptAllAuditInf.getWorkContent());
-            workPool.setWorkInstructor(showDeptAllAuditInf.getWorkInstructor());
-            workPool.setWorkFrom(showDeptAllAuditInf.getFromCode());
-            workPool.setWorkMinutes(showDeptAllAuditInf.getWorkMinutes());
-            if(showDeptAllAuditInf.getOriginWorkId()!=null){
-                workPool.setId(showDeptAllAuditInf.getOriginWorkId());
-            }
-            if(showDeptAllAuditInf.getOriginWorkId()==null){
-                addWorkPool.add(workPool);
-            }else{
+            workPool.setUserId(workAudit.getWorkUserId());
+            workPool.setWorkName(workAudit.getWorkName());
+            workPool.setWorkContent(workAudit.getWorkContent());
+            workPool.setWorkInstructor(workAudit.getWorkInstructor());
+            workPool.setWorkFrom(workAudit.getWorkFrom());
+            workPool.setWorkMinutes(workAudit.getWorkMinutes());
+            if(workAudit.getOriginWorkId()!=null){
+                workPool.setId(workAudit.getOriginWorkId());
                 updateWorkPool.add(workPool);
+            }
+            else{
+                addWorkPool.add(workPool);
             }
         }
         if(addWorkPool.size()>0) {
@@ -107,34 +107,33 @@ public class WorkAuditService {
         }
         /*更改审核记录的完成状态*/
         List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
-        for(ShowDeptAllAuditInf showDeptAllAuditInf:showDeptAllAuditInfList){
+        for(WorkAudit workAudit:workAuditList){
             WorkAuditDetail workAuditDetail=new WorkAuditDetail();
-            workAuditDetail.setAuditItemId(showDeptAllAuditInf.getId());
+            workAuditDetail.setAuditItemId(workAudit.getId());
             workAuditDetail.setAuditStatus("agree");
             workAuditDetail.setAuditUserId(userId);
             workAuditDetailList.add(workAuditDetail);
         }
         workAuditDao.updateAuditStatus(workAuditDetailList);
-        return showDeptAllAuditInfList.size();
+        return workAuditList.size();
     }
 
     /**
      * 审核不通过员工的工作项
-     * @param showDeptAllAuditInfList
+     * @param workAuditDetailList
+     * @param userId
      * @return
      */
     @Transactional
-    public int disagreeAuditWork(List<ShowDeptAllAuditInf> showDeptAllAuditInfList,Integer userId){
-        List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
-        for(ShowDeptAllAuditInf showDeptAllAuditInf:showDeptAllAuditInfList){
-            WorkAuditDetail workAuditDetail=new WorkAuditDetail();
-            workAuditDetail.setAuditItemId(showDeptAllAuditInf.getId());
+    public int disagreeAuditWork(List<WorkAuditDetail> workAuditDetailList,Integer userId){
+        if(workAuditDetailList.size()<=0){
+            return 0;
+        }
+        for(WorkAuditDetail workAuditDetail:workAuditDetailList){
             workAuditDetail.setAuditStatus("disagree");
             workAuditDetail.setAuditUserId(userId);
-            workAuditDetail.setAuditFailReason(showDeptAllAuditInf.getAuditFailReason());
-            workAuditDetailList.add(workAuditDetail);
         }
         workAuditDao.updateAuditStatus(workAuditDetailList);
-        return showDeptAllAuditInfList.size();
+        return 0;
     }
 }
