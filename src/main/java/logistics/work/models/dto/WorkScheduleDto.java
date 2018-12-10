@@ -1,4 +1,5 @@
 package logistics.work.models.dto;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -9,6 +10,7 @@ public class WorkScheduleDto {
     private String date;
     private String submitTime;
     private String submitStatus;
+    @Valid
     private List<WorkScheduleDetailDto> workScheduleDetailDtoList;
     public Integer getId() {
         return id;

@@ -1,17 +1,29 @@
 package logistics.work.models.dto;
 
+/**
+ * 显示部门中所有员工提交的待审核的工作项
+ */
 public class ShowDeptAllAuditInf {
     private Integer id;
     private String workName;
     private String workContent;
     private String submitter;
-    private Integer submitterId;
     private String workInstructor;
     private Integer workMinutes;
     private String workFrom;
     private String auditSubmitTime;
     private Integer originWorkId;
     private String fromCode;
+    private Integer submitterId;
+    private String auditFailReason;
+
+    public String getAuditFailReason() {
+        return auditFailReason;
+    }
+
+    public void setAuditFailReason(String auditFailReason) {
+        this.auditFailReason = auditFailReason;
+    }
 
     public Integer getSubmitterId() {
         return submitterId;

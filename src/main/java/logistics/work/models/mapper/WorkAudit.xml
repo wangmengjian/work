@@ -54,6 +54,7 @@
             </if>
         </where>
         order by wa.audit_submit_time desc
+        limit #{pageStart},#{pageSize}
     </select>
     <select id="queryDeptAllAuditInfCount" parameterType="java.util.Map"
             resultType="Integer">
@@ -83,4 +84,40 @@
         </where>
         ) a
     </select>
+    <update id="updateAuditStatus" parameterType="logistics.work.models.dto.ShowDeptAllAuditInf">
+        update work_audit_detail
+        set
+        audit_user_id=
+        case audit_item_id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.audit_item_id} then #{item.auditUserId}
+        </foreach>
+        end,
+        audit_time=
+        case audit_item_id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.audit_item_id} then NOW()
+        </foreach>
+        end,
+        audit_fail_reason=
+        case audit_item_id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.audit_item_id} then #{item.auditFailReason}
+        </foreach>
+        end,
+        audit_status=
+        case audit_item_id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.audit_item_id} then #{item.auditStatus}
+        </foreach>
+        end
+        where audit_item_id in
+        <foreach collection="list" separator="," item="item" open="(" close=")">
+            #{item.audit_item_id}
+        </foreach>
+    </update>
 </mapper>

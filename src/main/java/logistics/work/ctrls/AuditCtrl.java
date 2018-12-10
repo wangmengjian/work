@@ -29,10 +29,20 @@ public class AuditCtrl extends BaseCtrl{
         params.put("userId",user.getId());
         return this.send(workAuditService.queryDeptAllAuditInf(params));
     }
-    @PostMapping("/leader/auditWork")
-    public Result auditWork(@RequestBody List<ShowDeptAllAuditInf> showDeptAllAuditInfList){
+    @PostMapping("/leader/agreeAuditWork")
+    public Result agreeAuditWork(@RequestBody List<ShowDeptAllAuditInf> showDeptAllAuditInfList,HttpSession session){
+        User user=(User)session.getAttribute(Constants.userSession);
         try{
-            return this.send(workAuditService.auditWork(showDeptAllAuditInfList));
+            return this.send(workAuditService.agreeAuditWork(showDeptAllAuditInfList,user.getId()));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
+    @PostMapping("/leader/disagreeAuditWork")
+    public Result disagreeAuditWork(@RequestBody List<ShowDeptAllAuditInf> showDeptAllAuditInfList,HttpSession session){
+        User user=(User)session.getAttribute(Constants.userSession);
+        try{
+            return this.send(workAuditService.disagreeAuditWork(showDeptAllAuditInfList,user.getId()));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }

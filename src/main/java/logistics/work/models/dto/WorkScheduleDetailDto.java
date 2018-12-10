@@ -2,6 +2,8 @@ package logistics.work.models.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 日计划明细
  */
@@ -15,6 +17,7 @@ public class WorkScheduleDetailDto {
     private String finishStatus;
     private String finishPicture;
     private String finishFeedback;
+    @NotNull(message = "请输入完成时间")
     private String finishTime;
 
     public String getFinishTime() {

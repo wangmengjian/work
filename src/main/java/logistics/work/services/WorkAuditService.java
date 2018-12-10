@@ -68,34 +68,73 @@ public class WorkAuditService {
         Map<String,Object> result=new HashMap<>();
         result.put("data",showDeptAllAuditInfList);
         result.put("total",showDeptAllAuditInfList.size());
+        result.put("all",workAuditDao.queryDeptAllAuditInfCount(params));
         return result;
     }
 
     /**
-     * 审核员工工作项
+     * 审核通过员工工作项
      * @param showDeptAllAuditInfList
      * @return
      */
     @Transactional
-    public int auditWork(List<ShowDeptAllAuditInf> showDeptAllAuditInfList){
+    public int agreeAuditWork(List<ShowDeptAllAuditInf> showDeptAllAuditInfList,Integer userId){
         List<WorkPool> addWorkPool=new ArrayList<>();
         List<WorkPool> updateWorkPool=new ArrayList<>();
+        if(showDeptAllAuditInfList.size()<=0)return 0;
         for(ShowDeptAllAuditInf showDeptAllAuditInf:showDeptAllAuditInfList){
             WorkPool workPool=new WorkPool();
-            workPool.setUseId(showDeptAllAuditInf.getSubmitterId());
+            workPool.setUserId(showDeptAllAuditInf.getSubmitterId());
             workPool.setWorkName(showDeptAllAuditInf.getWorkName());
             workPool.setWorkContent(showDeptAllAuditInf.getWorkContent());
             workPool.setWorkInstructor(showDeptAllAuditInf.getWorkInstructor());
             workPool.setWorkFrom(showDeptAllAuditInf.getFromCode());
             workPool.setWorkMinutes(showDeptAllAuditInf.getWorkMinutes());
+            if(showDeptAllAuditInf.getOriginWorkId()!=null){
+                workPool.setId(showDeptAllAuditInf.getOriginWorkId());
+            }
             if(showDeptAllAuditInf.getOriginWorkId()==null){
                 addWorkPool.add(workPool);
             }else{
                 updateWorkPool.add(workPool);
             }
         }
-        workDao.addAgreeWork(addWorkPool);
-        workDao.updateAgreeWork(updateWorkPool);
+        if(addWorkPool.size()>0) {
+            workDao.addAgreeWork(addWorkPool);
+        }
+        if(updateWorkPool.size()>0) {
+            workDao.updateAgreeWork(updateWorkPool);
+        }
+        /*更改审核记录的完成状态*/
+        List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
+        for(ShowDeptAllAuditInf showDeptAllAuditInf:showDeptAllAuditInfList){
+            WorkAuditDetail workAuditDetail=new WorkAuditDetail();
+            workAuditDetail.setAuditItemId(showDeptAllAuditInf.getId());
+            workAuditDetail.setAuditStatus("agree");
+            workAuditDetail.setAuditUserId(userId);
+            workAuditDetailList.add(workAuditDetail);
+        }
+        workAuditDao.updateAuditStatus(workAuditDetailList);
+        return showDeptAllAuditInfList.size();
+    }
+
+    /**
+     * 审核不通过员工的工作项
+     * @param showDeptAllAuditInfList
+     * @return
+     */
+    @Transactional
+    public int disagreeAuditWork(List<ShowDeptAllAuditInf> showDeptAllAuditInfList,Integer userId){
+        List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
+        for(ShowDeptAllAuditInf showDeptAllAuditInf:showDeptAllAuditInfList){
+            WorkAuditDetail workAuditDetail=new WorkAuditDetail();
+            workAuditDetail.setAuditItemId(showDeptAllAuditInf.getId());
+            workAuditDetail.setAuditStatus("disagree");
+            workAuditDetail.setAuditUserId(userId);
+            workAuditDetail.setAuditFailReason(showDeptAllAuditInf.getAuditFailReason());
+            workAuditDetailList.add(workAuditDetail);
+        }
+        workAuditDao.updateAuditStatus(workAuditDetailList);
         return showDeptAllAuditInfList.size();
     }
 }

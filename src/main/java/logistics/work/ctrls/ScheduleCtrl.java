@@ -80,7 +80,7 @@ public class ScheduleCtrl extends BaseCtrl {
      * @return
      */
     @PostMapping("/employee/submitSchedule")
-    public Result submitSchedule(WorkScheduleDto workScheduleDto){
+    public Result submitSchedule(@Valid WorkScheduleDto workScheduleDto){
         try {
             return this.send(workScheduleService.submitSchedule(workScheduleDto));
         } catch (Exception e) {

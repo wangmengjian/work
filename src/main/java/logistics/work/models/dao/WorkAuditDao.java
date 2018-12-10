@@ -3,6 +3,7 @@ package logistics.work.models.dao;
 import logistics.work.models.domain.WorkAudit;
 import logistics.work.models.domain.WorkAuditDetail;
 import logistics.work.models.dto.ShowDeptAllAuditInf;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -16,4 +17,6 @@ public interface WorkAuditDao {
     public List<ShowDeptAllAuditInf> queryDeptAllAuditInfByPage(Map<String,Object> params);
     /*查询部门所有审核详情的数量*/
     public Integer queryDeptAllAuditInfCount(Map<String,Object> params);
+    /*更改工作项的完成状态*/
+    public int updateAuditStatus(List<WorkAuditDetail> workAuditDetailList);
 }
