@@ -11,7 +11,15 @@ public class ShowWorkAuditConditionDto {
     private String workInstructor;
     private Integer workMinutes;
     private String time;
+    private String auditFailReason;
 
+    public String getAuditFailReason() {
+        return auditFailReason;
+    }
+
+    public void setAuditFailReason(String auditFailReason) {
+        this.auditFailReason = auditFailReason;
+    }
     public String getTime() {
         return time;
     }

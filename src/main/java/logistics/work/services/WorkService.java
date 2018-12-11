@@ -16,6 +16,12 @@ public class WorkService {
     private WorkDao workDao;
     @Autowired
     private WorkScheduleDao workScheduleDao;
+
+    /**
+     * 查询员工提交的所有工作项的审核记录
+     * @param params
+     * @return
+     */
     public Map<String,Object> queryWorkByWorkName(Map<String,Object> params){
         List<ShowWorkAuditConditionDto> showWorkAuditConditionDtoList=workDao.queryWorkByPage(params);
         Map<String,Object> result=new HashMap<>();
