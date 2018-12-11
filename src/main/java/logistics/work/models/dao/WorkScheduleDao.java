@@ -23,4 +23,8 @@ public interface WorkScheduleDao {
     public int addScheduleDetail(@Param("idList") List<Integer> idList, @Param("scheduleId")Integer scheduleId);
     /*查询今日日计划id*/
     public Integer queryTodayScheduleId(Integer userId);
+    /*领导查询工作计划*/
+    public WorkScheduleDto leaderQuerySchedule(Map<String,Object> params);
+    /*领导查询工作计划明细*/
+    public List<WorkScheduleDetailDto> leaderQueryScheduleDetail(Map<String,Object> params);
 }

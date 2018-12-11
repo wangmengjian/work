@@ -40,6 +40,7 @@
                 and work_name like "%"#{workName}"%"
             </if>
         </where>
+        order by wsd.finish_time asc
     </select>
     <update id="updateScheduleDetail" parameterType="logistics.work.models.dto.WorkScheduleDetailDto">
         update work_schedule_detail
@@ -95,5 +96,49 @@
         select id
         from work_schedule as ws
         where date_format(ws.date,'%e %b %y') = date_format(now(), '%e %b %y') and ws.user_id=#{userId}
+    </select>
+    <select id="leaderQuerySchedule" parameterType="java.util.Map"
+            resultType="logistics.work.models.dto.WorkScheduleDto">
+        select *
+        from work_schedule
+        <where>
+            <if test="employeeId!=null">
+                user_id=#{employeeId}
+            </if>
+            <if test="date!=null">
+                and `date`=#{date}
+            </if>
+        </where>
+    </select>
+    <select id="leaderQueryScheduleDetail" resultType="logistics.work.models.dto.WorkScheduleDetailDto"
+            parameterType="java.util.Map">
+        select
+        wsd.id,
+        wp.work_name,
+        wp.work_content,
+        wp.work_instructor,
+        wp.work_minutes,
+        sc1.name as work_from,
+        sc.name as finish_status,
+        wsd.finish_picture,
+        wsd.finish_feedback,
+        wsd.finish_condition,
+        wsd.finish_time
+        from work_schedule_detail as wsd
+        left join sys_config as sc1
+        on wsd.work_from=sc1.`code`
+        left join work_pool as wp
+        on wsd.work_id=wp.id
+        left join sys_config as sc
+        on wsd.finish_status=sc.`code`
+        <where>
+            <if test="employeeId!=null">
+                user_id=#{employeeId}
+            </if>
+            <if test="scheduleId!=null">
+                and schedule_id=#{scheduleId}
+            </if>
+        </where>
+        order by wsd.finish_time asc
     </select>
 </mapper>

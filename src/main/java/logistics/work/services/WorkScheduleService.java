@@ -86,4 +86,28 @@ public class WorkScheduleService {
         }
         return result;
     }
+
+    /**
+     * 领导查询部门员工的工作计划
+     * @param params
+     * @return
+     */
+    public Map<String,Object> leaderQuerySchedule(Map<String,Object> params){
+        if(params.get("date")==null){
+            LocalDate localDate=LocalDate.now();
+            params.put("date",localDate.toString());
+        }
+        WorkScheduleDto workScheduleDto=workScheduleDao.leaderQuerySchedule(params);
+        Map<String,Object> result=new HashMap<>();
+        if(workScheduleDto==null){
+            result.put("data",null);
+            result.put("total",0);
+            return result;
+        }
+        params.put("scheduleId",workScheduleDto.getId());
+        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.leaderQueryScheduleDetail(params);
+        workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList);
+        result.put("data",workScheduleDto);
+        return result;
+    }
 }

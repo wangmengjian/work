@@ -189,7 +189,20 @@ public class ScheduleCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
-
+    @GetMapping("/leader/querySchedule")
+    public Result leaderQuerySchedule(@RequestParam(value="date",required = false)String date,
+                                      @RequestParam(value="employeeId",required = false)Integer employeeId,
+                                      @RequestParam(value="pageNumber", required = false)Integer pageNumber,
+                                      @RequestParam(value = "pageSize",required = false)Integer pageSize){
+        Map<String,Object> params=ParamUtils.setPageInfo(pageNumber,pageSize);
+        params.put("date",date);
+        params.put("employeeId",employeeId);
+        try{
+            return this.send(workScheduleService.leaderQuerySchedule(params));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
     @GetMapping("/download")
     public Result download(HttpServletRequest request, HttpServletResponse response){
         try {
