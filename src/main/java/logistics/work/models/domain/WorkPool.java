@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 public class WorkPool {
     private Integer id;
     private Integer userId;
-    private String username;
+    private String employeeName;
     @NotNull(message = "请填写作名称")
     private String workName;
     @NotNull(message="请填写工作内容工作内容")
@@ -19,12 +19,12 @@ public class WorkPool {
     @NotNull(message="工作项来源")
     private String workFrom;
 
-    public String getUsername() {
-        return username;
+    public String getEmployeeName() {
+        return employeeName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
     public Integer getId() {

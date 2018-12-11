@@ -23,16 +23,16 @@ public class WorkService {
      * @return
      */
     public Map<String,Object> queryWorkByWorkName(Map<String,Object> params){
-        List<ShowWorkAuditConditionDto> showWorkAuditConditionDtoList=workDao.queryWorkByPage(params);
+        List<ShowWorkAuditConditionDto> showWorkAuditConditionDtoList=workDao.querySubmitRecordByPage(params);
         Map<String,Object> result=new HashMap<>();
         result.put("data",showWorkAuditConditionDtoList);
         result.put("total",showWorkAuditConditionDtoList.size());
-        result.put("all",workDao.queryWorkCount(params));
+        result.put("all",workDao.querySubmitRecordCount(params));
         return result;
     }
 
     /**
-     * 查询未添加到日计划里的工作
+     * 员工查询未添加到日计划里的工作
      * @param params
      * @return
      */
@@ -43,6 +43,20 @@ public class WorkService {
         Map<String,Object> result=new HashMap<>();
         result.put("data",workPoolList);
         result.put("total",workPoolList.size());
+        return result;
+    }
+
+    /**
+     * 部门领导查询员工的常规工作项
+     * @param params
+     * @return
+     */
+    public Map<String,Object> queryWorkByEmployeeId(Map<String,Object> params){
+        Map<String,Object> result=new HashMap<>();
+        List<WorkPool> workPoolList=workDao.queryWorkByEmployeeId(params);
+        result.put("data",workPoolList);
+        result.put("total",workPoolList.size());
+        result.put("all",workDao.queryWorkCountByEmployeeId(params));
         return result;
     }
 }

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="logistics.work.models.dao.WorkDao">
-    <select id="queryWorkByPage" parameterType="java.util.Map"
+    <select id="querySubmitRecordByPage" parameterType="java.util.Map"
             resultType="logistics.work.models.dto.ShowWorkAuditConditionDto">
         select *
         from(select
@@ -47,7 +47,7 @@
         order by time desc
         limit #{pageStart},#{pageSize}
     </select>
-    <select id="queryWorkCount" parameterType="java.util.Map"
+    <select id="querySubmitRecordCount" parameterType="java.util.Map"
             resultType="Integer">
         select count(*)
         from(select
@@ -81,8 +81,7 @@
         wp.work_name,
         wp.work_content,
         wp.work_instructor,
-        wp.work_minutes,
-        `user`.username
+        wp.work_minutes
         from work_pool as wp
         LEFT JOIN `user`
         on `user`.id=wp.user_id
@@ -102,19 +101,20 @@
         order by update_time desc
     </select>
     <select id="queryWorkPoolCount" parameterType="java.util.Map" resultType="Integer">
-    select
-    count(*)
-    from work_pool as wp
-    <where>
-        <if test="employeeId!=null">
-            wp.user_id=#{employeeId}
-        </if>
-        <if test="workName!=null">
-            and wp.work_name like "%"#{workName}"%"
-        </if>
-    </where>
-</select>
-    <insert id="addAgreeWork" parameterType="logistics.work.models.domain.WorkPool" useGeneratedKeys="true" keyProperty="id">
+        select
+        count(*)
+        from work_pool as wp
+        <where>
+            <if test="employeeId!=null">
+                wp.user_id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+        </where>
+    </select>
+    <insert id="addAgreeWork" parameterType="logistics.work.models.domain.WorkPool" useGeneratedKeys="true"
+            keyProperty="id">
         insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,update_time)
         values
         <foreach collection="list" item="item" separator=",">
@@ -156,4 +156,43 @@
         </foreach>
         )
     </update>
+    <select id="queryWorkByEmployeeId" resultType="logistics.work.models.domain.WorkPool" parameterType="java.util.Map">
+        select
+        wp.*,
+        employee.emp_name as employeeName
+        from work_pool wp
+        left join `user`
+        on wp.user_id=`user`.id
+        left join employee
+        on `user`.employee_id=employee.id
+        <where>
+            work_from='w3'
+            <if test="employeeId!=null">
+                and employee.id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name=#{workName}
+            </if>
+        </where>
+        order by update_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="queryWorkCountByEmployeeId" resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from work_pool wp
+        left join `user`
+        on wp.user_id=`user`.id
+        left join employee
+        on `user`.employee_id=employee.id
+        <where>
+            work_from='w3'
+            <if test="employeeId!=null">
+                and employee.id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name=#{workName}
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -168,14 +168,14 @@ public class ScheduleCtrl extends BaseCtrl {
 
 
     /**
-     * 领导查询常规工作项
+     * 领导查询部门员工的常规工作项
      * @param workName
      * @param employeeId
      * @param pageNumber
      * @param pageSize
      * @return
      */
-    /*@GetMapping("/leader/queryWork")
+    @GetMapping("/leader/queryWork")
     public Result leaderQueryWork(@RequestParam(value="workName",required = false)String workName,
                                   @RequestParam(value="employeeId",required = false)Integer employeeId,
                                   @RequestParam(value="pageNumber", required = false)Integer pageNumber,
@@ -184,11 +184,11 @@ public class ScheduleCtrl extends BaseCtrl {
         params.put("workName",workName);
         params.put("employeeId",employeeId);
         try{
-            return this.send(workService.(params));
+            return this.send(workService.queryWorkByEmployeeId(params));
         }catch(Exception e){
             return this.send(-1,"操作失败");
         }
-    }*/
+    }
 
     @GetMapping("/download")
     public Result download(HttpServletRequest request, HttpServletResponse response){

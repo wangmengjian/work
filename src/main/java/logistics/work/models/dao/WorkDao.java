@@ -9,10 +9,17 @@ import java.util.Map;
 
 public interface WorkDao {
     /*查询所有提交的工作*/
-    public List<ShowWorkAuditConditionDto> queryWorkByPage(Map<String,Object> params);
-    public Integer queryWorkCount(Map<String,Object> params);
+    public List<ShowWorkAuditConditionDto> querySubmitRecordByPage(Map<String,Object> params);
+    /*查看所有提交的工作总数*/
+    public Integer querySubmitRecordCount(Map<String,Object> params);
+    /*查询未添加的工作*/
     public List<WorkPool> queryUnAddWork(Map<String,Object> params);
-    public Integer queryWorkPoolCount(Map<String,Object> params);
+    /*添加通过的工作项*/
     public int addAgreeWork(List<WorkPool> workPoolList);
+    /*更新通过的工作项*/
     public int updateAgreeWork(List<WorkPool> workPoolList);
+    /*查询部门下员工的常规工作项*/
+    public List<WorkPool> queryWorkByEmployeeId(Map<String,Object> params);
+    /*查询部门下员工的常规工作项*/
+    public int queryWorkCountByEmployeeId(Map<String,Object> params);
 }
