@@ -13,6 +13,7 @@ class store {
     // 表格源数组
     @observable dataSource = []
     @observable loading = false
+    @observable loadingButton = false
 
     // 选择
     @observable selectedRowKeys = []         // 选择框数据
@@ -20,6 +21,7 @@ class store {
 
     actions = {
         submit: action(() => {
+            this.loadingButton = true
             axios({
                 method: 'post',
                 url: '/api/work/schedule/employee/newSchedule',
@@ -33,6 +35,7 @@ class store {
                     } else {
                         message.error("生成计划失败: " + response.data.status.message)
                     }
+                    this.loadingButton = false
                 })
         }),
 

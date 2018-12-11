@@ -27,6 +27,9 @@ class table extends Component {
             {   title: '心得', dataIndex: 'finishFeedback', width: 180, render: (text) => {
                     if (text === null || text === '') { return '无' } else { return text }
                 }},
+            {   title: '完成时间', dataIndex: 'finishTime', width: 150, render: (text) => {
+                    if (text === null || text === '') { return '无' } else { return text }
+                }},
             {   title: '作业指导书', dataIndex: 'workInstructor', width: 200, render: (text, record) => {
                     // console.log(text.lastIndexOf('\\'))
                     if (text === null || text === '') { return '无' } else { return <a href={text}>{text}</a> }

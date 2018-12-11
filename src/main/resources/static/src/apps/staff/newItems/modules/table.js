@@ -107,7 +107,7 @@ class table extends Component {
                 // rowKey={"key"}
                 // size={"middle"}
             /><br/>
-            <Button type={"primary"} onClick={this.submit} loading={store.loading}>提交</Button>
+            <Button type={"primary"} onClick={this.submit} loading={store.loading} disabled={dataSource.length > 0 ? false : true}>提交</Button>
             <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>
         </Fragment>
     }

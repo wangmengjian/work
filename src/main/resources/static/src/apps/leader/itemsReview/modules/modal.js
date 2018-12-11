@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Modal, Input, Form, Select } from 'antd'
+import { Modal, Form, Select, Input, Button } from 'antd'
+import axios from "axios/index";
+import {message} from "antd/lib/index";
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -9,12 +11,31 @@ const FormItem = Form.Item
 @observer
 class modal extends Component {
 
+    componentDidMount() {
+        const store = this.props.store
+
+        axios({
+            method: 'get',
+            url: '/api/work/sysConfig/failReason',
+        })
+            .then(response => {
+                if (response.data.status.code === 1){
+                    store.reasonChoices = response.data.result.data
+                    store.reasonChoices.push({name: '其他'})
+                } else {
+                    message.error("获取下拉框数据失败: " + response.data.status.message)
+                }
+            })
+    }
+
     pushToTable = () => {
         const { form, store } = this.props
-        form.validateFields(['workFrom','workName','workContent','workMinutes'], (err, values) => {
+
+        form.validateFields((err, values) => {
                 if (!err) {
-                    store.actions.handleAdd(values)
-                    form.resetFields()
+                    store.reason = values.reason
+                    store.actions.disagree(form)
+                    // form.resetFields()
                 }
             },
         );
@@ -22,33 +43,49 @@ class modal extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form
-        const { visible, actions } = this.props.store
+        const store = this.props.store
+        const { actions } = store
 
         return <Modal
             title="填写不通过原因"
-            visible={visible}
-            onOk={this.pushToTable}
+            visible={store.visible}
             onCancel={actions.hideModal}
-            style={{width: 360, height: 300}}
+            style={{width: 230, height: 150}}
+            footer={[
+                <Button onClick={actions.hideModal}>取消</Button>,
+                <Button type={"primary"} onClick={this.pushToTable} loading={store.loadingDisButton}>提交</Button>,
+            ]}
         >
             <Form hideRequiredMark={true}>
                 <FormItem label={"原因"} labelCol={{span: 6}}>
-                    {getFieldDecorator('reason')(
+                    {getFieldDecorator('reason', {
+                        rules: [{ required: true, message: '请选择原因' }]
+                    })(
                         <Select
                             showSearch
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            style={{ width: 180 }}
+                            style={{ width: 220 }}
+                            onChange={value => store.reason = value}
                         >
-                            <Option key={'张三'}>张三</Option>
-                            <Option key={'李四'}>李四</Option>
+                            {
+                                store.reasonChoices.map(item => {
+                                    return <Option key={item.name}>{item.name}</Option>
+                                })
+                            }
                         </Select>
                     )}
                 </FormItem>
-                <FormItem label={"备注"} labelCol={{span: 6}}>
-                    {getFieldDecorator('other')(
-                        <Input style={{ width: 180 }}/>
-                    )}
-                </FormItem>
+                {
+                    store.reason === '其他' ? (
+                        <FormItem label={"其他原因"} labelCol={{span: 6}}>
+                            {getFieldDecorator('otherReason', {
+                                rules: [{ required: true, message: '请填写原因' }]
+                            })(
+                                <Input style={{ width: 220 }} onChange={value => store.otherReason = value}/>
+                            )}
+                        </FormItem>
+                    ) : null
+                }
             </Form>
         </Modal>
     }

@@ -16,6 +16,8 @@ class tableStore {
     @observable loading = false
     @observable loadingButton = false
 
+    @observable submitStatus = false    // 是否已提交过一次, 禁用按钮, 默认禁用
+
     actions = {
 
         // 获取工作项来源选择框数据
@@ -49,14 +51,21 @@ class tableStore {
             })
                 .then(response => {
                     if (response.data.status.code === 1){
-                        this.dataSource = response.data.result.data.workScheduleDetailDtoList
-                        this.id = response.data.result.data.id
-                        this.loading = false
-                        for (let i=0; i<this.dataSource.length; i++) {
-                            this.formData.push(0)
+                        if (response.data.result.data !== null) {
+                            this.dataSource = response.data.result.data.workScheduleDetailDtoList
+                            this.submitStatus = response.data.result.data.submitStatus === 'submitted' ? true : false
+                            this.id = response.data.result.data.id
+                            for (let i=0; i<this.dataSource.length; i++) {
+                                this.formData.push(0)
+                            }
+                        } else {
+                            message.success("今天没有待办的工作项")
+                            this.submitStatus = true
                         }
+                        this.loading = false
                     } else {
                         message.error("获取表格数据失败: " + response.data.status.message)
+                        this.submitStatus = true
                     }
                 })
         }),
@@ -113,6 +122,7 @@ class tableStore {
 
             // isAlter 有值，意味着是通过修改表格触发的该函数
             dataSource[isAlter].finishStatus = values['finishStatus']
+            dataSource[isAlter].finishTime = values['finishTime']
             dataSource[isAlter].finishCondition = values['finishCondition']
             dataSource[isAlter].finishFeedback = values['finishFeedback']
             this.isAlter = undefined

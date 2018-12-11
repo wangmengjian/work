@@ -41,7 +41,7 @@ export default {
                 name:'新增工作项'
             },{
                 key:'work/leader/workItems/dailyUnfinished',
-                name:'查看今日未完成工作项'
+                name:'查看未完成工作项'
             },{
                 key:'work/leader/workItems/itemsReview',
                 name:'工作项审批'

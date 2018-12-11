@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react'
 import { inject, observer } from 'mobx-react'
-import { Modal, Button, Input, Form, Radio, Upload, Icon } from 'antd'
+import { Modal, Button, Input, Form, Radio, Upload, Icon, TimePicker } from 'antd'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -11,7 +11,7 @@ class modal extends Component {
 
     pushToArray = () => {
         const { form, store } = this.props
-        form.validateFields(['finishStatus','finishCondition','finishFeedback'], (err, values) => {
+        form.validateFields(['finishStatus','finishCondition','finishFeedback','finishTime'], (err, values) => {
                 if (!err) {
                     store.actions.workEnd(values)
                     form.resetFields()
@@ -24,6 +24,7 @@ class modal extends Component {
         const { getFieldDecorator } = this.props.form
         const store = this.props.store
         const { visible, actions, fileData } = store
+        const format = "HH:mm"
         const props = {
             action: '/api/work/schedule/employee/submitSchedule',
             beforeUpload: actions.beforeUploadHandle,
@@ -39,7 +40,7 @@ class modal extends Component {
             visible={visible}
             onOk={this.pushToArray}
             onCancel={actions.hideModal}
-            style={{width: 360, height: 300}}
+            style={{width: 300, height: 300}}
         >
             <Form hideRequiredMark={true}>
                 <FormItem label={"完成状态"} labelCol={{span: 6}}>
@@ -58,12 +59,19 @@ class modal extends Component {
                         <div id="modal_form">
                             <FormItem label={"完成情况"} labelCol={{span: 6}}>
                                 {getFieldDecorator('finishCondition')(
-                                    <Input style={{width: 203}}/>
+                                    <Input style={{width: 220}}/>
                                 )}
                             </FormItem>
                             <FormItem label={"心得"} labelCol={{span: 6}}>
                                 {getFieldDecorator('finishFeedback')(
-                                    <TextArea style={{width: 280, height: 100}}/>
+                                    <TextArea style={{width: 220, height: 100}}/>
+                                )}
+                            </FormItem>
+                            <FormItem label={"完成时间"} labelCol={{span: 6}}>
+                                {getFieldDecorator('finishTime', {
+                                    rules: [{ required: true, message: '请选择时间' }]
+                                })(
+                                    <TimePicker format={format}/>
                                 )}
                             </FormItem>
                             <FormItem labelCol={{span: 6}}>

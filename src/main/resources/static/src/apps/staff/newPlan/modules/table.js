@@ -45,7 +45,7 @@ class table extends Component {
                 size={"middle"}
                 scroll={{ y : 460 }}
             /><br/>
-            <Button type={'primary'} onClick={() => actions.submit()}>生成</Button>
+            <Button type={'primary'} onClick={() => actions.submit()} loading={store.loadingButton}>生成</Button>
             {/*<Row>*/}
                 {/*<Col className="gutter-row" span={21}>*/}
                     {/*<Pagination*/}

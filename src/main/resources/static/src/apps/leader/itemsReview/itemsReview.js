@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {Provider} from 'mobx-react'
 import store from './stores/store'
 import Table from './modules/table'
+import Modal from './modules/modal'
 import Search from './modules/search'
 
 class ItemsReview extends Component {
@@ -11,6 +12,7 @@ class ItemsReview extends Component {
             <Fragment>
                 <Search/>
                 <Table/>
+                <Modal/>
             </Fragment>
         </Provider>
     }
