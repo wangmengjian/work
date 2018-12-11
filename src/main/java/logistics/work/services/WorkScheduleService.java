@@ -108,6 +108,8 @@ public class WorkScheduleService {
         List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.leaderQueryScheduleDetail(params);
         workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList);
         result.put("data",workScheduleDto);
+        result.put("total",workScheduleDetailDtoList.size());
+        result.put("all",workScheduleDao.leaderQueryScheduleDetailCount(params));
         return result;
     }
 }

@@ -140,5 +140,25 @@
             </if>
         </where>
         order by wsd.finish_time asc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="leaderQueryScheduleDetailCount" resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from work_schedule_detail as wsd
+        left join sys_config as sc1
+        on wsd.work_from=sc1.`code`
+        left join work_pool as wp
+        on wsd.work_id=wp.id
+        left join sys_config as sc
+        on wsd.finish_status=sc.`code`
+        <where>
+            <if test="employeeId!=null">
+                user_id=#{employeeId}
+            </if>
+            <if test="scheduleId!=null">
+                and schedule_id=#{scheduleId}
+            </if>
+        </where>
     </select>
 </mapper>

@@ -17,7 +17,6 @@ public class WorkScheduleDetailDto {
     private String finishStatus;
     private String finishPicture;
     private String finishFeedback;
-    @NotNull(message = "请输入完成时间")
     private String finishTime;
 
     public String getFinishTime() {

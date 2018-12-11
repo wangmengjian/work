@@ -27,4 +27,6 @@ public interface WorkScheduleDao {
     public WorkScheduleDto leaderQuerySchedule(Map<String,Object> params);
     /*领导查询工作计划明细*/
     public List<WorkScheduleDetailDto> leaderQueryScheduleDetail(Map<String,Object> params);
+    /*领导查询工作计划明细*/
+    public int leaderQueryScheduleDetailCount(Map<String,Object> params);
 }
