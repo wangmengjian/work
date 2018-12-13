@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Table, Pagination, Select, Row, Col, Button } from 'antd'
+import Search from './search'
 
 // const Option = Select.Option
 
@@ -21,10 +22,14 @@ class table extends Component {
                 }},
             {   title: '名称', dataIndex: 'workName', width: 150},
             {   title: '内容', dataIndex: 'workContent', width: 180},
-            {   title: '作业指导书', dataIndex: 'workInstructor', width: 200, render: (text) => {
-                    if (text === null || text === '') { return '无' } else { return <a href={text}>{text}</a> }
-                }},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 120},
+            {   title: '选项', dataIndex: 'operation', width: 150, render: (text, record) => {
+                    if (record.workInstructor === null || record.workInstructor === '') {
+                        return '暂无指导书'
+                    } else {
+                        return <a href={record.workInstructor}>查看指导书</a>
+                    }
+                }},
         ];
 
         const rowSelection = {
@@ -35,6 +40,12 @@ class table extends Component {
         }
 
         return <Fragment>
+            <Row>
+                <Col span={16}>
+                    <Button type={'primary'} onClick={() => actions.submit()} loading={store.loadingButton}>生成</Button>
+                </Col>
+                <Search/>
+            </Row>
             <Table
                 dataSource={store.dataSource}
                 columns={columns}
@@ -44,8 +55,8 @@ class table extends Component {
                 loading={store.loading}
                 size={"middle"}
                 scroll={{ y : 460 }}
-            /><br/>
-            <Button type={'primary'} onClick={() => actions.submit()} loading={store.loadingButton}>生成</Button>
+                bordered
+            />
             {/*<Row>*/}
                 {/*<Col className="gutter-row" span={21}>*/}
                     {/*<Pagination*/}

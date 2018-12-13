@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Table, Pagination, Popconfirm } from 'antd'
+import { Table, Pagination, Popconfirm, Row, Col } from 'antd'
+import Search from './search'
 
 @inject('store')
 @observer
@@ -29,6 +30,9 @@ class table extends Component {
         ];
 
         return <Fragment>
+            <Row>
+                <Search/>
+            </Row>
             <Table
                 dataSource={store.dataSource}
                 columns={columns}
@@ -37,13 +41,28 @@ class table extends Component {
                 // rowKey={}
                 // size={"middle"}
             />
-            <Pagination
-                current={store.current}
-                // onChange={ page => search(this.props.form, page, pageSize)}
-                // total={all}
-                // showTotal={total => `共有 ${total} 条记录`}
-                pageSize={store.pageSize}
-            />
+            <Row type="flex" justify="end">
+                <Col>
+                    <Pagination
+                        current={store.current}
+                        onChange={ page => actions.search(page, store.pageSize)}
+                        total={store.all}
+                        showTotal={total => `共有 ${total} 条记录`}
+                        pageSize={store.pageSize}
+                    />
+                </Col>
+                {/*<Col className="gutter-row" span={3}>*/}
+                {/*<span>每页条数:&nbsp;&nbsp;&nbsp;</span>*/}
+                {/*<Select*/}
+                {/*defaultValue={store.pageSize}*/}
+                {/*onChange={value => actions.handlePageSizeChange(value)}*/}
+                {/*>*/}
+                {/*<Option key={10}>10</Option>*/}
+                {/*<Option key={20}>20</Option>*/}
+                {/*<Option key={30}>30</Option>*/}
+                {/*</Select>*/}
+                {/*</Col>*/}
+            </Row>
         </Fragment>
     }
 }

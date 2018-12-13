@@ -40,7 +40,7 @@ class modal extends Component {
             visible={visible}
             onOk={this.pushToArray}
             onCancel={actions.hideModal}
-            style={{width: 300, height: 300}}
+            width={400}
         >
             <Form hideRequiredMark={true}>
                 <FormItem label={"完成状态"} labelCol={{span: 6}}>

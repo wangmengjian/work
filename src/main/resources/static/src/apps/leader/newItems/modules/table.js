@@ -97,6 +97,12 @@ class table extends Component {
                 <Col className="gutter-row" span={2}>
                     <Button type={"primary"} onClick={this.newItem}>新增</Button>
                 </Col>
+                <Col className="gutter-row" span={20}>
+                    <Button type={"primary"} onClick={this.submit} loading={store.loading}>提交</Button>
+                </Col>
+                <Col className="gutter-row" span={2}>
+                    <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>
+                </Col>
             </Row><br/>
             <Table
                 dataSource={dataSource}
@@ -107,8 +113,6 @@ class table extends Component {
                 // rowKey={"key"}
                 // size={"middle"}
             /><br/>
-            <Button type={"primary"} onClick={this.submit} loading={store.loading}>提交</Button>
-            <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>
         </Fragment>
     }
 }

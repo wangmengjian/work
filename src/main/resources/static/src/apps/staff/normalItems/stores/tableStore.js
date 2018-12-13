@@ -7,6 +7,9 @@ class tableStore {
     // 分页
     @observable current = 1
     @observable pageSize = 10
+
+    @observable currentIndex = 1
+
     // 表格源数组
     @observable dataSource = []
     @observable all = undefined
@@ -15,14 +18,34 @@ class tableStore {
 
 
     actions = {
-        search: action((pageNumber, pageSize) => {
+        search: action((pageNumber) => {
 
             this.loading = true
 
             let url = '/api/work/schedule/employee/queryWork?'
 
             url = url + (( this.workName === undefined || this.workName === '' ) ? '' : "workName="+ this.workName + "&")
-            url = url + "pageNumber="+ pageNumber + "&pageSize=" + pageSize
+            url = url + "pageNumber="+ pageNumber + "&"
+
+            switch (this.currentIndex) {
+                case 2:
+                    url = url + "auditStatus=agree"
+                    break
+                case 3:
+                    url = url + "auditStatus=disagree"
+                    break
+                case 4:
+                    url = url + "auditStatus=unaudited"
+                    break
+                case 5:
+                    url = url + "workFrom=w3"
+                    break
+                case 6:
+                    url = url + "workFrom=w2"
+                    break
+            }
+
+            console.log(url)
 
             axios({
                 method: 'get',

@@ -61,7 +61,6 @@ class tableStore {
         handleAdd: action( values => {
             const { count, dataSource, isAlter } = this;
             this.workFrom = [...this.workFrom, values['workFrom']]
-            console.log(this.workFrom[count-1])
             const newData = {
                 key: count,
                 workName: values['workName'],
@@ -69,6 +68,7 @@ class tableStore {
                 workMinutes: values['workMinutes'],
                 workFrom: this.workFrom[count-1].substring(2)
             };
+
             // 如果当前工作项上传了文件
             if (this.fileData.length === 1) {
                 // 是否经由修改按钮再重新上传文件
@@ -77,14 +77,20 @@ class tableStore {
                 } else {
                     this.formData[isAlter-1] = this.fileData[0]
                 }
-            }
-            this.fileData = []
-            if (this.fileName !== undefined) {
-                newData.file = this.fileName
-                this.fileName = undefined
+            } else {
+                if (this.isAlter === undefined) {
+                    this.formData = [...this.formData, null]
+                } else {
+                    this.formData[isAlter-1] = null
+                }
             }
 
-            console.log(this.formData)
+            // 上传了文件
+            if (this.fileData.length > 0) {
+                newData.file = this.fileData[0].name
+            }
+
+            this.fileData = []
             console.log(newData)
             // isAlter 有值，意味着是通过修改表格触发的该函数
             if (isAlter === undefined) {

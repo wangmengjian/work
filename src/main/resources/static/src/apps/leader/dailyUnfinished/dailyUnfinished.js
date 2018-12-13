@@ -9,7 +9,7 @@ class DailyUnfinished extends Component {
     render() {
         return <Provider store={store}>
             <Fragment>
-                <Search/>
+                {/*<Search/>*/}
                 <Table/>
             </Fragment>
         </Provider>

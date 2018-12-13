@@ -6,39 +6,8 @@
     margin: 24px 16px 0;
 }
 
-.editable-cell {
-    position: relative;
-}
-  
-.editable-cell-value-wrap {
-    padding: 5px 12px;
-    cursor: pointer;
-}
-
-.editable-row:hover .editable-cell-value-wrap {
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    padding: 4px 11px;
-}
-
-.custom-filter-dropdown {
-    padding: 8px;
-    border-radius: 6px;
-    background: #fff;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
-  }
-
-.custom-filter-dropdown input {
-width: 130px;
-margin-right: 8px;
-}
-
-.custom-filter-dropdown button {
-margin-right: 8px;
-}
-
 .highlight {
-color: #f50;
+    color: #f50;
 }
 
 .ant-form-explain {
@@ -46,7 +15,7 @@ color: #f50;
 }
 
 .ant-modal {
-top: 50px;
+    top: 50px;
 }
 
 #spanCount {
@@ -68,4 +37,44 @@ top: 50px;
 }
 .upload-list-inline .ant-upload-animate-leave {
     animation-name: uploadAnimateInlineOut;
+}
+
+/* 输入框 */
+.ant-row.ant-form-item {
+    margin-bottom: 10px;
+}
+
+.tab{
+    /*list-style:none;*/
+    /*display:block;*/
+    height:28px;
+    /*line-height:30px;*/
+    border-bottom:1px black solid;
+}/* 定义tabs 的子后代ul, list-style意思是去掉列表默认的小圆点，后面是定义上边边框为2px 马鞍棕色 实心的线*/
+.tab li{
+    /*border-radius: 5px;*/
+    cursor:pointer;
+    /*list-style:none;*/
+    height:28px;
+    line-height:28px;
+    margin:0px 4px;
+    border-left:1px solid black;
+    border-top:1px solid black;
+    border-right:1px solid black;
+    display:inline-block;
+    width:65px;
+    text-align:center;
+}/*cursor:pointer意思就是鼠标放上去变成小手的形状，高度和行高的值一样的话就垂直居中了，设置下边框为空 */
+.tab li.on{
+    border-bottom:3px solid #fff;
+}/*说白了这个就是设置第一个选择框的样式，不过选择器也是有优先级的，加入都为同一个元素设置颜色就会显示id的 然后是.xx  其次是便签选择器*/
+
+.ant-divider.ant-divider-vertical {
+    margin: 0 8px;
+    display: inline-block;
+    height: 1.4em;
+    width: 3px;
+    vertical-align: middle;
+    position: relative;
+    top: -0.3em;
 }

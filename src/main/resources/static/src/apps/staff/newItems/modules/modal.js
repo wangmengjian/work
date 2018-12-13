@@ -11,7 +11,7 @@ class modal extends Component {
 
     pushToTable = () => {
         const { form, store } = this.props
-        form.validateFields(['workFrom','workName','workContent','workMinutes'], (err, values) => {
+        form.validateFields(['workFrom','workName','workContent','workMinutes','file'], (err, values) => {
                 if (!err) {
                     store.actions.handleAdd(values)
                     form.resetFields()

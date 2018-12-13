@@ -30,10 +30,9 @@ class tableStore {
             })
                 .then(response => {
                     if (response.data.status.code === 1){
-                        if (response.data.result !== null) {
+                        if (response.data.result !== null && response.data.result.data !== null) {
                             this.dataSource = response.data.result.data.workScheduleDetailDtoList
                         } else {
-                            message.success("查询成功，尚无记录")
                             this.dataSource = []
                         }
                         this.loading = false

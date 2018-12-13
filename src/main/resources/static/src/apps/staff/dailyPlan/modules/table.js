@@ -1,8 +1,11 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Table, Button, message, Form } from 'antd'
-import axios from "axios";
+import { Table, Button, message, Form, Row, Col } from 'antd'
+import axios from "axios"
+import Filter from './filter'
 import util from '../../../../common/util'
+
+const FormItem = Form.Item
 
 @inject('store', 'form')
 @observer
@@ -10,6 +13,7 @@ class table extends Component {
 
     componentDidMount () {
         this.props.store.actions.search()
+        this.props.store.actions.queryWorkPool()
     }
 
     // 校验表单
@@ -17,60 +21,50 @@ class table extends Component {
         const store = this.props.store
         const { dataSource, actions } = this.props.store
 
-        let ok = true
+        store.loadingSubmitButton = true
+
+        const form = new FormData()
+        let finishStatus = null
+        form.append('id', store.id)
         for (let i=0; i < dataSource.length; i++) {
-            if (dataSource[i].finishTime === null) {
-                message.error("请填写所有工作项的完成时间")
-                ok = false
-                break
+            if (dataSource[i].finishStatus === '已完成') {
+                finishStatus = 'completed'
+            } else {
+                finishStatus = 'uncompleted'
             }
-        }
-
-        if (ok) {
-            store.loadingButton = true
-
-            const form = new FormData()
-            let finishStatus = null
-            form.append('id', store.id)
-            for (let i=0; i < dataSource.length; i++) {
-                if (dataSource[i].finishStatus === '已完成') {
-                    finishStatus = 'completed'
-                } else {
-                    finishStatus = 'uncompleted'
+            if (store.formData[i] !== 0) {
+                for (let j=0; j < store.formData[i].length; j++) {
+                    form.append('workScheduleDetailDtoList['+i+'].pictures', store.formData[i][j])
                 }
-                if (store.formData[i] !== 0) {
-                    for (let j=0; j < store.formData[i].length; j++) {
-                        form.append('workScheduleDetailDtoList['+i+'].pictures', store.formData[i][j])
-                    }
-                }
-                form.append('workScheduleDetailDtoList['+i+'].id', dataSource[i].id)
-                form.append('workScheduleDetailDtoList['+i+'].finishStatus', finishStatus)
+            }
+            form.append('workScheduleDetailDtoList['+i+'].id', dataSource[i].id)
+            form.append('workScheduleDetailDtoList['+i+'].finishStatus', finishStatus)
+            if (dataSource[i].finishTime !== null && dataSource[i].finishTime !== undefined) {
                 form.append('workScheduleDetailDtoList['+i+'].finishTime', util.gmtToStr(dataSource[i].finishTime['_d']))
-                if (dataSource[i].finishFeedback !== null && dataSource[i].finishFeedback !== '') {
-                    form.append('workScheduleDetailDtoList[' + i + '].finishFeedback', dataSource[i].finishFeedback)
-                }
-                if (dataSource[i].finishCondition !== null && dataSource[i].finishCondition !== '') {
-                    form.append('workScheduleDetailDtoList['+i+'].finishCondition', dataSource[i].finishCondition)
-                }
             }
-
-            axios({
-                method: 'post',
-                url: '/api/work/schedule/employee/submitSchedule',
-                data: form
-            })
-                .then(response => {
-                    if (response.data.status.code === 1){
-                        actions.resetTable()
-                        message.success("提交成功: " + response.data.status.message)
-                    } else {
-                        message.error("提交失败: " + response.data.status.message)
-                    }
-                    store.loadingButton = false
-                })
+            if (dataSource[i].finishFeedback !== null && dataSource[i].finishFeedback !== '') {
+                form.append('workScheduleDetailDtoList[' + i + '].finishFeedback', dataSource[i].finishFeedback)
+            }
+            if (dataSource[i].finishCondition !== null && dataSource[i].finishCondition !== '') {
+                form.append('workScheduleDetailDtoList['+i+'].finishCondition', dataSource[i].finishCondition)
+            }
         }
 
-
+        axios({
+            method: 'post',
+            url: '/api/work/schedule/employee/submitSchedule',
+            data: form
+        })
+            .then(response => {
+                if (response.data.status.code === 1){
+                    actions.resetTable()
+                    message.success("提交成功: " + response.data.status.message)
+                    this.props.store.actions.search()
+                } else {
+                    message.error("提交失败: " + response.data.status.message)
+                }
+                store.loadingSubmitButton = false
+            })
     }
 
     // 填写完成情况
@@ -98,6 +92,9 @@ class table extends Component {
 
     render() {
         const store = this.props.store
+        const date = new Date();
+        const today = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+
         const columns = [
             {   title: '#', dataIndex: 'key', width: 50, render: (text, record, index) => {
                     return index + 1
@@ -106,32 +103,59 @@ class table extends Component {
             {   title: '类型', dataIndex: 'workFrom', width: 150},
             {   title: '名称', dataIndex: 'workName', width: 160},
             {   title: '内容', dataIndex: 'workContent', width: 200},
-            {   title: '作业指导书', dataIndex: 'workInstructor', width: 200, render: (text, record) => {
-                    // console.log(text.lastIndexOf('\\'))
-                    return <a href={text}>{text}</a>
-                }},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 100, render: (text) => {
                     return <span>{text}&nbsp;分钟</span>
                 }},
-            {   title: '选项', dataIndex: 'operation', width: 120, render: (text, record, index) => {
+            {   title: '选项', dataIndex: 'operation', width: 200, render: (text, record, index) => {
                     return (
-                        store.dataSource.length >= 1 && store.submitStatus === false ? (
-                            <a href="javascript:;" onClick={() => this.workEnd(record, index)}>填写完成情况</a>
-                        ) : '无'
+                        // store.dataSource.length >= 1 && store.submitStatus === false ? (
+                            <Fragment>
+                                {
+                                    record.workInstructor === null || record.workInstructor === '' ?
+                                        '暂无指导书' : <a href={record.workInstructor}>查看指导书</a>
+                                }&nbsp;&nbsp;
+                                {
+                                    today === store.date ?
+                                        <a href="javascript:;" onClick={() => this.workEnd(record, index)}>填写完成情况</a> : null
+                                }
+                            </Fragment>
+                        // ) : '无'
                     );
                 }}
         ];
 
         return <Fragment>
+            <Row>
+                <Col span={2}>
+                    <Button
+                        type={"primary"}
+                        onClick={this.submit}
+                        loading={store.loadingSubmitButton}
+                        disabled={store.submitStatus}
+                    >
+                        提交
+                    </Button>
+                </Col>
+                <Col span={15}>
+                    <Button
+                        type={"primary"}
+                        onClick={() => store.actions.showSonTable()}
+                    >
+                        添加计划
+                    </Button>
+                </Col>
+                <Filter/>
+            </Row>
             <Table
                 dataSource={store.dataSource}
                 columns={columns}
                 pagination={false}
-                scroll={{ y: 460 }}
                 loading={store.loading}
                 rowKey={"id"}
-            /><br/>
-            <Button type={"primary"} onClick={this.submit} loading={store.loadingButton} disabled={store.submitStatus}>提交</Button>
+                size="small"
+                scroll={{ y : 470 }}
+                bordered
+            />
         </Fragment>
     }
 }

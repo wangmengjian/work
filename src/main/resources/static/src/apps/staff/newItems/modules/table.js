@@ -49,7 +49,8 @@ class table extends Component {
             workFrom: record.workFrom === '常规工作项' ? 'w3常规工作项':'w2临时工作项',
             workName: record.workName,
             workContent: record.workContent,
-            workMinutes: record.workMinutes
+            workMinutes: record.workMinutes,
+            file: record.file
         })
         store.fileData = []
         if (store.formData.length > 0) {
@@ -97,6 +98,19 @@ class table extends Component {
                 <Col className="gutter-row" span={2}>
                     <Button type={"primary"} onClick={this.newItem}>新增</Button>
                 </Col>
+                <Col className="gutter-row" span={20}>
+                    <Button
+                        type={"primary"}
+                        onClick={this.submit}
+                        loading={store.loading}
+                        disabled={dataSource.length > 0 ? false : true}
+                    >
+                        提交
+                    </Button>
+                </Col>
+                <Col className="gutter-row" span={2}>
+                    <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>
+                </Col>
             </Row><br/>
             <Table
                 dataSource={dataSource}
@@ -104,11 +118,9 @@ class table extends Component {
                 pagination={false}
                 scroll={{ y: 460 }}
                 // rowSelection={}
-                // rowKey={"key"}
-                // size={"middle"}
+                rowKey={"key"}
+                size={"middle"}
             /><br/>
-            <Button type={"primary"} onClick={this.submit} loading={store.loading} disabled={dataSource.length > 0 ? false : true}>提交</Button>
-            <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>
         </Fragment>
     }
 }

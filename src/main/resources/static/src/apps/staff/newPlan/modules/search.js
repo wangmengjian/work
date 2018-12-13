@@ -21,7 +21,7 @@ class search extends Component {
     render() {
         const { getFieldDecorator } = this.props.form
         return <Fragment>
-            <Row>
+            {/*<Row>*/}
                 <Col className="gutter-row" span={6}>
                     <FormItem label={"工作项名称"} labelCol={{span: 6}}>
                         {getFieldDecorator('workName')(
@@ -30,11 +30,13 @@ class search extends Component {
                     </FormItem>
                 </Col>
                 <Col className="gutter-row" span={2}>
-                    <Button type={"primary"} onClick={this.handleSearch}>
-                        查询
-                    </Button>
+                    <FormItem>
+                        <Button type={"primary"} onClick={this.handleSearch}>
+                            查询
+                        </Button>
+                    </FormItem>
                 </Col>
-            </Row>
+            {/*</Row>*/}
 
         </Fragment>
     }

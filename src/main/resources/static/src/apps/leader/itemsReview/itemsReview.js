@@ -10,7 +10,7 @@ class ItemsReview extends Component {
     render() {
         return <Provider store={store}>
             <Fragment>
-                <Search/>
+                {/*<Search/>*/}
                 <Table/>
                 <Modal/>
             </Fragment>

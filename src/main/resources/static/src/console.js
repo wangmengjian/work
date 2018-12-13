@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Link, Route, Switch, withRouter } from 'react-router-dom';
-import { Layout, Menu, Icon} from 'antd';
+import { Layout, Menu, Icon, Divider } from 'antd';
 
 // 员工
 import NormalItems from './apps/staff/normalItems/normalItems'
@@ -18,7 +18,7 @@ import NewItemsLeader from './apps/leader/newItems/newItems'
 import NormalItemsLeader from './apps/leader/normalItems/normalItems'
 import menus from './config/menus'
 
-const { Sider, Content } = Layout;
+const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 //每次都传入一级菜单
@@ -55,7 +55,7 @@ class SideMenu extends Component {
 
     render() {
         let mu = []
-        menus.leader.map( m => {
+        menus.all.map( m => {
             mu.push(renderMenu(m))
         })
 
@@ -65,7 +65,6 @@ class SideMenu extends Component {
         return (
             <Menu
                 mode='inline'
-                theme='dark'
                 onSelect = {this.navigate}
                 defaultOpenKeys={[getOpenKeys()]}
                 defaultSelectedKeys={[getSelectedKeys()]}
@@ -84,34 +83,48 @@ class Work extends Component {
         collapsed: false
     };
 
+    onCollapse = (collapsed) => {
+        this.setState({ collapsed });
+    }
+
     render() {
         return <Layout style={{height:"100vh"}}>
-                <Sider defaultselectedseys={['1']} collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} >
-                    <Link to="/"><div className="logo"><h2 style={{color: '#fff'}}>工作笔记</h2></div></Link>
-                    <SideMenuWrapper/>
-                </Sider>
+                <Header theme="light">
+                    <div className="logo" style={{display: 'table-cell'}}>
+                        <Link to="/" style={{ textDecoration: 'none' }}>
+                            <span style={{color: '#fff', fontSize: 20}}><strong>工作笔记</strong></span>
+                            <Divider type='vertical' style={{ height: 20 }}/>
+                            <span>每天进步一点点</span>
+                        </Link>
+                    </div>
+                </Header>
                 <Layout>
-                    <Content style={{ margin: '16px 16px 0' }}>
-                        <div style={{ padding: 30, background: '#fff', minHeight: 700 }}>
-                            <Switch>
-                                <Route path="/" exact></Route>
-                                {/* 员工 */}
-                                <Route path="/work/employee/workItems/normalItems"><NormalItems /></Route>
-                                <Route path="/work/employee/workItems/newItems"><NewItems /></Route>
-                                <Route path="/work/employee/dailyPlan"><DailyPlan /></Route>
-                                <Route path="/work/employee/planHistory"><PlanHistory /></Route>
-                                <Route path="/work/employee/newPlan"><NewPlan /></Route>
+                    <Sider defaultselectedseys={['1']} collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} >
+                        {/*<Link to="/"><div className="logo"><h2 style={{color: '#fff'}}>工作笔记</h2></div></Link>*/}
+                        <SideMenuWrapper/>
+                    </Sider>
+                    <Layout>
+                        {/*<Content style={{ margin: '16px 16px 0' }}>*/}
+                            <div style={{ padding: 30, background: '#fff', minHeight: '100%' }}>
+                                <Switch>
+                                    <Route path="/" exact></Route>
+                                    {/* 员工 */}
+                                    <Route path="/work/employee/workItems/normalItems"><NormalItems /></Route>
+                                    <Route path="/work/employee/workItems/newItems"><NewItems /></Route>
+                                    <Route path="/work/employee/dailyPlan"><DailyPlan /></Route>
+                                    <Route path="/work/employee/planHistory"><PlanHistory /></Route>
+                                    <Route path="/work/employee/newPlan"><NewPlan /></Route>
 
-                                {/* 领导 */}
-                                <Route path="/work/leader/workItems/normalItems"><NormalItemsLeader /></Route>
-                                <Route path="/work/leader/workItems/newItems"><NewItemsLeader /></Route>
-                                <Route path="/work/leader/workItems/dailyUnfinished"><DailyUnfinished /></Route>
-                                <Route path="/work/leader/workItems/itemsReview"><ItemsReview /></Route>
-                                <Route path="/work/leader/plan/dailyPlan"><DailyPlanLeader /></Route>
-
-                            </Switch>
-                        </div>
-                    </Content>
+                                    {/* 领导 */}
+                                    <Route path="/work/leader/workItems/normalItems"><NormalItemsLeader /></Route>
+                                    <Route path="/work/leader/workItems/newItems"><NewItemsLeader /></Route>
+                                    <Route path="/work/leader/workItems/dailyUnfinished"><DailyUnfinished /></Route>
+                                    <Route path="/work/leader/workItems/itemsReview"><ItemsReview /></Route>
+                                    <Route path="/work/leader/plan/dailyPlan"><DailyPlanLeader /></Route>
+                                </Switch>
+                            </div>
+                        {/*</Content>*/}
+                    </Layout>
                 </Layout>
             </Layout>
         

@@ -15,24 +15,26 @@ class search extends Component {
                 store.workName = values.workName
             }
         })
-        this.props.store.actions.search(1, store.pageSize)
+        this.props.store.actions.search(1)
     }
 
     render() {
         const { getFieldDecorator } = this.props.form
         return <Fragment>
-            <Row>
-                <Col className="gutter-row" span={6}>
+            <Row type="flex" justify="end">
+                <Col span={6} push={1}>
                     <FormItem label={"工作项名称"} labelCol={{span: 6}}>
                         {getFieldDecorator('workName')(
                             <Input style={{ width: 180 }} />
                         )}
                     </FormItem>
                 </Col>
-                <Col className="gutter-row" span={2}>
-                    <Button type={"primary"} onClick={this.handleSearch}>
-                        查询
-                    </Button>
+                <Col span={2} >
+                    <FormItem>
+                        <Button type={"primary"} onClick={this.handleSearch}>
+                            查询
+                        </Button>
+                    </FormItem>
                 </Col>
             </Row>
 
