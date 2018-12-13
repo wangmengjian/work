@@ -64,12 +64,14 @@ public class ScheduleCtrl extends BaseCtrl {
     public Result employeeQueryScheduleByDate(@RequestParam(value = "date",required = false)String date,
                                   @RequestParam(value="workFrom",required = false)String workFrom,
                                   @RequestParam(value="workName",required = false)String workName,
+                                  @RequestParam(value = "finishStatus",required = false)String finishStatus,
                                   HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
         Map<String,Object> params=new HashMap<>();
         params.put("userId",user.getId());
         params.put("workFrom",workFrom);
         params.put("workName",workName);
+        params.put("finishStatus",finishStatus);
         params.put("date",date);
         Map<String,Object> result=workScheduleService.querySchedule(params);
         return this.send(result);
@@ -119,11 +121,16 @@ public class ScheduleCtrl extends BaseCtrl {
     @GetMapping("/employee/queryWork")
     public Result employeeQueryWork(@RequestParam(value="workName",required = false)String workName,
                                     @RequestParam(value="pageNumber",required = false)Integer pageNumber,
-                                    @RequestParam(value = "pageSize",required = false)Integer pageSize,HttpSession session){
+                                    @RequestParam(value = "pageSize",required = false)Integer pageSize,
+                                    @RequestParam(value="auditStatus",required = false)String auditStatus,
+                                    @RequestParam(value = "workFrom",required = false)String workFrom,
+                                    HttpSession session){
         Map<String,Object> params=ParamUtils.setPageInfo(pageNumber,pageSize);
         params.put("workName",workName);
         User user= (User) session.getAttribute(Constants.userSession);
         params.put("userId",user.getId());
+        params.put("auditStatus",auditStatus);
+        params.put("workFrom",workFrom);
         return this.send(workService.queryWorkByWorkName(params));
     }
 

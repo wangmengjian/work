@@ -20,7 +20,7 @@ public class WorkScheduleService {
     private WorkScheduleDao workScheduleDao;
 
     /**
-     * 查询日计划
+     * 员工查询日计划
      * @param params
      * @return
      */

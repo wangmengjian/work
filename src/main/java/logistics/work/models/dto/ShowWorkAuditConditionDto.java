@@ -12,6 +12,15 @@ public class ShowWorkAuditConditionDto {
     private Integer workMinutes;
     private String time;
     private String auditFailReason;
+    private String workFrom;
+
+    public String getWorkFrom() {
+        return workFrom;
+    }
+
+    public void setWorkFrom(String workFrom) {
+        this.workFrom = workFrom;
+    }
 
     public String getAuditFailReason() {
         return auditFailReason;

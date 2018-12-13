@@ -5,8 +5,7 @@
 <mapper namespace="logistics.work.models.dao.WorkDao">
     <select id="querySubmitRecordByPage" parameterType="java.util.Map"
             resultType="logistics.work.models.dto.ShowWorkAuditConditionDto">
-        select *
-        from(select
+        select
         wad.id,
         sc1.`name` as audit_status,
         wa.work_name,
@@ -15,33 +14,25 @@
         wa.work_minutes,
         wa.origin_work_id,
         wad.audit_time as time,
-        wad.audit_fail_reason
+        wad.audit_fail_reason,
+        sc2.`name` as workFrom
         from work_audit_detail as wad
         left join work_audit as wa
         on wad.audit_item_id=wa.id
         left join sys_config as sc1
         on wad.audit_status=sc1.code
-        where wad.audit_time is not null and wa.work_user_id=#{userId}
-        UNION
-        select
-        wad.id,
-        sc1.`name` as audit_status,
-        wa.work_name,
-        wa.work_content,
-        wa.work_instructor,
-        wa.work_minutes,
-        wa.origin_work_id,
-        wa.audit_submit_time as time,
-        wad.audit_fail_reason
-        from work_audit_detail as wad
-        left join work_audit as wa
-        on wad.audit_item_id=wa.id
-        left join sys_config as sc1
-        on wad.audit_status=sc1.code
-        where wad.audit_time is null and wa.work_user_id=#{userId})a
+        left join sys_config as sc2
+        on wa.work_from=sc2.code
         <where>
+            wa.work_user_id=#{userId}
             <if test="workName!=null">
-                work_name like "%"#{workName}"%"
+                and work_name like "%"#{workName}"%"
+            </if>
+            <if test="auditStatus!=null">
+                and wad.audit_status like #{auditStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wa.work_from like #{workFrom}
             </if>
         </where>
         order by time desc
@@ -50,28 +41,21 @@
     <select id="querySubmitRecordCount" parameterType="java.util.Map"
             resultType="Integer">
         select count(*)
-        from(select
-        wad.id,
-        wa.work_name
         from work_audit_detail as wad
         left join work_audit as wa
         on wad.audit_item_id=wa.id
         left join sys_config as sc1
         on wad.audit_status=sc1.code
-        where wad.audit_time is not null and wa.work_user_id=#{userId}
-        UNION
-        select
-        wad.id,
-        wa.work_name
-        from work_audit_detail as wad
-        left join work_audit as wa
-        on wad.audit_item_id=wa.id
-        left join sys_config as sc1
-        on wad.audit_status=sc1.code
-        where wad.audit_time is null and wa.work_user_id=#{userId})a
         <where>
+            wa.work_user_id=#{userId}
             <if test="workName!=null">
-                work_name like "%"#{workName}"%"
+                and work_name like "%"#{workName}"%"
+            </if>
+            <if test="auditStatus!=null">
+                and wad.audit_status like #{auditStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wa.work_from like #{workFrom}
             </if>
         </where>
     </select>

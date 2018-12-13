@@ -39,6 +39,9 @@
             <if test="workName!=null">
                 and work_name like "%"#{workName}"%"
             </if>
+            <if test="finishStatus!=null">
+                and wsd.finish_status like #{finishStatus}
+            </if>
         </where>
         order by wsd.finish_time asc
     </select>

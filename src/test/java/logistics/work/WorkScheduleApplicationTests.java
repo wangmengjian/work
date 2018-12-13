@@ -17,13 +17,6 @@ import java.util.Map;
 public class WorkScheduleApplicationTests {
     @Test
     public void contextLoads() {
-        ApplicationContext applicationContext=SpringApplication.run(WorkScheduleApplication.class);
-        WorkScheduleDao workScheduleDao=applicationContext.getBean(WorkScheduleDao.class);
-        Map<String,Object> params=new HashMap<>();
-        params.put("userId",1);
-        params.put("date","2018-12-03");
-        WorkScheduleDto workScheduleDto=workScheduleDao.queryWorkScheduleByDate(params);
-        System.out.println(workScheduleDto.getDate());
     }
 
 }
