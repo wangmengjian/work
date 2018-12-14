@@ -114,5 +114,7 @@ public class WorkService {
             deptDto.setEmployeeList(employeeList1);
         }
         Map<String,Object> result=new HashMap<>();
+        result.put("data",deptDtoList);
+        return result;
     }
 }
