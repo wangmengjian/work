@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Table, Button, Row, Col, message } from 'antd'
+import { Table, Button, Row, Col, message, Modal } from 'antd'
 import axios from "axios";
 
 @inject('store', 'form')
@@ -34,7 +34,10 @@ class table extends Component {
             .then(response => {
                 if (response.data.status.code === 1){
                     actions.resetTable()
-                    message.success("提交成功: " + response.data.status.message)
+                    Modal.success({
+                        title: '提交成功',
+                        content: response.data.status.message,
+                    });
                 } else {
                     message.error("提交失败: " + response.data.status.message)
                 }

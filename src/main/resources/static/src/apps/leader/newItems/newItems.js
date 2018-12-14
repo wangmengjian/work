@@ -10,8 +10,10 @@ class NewItems extends Component {
     render() {
         return <Provider store={store} form={this.props.form}>
             <Fragment>
-                <Modal/>
-                <Table/>
+                <div className="content">
+                    <Modal/>
+                    <Table/>
+                </div>
             </Fragment>
         </Provider>
     }

@@ -2,16 +2,9 @@ export default {
     // 总的
     all: [
         {
-            key: 'work/employee/workItems',
+            key: 'work/employee/normalItems',
             icon: 'user',
-            name: '工作项管理',
-            menus:[{
-                key:'work/employee/workItems/normalItems',
-                name:'查询工作项'
-            },{
-                key:'work/employee/workItems/newItems',
-                name:'新增工作项'
-            }]
+            name: '我的工作项',
         },{
             key: 'work/employee/dailyPlan',
             icon: 'team',

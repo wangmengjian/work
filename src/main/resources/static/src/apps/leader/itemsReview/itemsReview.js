@@ -3,16 +3,16 @@ import {Provider} from 'mobx-react'
 import store from './stores/store'
 import Table from './modules/table'
 import Modal from './modules/modal'
-import Search from './modules/search'
 
 class ItemsReview extends Component {
 
     render() {
         return <Provider store={store}>
             <Fragment>
-                {/*<Search/>*/}
-                <Table/>
-                <Modal/>
+                <div className="content">
+                    <Table/>
+                    <Modal/>
+                </div>
             </Fragment>
         </Provider>
     }

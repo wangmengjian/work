@@ -6,10 +6,6 @@ import { Modal, Button, Table } from 'antd'
 @observer
 class sonTable extends Component {
 
-    componentDidMount() {
-        this.props.store.actions.search()
-    }
-
     render() {
         const store = this.props.store
         const { actions } = store
@@ -45,8 +41,9 @@ class sonTable extends Component {
             width={1000}
             style={{ height: 500 }}
             footer={[
-                <Button onClick={actions.hideModal}>取消</Button>,
+                <Button key="cancel" onClick={actions.hideModal}>取消</Button>,
                 <Button
+                    key="submit"
                     type={'primary'}
                     onClick={() => actions.submit()}
                     loading={store.loadingNewPlanButton}
