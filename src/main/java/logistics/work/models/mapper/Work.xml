@@ -179,4 +179,16 @@
             </if>
         </where>
     </select>
+    <insert id="addWork" parameterType="logistics.work.models.domain.WorkPool">
+        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom})
+        </foreach>
+    </insert>
+    <update id="updateWork" parameterType="logistics.work.models.domain.WorkPool">
+        update work_pool
+        set work_name=#{workName},work_content=#{workContent},work_minutes=#{workMinutes},work_instructor=#{workInstructor}
+        where id=#{id}
+    </update>
 </mapper>

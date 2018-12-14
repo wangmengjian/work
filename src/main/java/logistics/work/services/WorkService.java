@@ -1,12 +1,20 @@
 package logistics.work.services;
 
+import logistics.work.common.FileUtils;
+import logistics.work.models.dao.UserDao;
 import logistics.work.models.dao.WorkDao;
 import logistics.work.models.dao.WorkScheduleDao;
+import logistics.work.models.domain.Employee;
 import logistics.work.models.domain.WorkPool;
+import logistics.work.models.dto.DeptDto;
 import logistics.work.models.dto.ShowWorkAuditConditionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +24,8 @@ public class WorkService {
     private WorkDao workDao;
     @Autowired
     private WorkScheduleDao workScheduleDao;
+    @Autowired
+    private UserDao userDao;
 
     /**
      * 查询员工提交的所有工作项的审核记录
@@ -47,7 +57,7 @@ public class WorkService {
     }
 
     /**
-     * 部门领导查询员工的常规工作项
+     * 查询员工的常规工作项
      * @param params
      * @return
      */
@@ -58,5 +68,51 @@ public class WorkService {
         result.put("total",workPoolList.size());
         result.put("all",workDao.queryWorkCountByEmployeeId(params));
         return result;
+    }
+
+    /**
+     * 直接添加工作项（无需审核）
+     * @param workPoolList
+     * @return
+     */
+    @Transactional
+    public int addWork(List<WorkPool> workPoolList) throws Exception {
+        for(WorkPool workPool:workPoolList){
+            String instructor = null;
+            if (workPool.getFile() != null) {
+                instructor = FileUtils.upload(workPool.getFile());
+            }
+            workPool.setWorkInstructor(instructor);
+        }
+        return workDao.addWork(workPoolList);
+    }
+
+    /**
+     * 更改工作项（无需审核）
+     * @param workPool
+     * @return
+     */
+    @Transactional
+    public int updateWork(@Valid WorkPool workPool) throws Exception {
+        String instructor = null;
+        if (workPool.getFile() != null) {
+            instructor = FileUtils.upload(workPool.getFile());
+        }
+        workPool.setWorkInstructor(instructor);
+        return workDao.updateWork(workPool);
+    }
+    public Map<String,Object> queryAllEmployee(){
+        List<DeptDto> deptDtoList=userDao.queryAllDept();
+        List<Employee> employeeList=userDao.queryAllEmployee();
+        for(DeptDto deptDto:deptDtoList){
+            List<Employee> employeeList1=new ArrayList<>();
+            for(Employee employee:employeeList){
+                if(deptDto.getDeptNumber().equals(employee.getDeptNumber())){
+                    employeeList1.add(employee);
+                }
+            }
+            deptDto.setEmployeeList(employeeList1);
+        }
+        Map<String,Object> result=new HashMap<>();
     }
 }

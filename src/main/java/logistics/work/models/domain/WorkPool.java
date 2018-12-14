@@ -1,5 +1,7 @@
 package logistics.work.models.domain;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -9,16 +11,22 @@ public class WorkPool {
     private Integer id;
     private Integer userId;
     private String employeeName;
-    @NotNull(message = "请填写作名称")
+    @NotNull(message = "请填写工作名称")
     private String workName;
     @NotNull(message="请填写工作内容工作内容")
     private String workContent;
     private String workInstructor;
     @NotNull(message="请填写标准工时")
     private Integer workMinutes;
-    @NotNull(message="工作项来源")
     private String workFrom;
+    private MultipartFile[] file;
 
+    public MultipartFile[] getFile() {
+        return file;
+    }
+    public void setFile(MultipartFile[] file) {
+        this.file = file;
+    }
     public String getEmployeeName() {
         return employeeName;
     }

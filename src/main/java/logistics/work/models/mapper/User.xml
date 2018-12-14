@@ -17,4 +17,12 @@ left join `user`
 on `user`.employee_id=employee.id
 where employee.dept_number=#{deptNumber} and employee.emp_job not like '经理'
     </select>
+    <select id="queryAllDept" resultType="logistics.work.models.dto.DeptDto">
+        select *
+        from department
+    </select>
+    <select id="queryAllEmployee" resultType="logistics.work.models.domain.Employee">
+        select *
+        from employee
+    </select>
 </mapper>

@@ -6,7 +6,9 @@ import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
 import logistics.work.models.domain.WorkAudit;
+import logistics.work.models.domain.WorkPool;
 import logistics.work.models.dto.WorkAuditDto;
+import logistics.work.models.dto.WorkPoolDto;
 import logistics.work.models.dto.WorkScheduleDto;
 import logistics.work.services.WorkAuditService;
 import logistics.work.services.WorkScheduleService;
@@ -213,6 +215,57 @@ public class ScheduleCtrl extends BaseCtrl {
         params.put("employeeId",employeeId);
         try{
             return this.send(workScheduleService.leaderQuerySchedule(params));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
+
+    /**
+     * 人事查询部门员工的工作
+     * @param workName
+     * @param employeeId
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/personnel/queryWork")
+    public Result personnelQueryWork(@RequestParam(value="workName",required = false)String workName,
+                                     @RequestParam(value="employeeId",required = false)Integer employeeId,
+                                     @RequestParam(value="pageNumber", required = false)Integer pageNumber,
+                                     @RequestParam(value = "pageSize",required = false)Integer pageSize){
+        Map<String,Object> params=ParamUtils.setPageInfo(pageNumber,pageSize);
+        params.put("workName",workName);
+        params.put("employeeId",employeeId);
+        try{
+            return this.send(workService.queryWorkByEmployeeId(params));
+        }catch(Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
+
+    /**
+     * 人事新增员工常规工作项
+     * @param workPoolDto
+     * @return
+     */
+    @RequestMapping("/personnel/addWork")
+    public Result personnelAddWork(@Valid WorkPoolDto workPoolDto){
+        try{
+            return this.send(workService.addWork(workPoolDto.getWorkPoolList()));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
+
+    /**
+     * 人事管理员更改常规工作项
+     * @param workPool
+     * @return
+     */
+    @RequestMapping("/personnel/updateWork")
+    public Result personnelUpdateWork(@Valid WorkPool workPool){
+        try{
+            return this.send(workService.updateWork(workPool));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }
