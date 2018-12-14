@@ -1,6 +1,8 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Table, Pagination, Select, Row, Col } from 'antd'
+import { withRouter } from 'react-router-dom'
+import { Table, Pagination, Select, Row, Col, Button } from 'antd'
+import Search from './search'
 
 const Option = Select.Option
 
@@ -39,6 +41,17 @@ class table extends Component {
         ];
 
         return <Fragment>
+            <Row>
+                <Col span={16}>
+                    <Button
+                        type="primary"
+                        onClick={() => this.props.history.push('/work/employee/newItems')}
+                    >
+                        新增工作项
+                    </Button>
+                </Col>
+                <Search/>
+            </Row>
             <Table
                 dataSource={store.dataSource}
                 columns={columns}
@@ -75,4 +88,4 @@ class table extends Component {
     }
 }
 
-export default table
+export default withRouter(table)

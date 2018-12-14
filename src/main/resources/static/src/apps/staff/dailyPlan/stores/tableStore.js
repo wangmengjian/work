@@ -1,5 +1,5 @@
 import {observable, action } from 'mobx';
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import axios from 'axios'
 import util from "../../../../common/util";
 
@@ -28,7 +28,7 @@ class tableStore {
     // 选择
     @observable selectedRowKeys = []         // 选择框数据
 
-    @observable submitStatus = false    // 是否已提交过一次, 禁用按钮, 默认禁用
+    @observable submitStatus = true    // 是否已提交过一次, 禁用按钮, 默认禁用
 
     actions = {
 
@@ -132,7 +132,10 @@ class tableStore {
             })
                 .then(response => {
                     if (response.data.status.code === 1){
-                        message.success("生成计划成功")
+                        Modal.success({
+                            title: '成功',
+                            content: '生成计划成功',
+                        });
                         this.selectedRowKeys = []
                         this.actions.search()
                         this.visibleSonTable = false

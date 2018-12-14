@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react'
+import React, {Component} from 'react'
 import { inject, observer } from 'mobx-react'
 import { Modal, Button, Input, Form, Radio, Upload, Icon, TimePicker } from 'antd'
 
@@ -24,7 +24,6 @@ class modal extends Component {
         const { getFieldDecorator } = this.props.form
         const store = this.props.store
         const { visible, actions, fileData } = store
-        const format = "HH:mm"
         const props = {
             action: '/api/work/schedule/employee/submitSchedule',
             beforeUpload: actions.beforeUploadHandle,
@@ -42,7 +41,7 @@ class modal extends Component {
             onCancel={actions.hideModal}
             width={400}
         >
-            <Form hideRequiredMark={true}>
+            <Form>
                 <FormItem label={"完成状态"} labelCol={{span: 6}}>
                     {getFieldDecorator('finishStatus')(
                         <Radio.Group
@@ -71,7 +70,7 @@ class modal extends Component {
                                 {getFieldDecorator('finishTime', {
                                     rules: [{ required: true, message: '请选择时间' }]
                                 })(
-                                    <TimePicker format={format}/>
+                                    <TimePicker format="HH:mm"/>
                                 )}
                             </FormItem>
                             <FormItem labelCol={{span: 6}}>

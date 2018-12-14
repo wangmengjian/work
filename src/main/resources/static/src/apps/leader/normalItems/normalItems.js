@@ -9,8 +9,9 @@ class NormalItems extends Component {
     render() {
         return <Provider store={store}>
             <Fragment>
-                {/*<Search/>*/}
-                <Table/>
+                <div className="content">
+                    <Table/>
+                </div>
             </Fragment>
         </Provider>
     }

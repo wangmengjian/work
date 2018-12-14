@@ -6,6 +6,7 @@ import { Layout, Menu, Icon, Divider } from 'antd';
 // 员工
 import NormalItems from './apps/staff/normalItems/normalItems'
 import NewItems from './apps/staff/newItems/newItems'
+import NewItem from './apps/staff/newItem/newItem'
 import DailyPlan from './apps/staff/dailyPlan/dailyPlan'
 import PlanHistory from './apps/staff/planHistory/planHistory'
 import NewPlan from './apps/staff/newPlan/newPlan'
@@ -65,6 +66,7 @@ class SideMenu extends Component {
         return (
             <Menu
                 mode='inline'
+                theme="dark"
                 onSelect = {this.navigate}
                 defaultOpenKeys={[getOpenKeys()]}
                 defaultSelectedKeys={[getSelectedKeys()]}
@@ -89,12 +91,12 @@ class Work extends Component {
 
     render() {
         return <Layout style={{height:"100vh"}}>
-                <Header theme="light">
+                <Header style={{ backgroundColor: '#0d5ca7' }}>
                     <div className="logo" style={{display: 'table-cell'}}>
                         <Link to="/" style={{ textDecoration: 'none' }}>
                             <span style={{color: '#fff', fontSize: 20}}><strong>工作笔记</strong></span>
                             <Divider type='vertical' style={{ height: 20 }}/>
-                            <span>每天进步一点点</span>
+                            <span style={{ color: 'white' }}>每天进步一点点</span>
                         </Link>
                     </div>
                 </Header>
@@ -104,13 +106,13 @@ class Work extends Component {
                         <SideMenuWrapper/>
                     </Sider>
                     <Layout>
-                        {/*<Content style={{ margin: '16px 16px 0' }}>*/}
-                            <div style={{ padding: 30, background: '#fff', minHeight: '100%' }}>
+                        <Content style={{ background: '#fff' }}>
+                            <div style={{ minHeight: '100%' }}>
                                 <Switch>
                                     <Route path="/" exact></Route>
                                     {/* 员工 */}
-                                    <Route path="/work/employee/workItems/normalItems"><NormalItems /></Route>
-                                    <Route path="/work/employee/workItems/newItems"><NewItems /></Route>
+                                    <Route path="/work/employee/normalItems"><NormalItems /></Route>
+                                    <Route path="/work/employee/newItems"><NewItems /></Route>
                                     <Route path="/work/employee/dailyPlan"><DailyPlan /></Route>
                                     <Route path="/work/employee/planHistory"><PlanHistory /></Route>
                                     <Route path="/work/employee/newPlan"><NewPlan /></Route>
@@ -123,7 +125,7 @@ class Work extends Component {
                                     <Route path="/work/leader/plan/dailyPlan"><DailyPlanLeader /></Route>
                                 </Switch>
                             </div>
-                        {/*</Content>*/}
+                        </Content>
                     </Layout>
                 </Layout>
             </Layout>

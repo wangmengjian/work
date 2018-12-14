@@ -4,6 +4,7 @@ import { Table, Button, message, Form, Row, Col } from 'antd'
 import axios from "axios"
 import Filter from './filter'
 import util from '../../../../common/util'
+import moment from 'moment'
 
 const FormItem = Form.Item
 
@@ -70,24 +71,22 @@ class table extends Component {
     // 填写完成情况
     workEnd = (record, index) => {
         const { form, store } = this.props
-        console.log(JSON.parse(JSON.stringify(record)))
         form.setFieldsValue({
-            // finishStatus: record.finishStatus,
             finishStatus: '已完成',
             finishCondition: record.finishCondition,
             finishFeedback: record.finishFeedback,
-            finishTime: record.finishTime
+            finishTime: typeof record.finishTime === 'string' ? moment(record.finishTime) : record.finishTime
         })
         store.finish = '已完成'
-        // store.fileData = []
         // if (store.formData.length > 0) {
         //     if (store.formData[record.key-1] !== null) {
         //         store.fileData.push(store.formData[record.key-1])
         //     }
         // }
+        // store.fileData = []
+        store.actions.showModal()
         store.isAlter = index
         store.fileData = store.formData[store.isAlter]
-        store.actions.showModal()
     }
 
     render() {
@@ -115,7 +114,7 @@ class table extends Component {
                                         '暂无指导书' : <a href={record.workInstructor}>查看指导书</a>
                                 }&nbsp;&nbsp;
                                 {
-                                    today === store.date ?
+                                    store.submitStatus ?
                                         <a href="javascript:;" onClick={() => this.workEnd(record, index)}>填写完成情况</a> : null
                                 }
                             </Fragment>

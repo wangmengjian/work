@@ -45,29 +45,26 @@
 }
 
 .tab{
-    /*list-style:none;*/
-    /*display:block;*/
-    height:28px;
-    /*line-height:30px;*/
-    border-bottom:1px black solid;
-}/* 定义tabs 的子后代ul, list-style意思是去掉列表默认的小圆点，后面是定义上边边框为2px 马鞍棕色 实心的线*/
+    height:40px;
+    margin-bottom: 0px;
+}
+
 .tab li{
-    /*border-radius: 5px;*/
+    color: white;
+    background-color: #89a5ba;
+    border-radius: 8px 8px 0px 0px;
     cursor:pointer;
-    /*list-style:none;*/
-    height:28px;
-    line-height:28px;
-    margin:0px 4px;
-    border-left:1px solid black;
-    border-top:1px solid black;
-    border-right:1px solid black;
+    line-height:30px;
+    margin:10px 3px;
     display:inline-block;
-    width:65px;
+    width:80px;
     text-align:center;
-}/*cursor:pointer意思就是鼠标放上去变成小手的形状，高度和行高的值一样的话就垂直居中了，设置下边框为空 */
+}
+
 .tab li.on{
-    border-bottom:3px solid #fff;
-}/*说白了这个就是设置第一个选择框的样式，不过选择器也是有优先级的，加入都为同一个元素设置颜色就会显示id的 然后是.xx  其次是便签选择器*/
+    color: black;
+    background-color: white;
+}
 
 .ant-divider.ant-divider-vertical {
     margin: 0 8px;
@@ -77,4 +74,13 @@
     vertical-align: middle;
     position: relative;
     top: -0.3em;
+}
+
+.head {
+    background: #7688a4;
+}
+
+.content {
+    padding: 20px 30px 0 30px;
+    background: #fff;
 }
