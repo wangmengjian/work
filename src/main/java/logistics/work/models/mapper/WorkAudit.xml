@@ -121,13 +121,13 @@
             #{item.auditItemId}
         </foreach>
     </update>
-    <select id="queryAllAuditById" parameterType="Integer" resultType="logistics.work.models.domain.WorkAudit">
+    <select id="queryAllAuditByDetail" parameterType="logistics.work.models.domain.WorkAuditDetail" resultType="logistics.work.models.domain.WorkAudit">
         select *
         from work_audit
         where id
         in
         <foreach collection="list" item="item" separator="," open="(" close=")">
-            #{item}
+            #{item.auditItemId}
         </foreach>
     </select>
 </mapper>

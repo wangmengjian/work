@@ -74,15 +74,16 @@ public class WorkAuditService {
 
     /**
      * 审核通过员工工作项
-     * @param idList
+     * @param workAuditDetails 提交的审核明细
+     * @param userId 审核人id
      * @return
      */
     @Transactional
-    public int agreeAuditWork(List<Integer> idList,Integer userId){
-        if(idList.size()<=0)return 0;
+    public int agreeAuditWork(List<WorkAuditDetail> workAuditDetails,Integer userId){
+        if(workAuditDetails.size()<=0)return 0;
         List<WorkPool> addWorkPool=new ArrayList<>();
         List<WorkPool> updateWorkPool=new ArrayList<>();
-        List<WorkAudit> workAuditList=workAuditDao.queryAllAuditById(idList);
+        List<WorkAudit> workAuditList=workAuditDao.queryAllAuditByDetail(workAuditDetails);
         for(WorkAudit workAudit:workAuditList){
             WorkPool workPool=new WorkPool();
             workPool.setUserId(workAudit.getWorkUserId());
@@ -130,10 +131,9 @@ public class WorkAuditService {
             return 0;
         }
         for(WorkAuditDetail workAuditDetail:workAuditDetailList){
-            workAuditDetail.setAuditStatus("disagree");
             workAuditDetail.setAuditUserId(userId);
         }
         workAuditDao.updateAuditStatus(workAuditDetailList);
-        return 0;
+        return workAuditDetailList.size();
     }
 }

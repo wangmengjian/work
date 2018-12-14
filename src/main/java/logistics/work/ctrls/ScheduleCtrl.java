@@ -14,8 +14,6 @@ import logistics.work.services.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.*;
@@ -196,6 +194,15 @@ public class ScheduleCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
+
+    /**
+     * 领导查询部门员工的日计划
+     * @param date
+     * @param employeeId
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/leader/querySchedule")
     public Result leaderQuerySchedule(@RequestParam(value="date",required = false)String date,
                                       @RequestParam(value="employeeId",required = false)Integer employeeId,
@@ -209,13 +216,5 @@ public class ScheduleCtrl extends BaseCtrl {
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }
-    }
-    @GetMapping("/download")
-    public Result download(HttpServletRequest request, HttpServletResponse response){
-        try {
-            FileUtils.download(response,"m22126EpUGGU");
-        } catch (Exception e) {
-        }
-        return null;
     }
 }
