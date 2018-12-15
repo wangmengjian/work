@@ -12,15 +12,15 @@ public class WorkAssess {
     private Date assessTime;
     private String deleteStatus;
     private String assessGrade;
-    private Integer assessDetailId;
+    private Integer scheduleDetailId;
     private String assessDesc;
 
-    public Integer getAssessDetailId() {
-        return assessDetailId;
+    public Integer getScheduleDetailId() {
+        return scheduleDetailId;
     }
 
-    public void setAssessDetailId(Integer assessDetailId) {
-        this.assessDetailId = assessDetailId;
+    public void setScheduleDetailId(Integer scheduleDetailId) {
+        this.scheduleDetailId = scheduleDetailId;
     }
 
     public Integer getId() {

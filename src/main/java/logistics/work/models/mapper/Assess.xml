@@ -78,7 +78,7 @@
                 and employee_id=#{employeeId}
             </if>
             <if test="finishStatus!=null">
-                and finish_status=#{finishStatus}
+                and wsd.finish_status like #{finishStatus}
             </if>
             <if test="workName!=null">
                 and wp.work_name like "%"#{workName}"%"
