@@ -10,11 +10,18 @@ public class WorkAssess {
     private Integer userId;
     private Integer assessUserId;
     private Date assessTime;
-    private Date assessBeginTime;
-    private Date assessEndTime;
-    private String assessGrade;
-    private String assessDesc;
     private String deleteStatus;
+    private String assessGrade;
+    private Integer assessDetailId;
+    private String assessDesc;
+
+    public Integer getAssessDetailId() {
+        return assessDetailId;
+    }
+
+    public void setAssessDetailId(Integer assessDetailId) {
+        this.assessDetailId = assessDetailId;
+    }
 
     public Integer getId() {
         return id;
@@ -46,22 +53,6 @@ public class WorkAssess {
 
     public void setAssessTime(Date assessTime) {
         this.assessTime = assessTime;
-    }
-
-    public Date getAssessBeginTime() {
-        return assessBeginTime;
-    }
-
-    public void setAssessBeginTime(Date assessBeginTime) {
-        this.assessBeginTime = assessBeginTime;
-    }
-
-    public Date getAssessEndTime() {
-        return assessEndTime;
-    }
-
-    public void setAssessEndTime(Date assessEndTime) {
-        this.assessEndTime = assessEndTime;
     }
 
     public String getAssessGrade() {

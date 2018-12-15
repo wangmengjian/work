@@ -40,8 +40,7 @@
         left join sys_config as sc
         on wa.work_from=sc.code
         <where>
-            emp_job not like '经理'
-            and wad.audit_status='unaudited'
+            wad.audit_status='unaudited'
             <if test="deptNumber!=null">
                 and dept_number like #{deptNumber}
             </if>
