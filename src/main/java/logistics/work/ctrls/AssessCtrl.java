@@ -2,13 +2,13 @@ package logistics.work.ctrls;
 
 import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
+import logistics.work.models.domain.User;
+import logistics.work.models.dto.WorkAssessDto;
 import logistics.work.services.AssessService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @RestController
@@ -44,6 +44,21 @@ public class AssessCtrl extends BaseCtrl {
         try{
             return this.send(assessService.queryWork(params));
         }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
+
+    /**
+     * 领导考核工作
+     * @param workAssessDto
+     * @return
+     */
+    @PostMapping("/assessWork")
+    public Result assessWork(WorkAssessDto workAssessDto, HttpSession session){
+        User user= (User) session.getAttribute("USER_SESSION");
+        try{
+            return this.send(assessService.assessWork(workAssessDto.getWorkAssessList(),user.getId()));
+        }catch(Exception e){
             return this.send(-1,"操作失败");
         }
     }

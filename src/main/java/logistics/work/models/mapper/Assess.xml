@@ -31,8 +31,9 @@
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
         <where>
+            assess_time is null
             <if test="assessGrade!=null">
-                assess_grade like #{assessGrade}
+                and assess_grade like #{assessGrade}
             </if>
             <if test="employeeId!=null">
                 and employee_id=#{employeeId}
@@ -50,7 +51,7 @@
                 and #{endTime}>finish_time
             </if>
         </where>
-        order by assess_time desc
+        order by finish_time desc
         limit #{pageStart},#{pageSize}
     </select>
     <select id="queryAllAssessCount" resultType="Integer" parameterType="java.util.Map">
@@ -71,8 +72,9 @@
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
         <where>
+            assess_time is null
             <if test="assessGrade!=null">
-                assess_grade like #{assessGrade}
+                and assess_grade like #{assessGrade}
             </if>
             <if test="employeeId!=null">
                 and employee_id=#{employeeId}
@@ -91,4 +93,11 @@
             </if>
         </where>
     </select>
+    <insert id="assessWork" parameterType="logistics.work.models.domain.WorkAssess">
+        insert into work_assess(assess_user_id,assess_time,assess_grade,assess_desc,schedule_detail_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.assessUserId},NOW(),#{item.assessGrade},#{item.assessDesc},#{item.scheduleDetailId})
+        </foreach>
+    </insert>
 </mapper>

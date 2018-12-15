@@ -1,6 +1,7 @@
 package logistics.work.services;
 
 import logistics.work.models.dao.AssessDao;
+import logistics.work.models.domain.WorkAssess;
 import logistics.work.models.dto.ShowAssessDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,18 @@ public class AssessService {
         result.put("total",showAssessDtoList.size());
         result.put("all",assessDao.queryAllAssessCount(params));
         return result;
+    }
+
+    /**
+     * 领导考核工作
+     * @param workAssessList
+     * @param assessUserId
+     * @return
+     */
+    public int assessWork(List<WorkAssess> workAssessList,Integer assessUserId){
+        for(WorkAssess workAssess:workAssessList){
+            workAssess.setAssessUserId(assessUserId);
+        }
+        return assessDao.assessWork(workAssessList);
     }
 }
