@@ -12,8 +12,6 @@ class store {
 
     @observable loading = false
 
-    @observable visible = false
-
     @observable workName = undefined
     @observable employeeId = undefined
     @observable employeeList = []
@@ -55,14 +53,6 @@ class store {
             this.pageSize = value
             this.actions.search(1, this.pageSize*1)
         }),
-
-        showModal: action(() => {
-            this.visible = true
-        }),
-
-        hideModal: action(() => {
-            this.visible = false
-        })
     }
 }
 

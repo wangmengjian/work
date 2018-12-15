@@ -47,6 +47,7 @@ class table extends Component {
                 scroll={{ y: 460 }}
                 loading={store.loading}
                 rowKey={"id"}
+                size={'middle'}
             />
         </Fragment>
     }

@@ -111,7 +111,7 @@ class table extends Component {
                 scroll={{ y: 460 }}
                 // rowSelection={}
                 // rowKey={"key"}
-                // size={"middle"}
+                size={"middle"}
             /><br/>
         </Fragment>
     }

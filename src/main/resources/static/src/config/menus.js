@@ -37,6 +37,14 @@ export default {
                 key:'work/leader/plan/access',
                 name:'日计划考核'
             }]
+        },{
+            key: 'work/personnel/normalItems',
+            icon: 'user',
+            name: '人事工作项查询',
+        },{
+            key: 'work/personnel/newItems',
+            icon: 'user',
+            name: '人事新增工作项',
         }
     ],
 

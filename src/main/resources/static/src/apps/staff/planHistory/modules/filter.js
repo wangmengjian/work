@@ -18,7 +18,7 @@ class filter extends Component {
 
     render () {
         const { getFieldDecorator } = this.props.form
-        return <Form hideRequiredMark={true}>
+        return <Form>
             <Row>
                 <Col className="gutter-row" span={6}>
                     <FormItem label={"工作项名称"} labelCol={{span: 7}}>

@@ -4,8 +4,8 @@ import axios from 'axios'
 import util from "../../../../common/util";
 
 class tableStore {
-    @observable fileData = []       // 上传列表源
-    @observable formData = []       // 总上传列表
+    // @observable fileData = []       // 上传列表源
+    // @observable formData = []       // 总上传列表
 
     @observable currentIndex = 1    // 当前所在分页
 
@@ -86,9 +86,9 @@ class tableStore {
                             this.date = response.data.result.data.date
                             this.submitStatus = response.data.result.data.submitStatus === 'submitted' ? true : false
                             this.id = response.data.result.data.id
-                            for (let i=0; i<this.dataSource.length; i++) {
-                                this.formData.push(0)
-                            }
+                            // for (let i=0; i<this.dataSource.length; i++) {
+                            //     this.formData.push(0)
+                            // }
                         } else {
                             message.success("今天没有待办的工作项")
                             this.date = null
@@ -147,18 +147,18 @@ class tableStore {
         }),
 
         // 拦截文件上传
-        beforeUploadHandle: action(file => {
-            // 允许的类型
-            const type = [ 'image/jpeg', 'image/png' ]
-            console.log(file)
-            if (type.indexOf(file.type) > -1) {
-                this.fileData = [...this.fileData, file]
-                return true
-            } else {
-                message.error("只能上传 jpg / png 格式的图片")
-                return false
-            }
-        }),
+        // beforeUploadHandle: action(file => {
+        //     // 允许的类型
+        //     const type = [ 'image/jpeg', 'image/png' ]
+        //     console.log(file)
+        //     if (type.indexOf(file.type) > -1) {
+        //         this.fileData = [...this.fileData, file]
+        //         return true
+        //     } else {
+        //         message.error("只能上传 jpg / png 格式的图片")
+        //         return false
+        //     }
+        // }),
 
         // 监听文件变化
         // fileChange: action(info => {
@@ -170,12 +170,12 @@ class tableStore {
         // }),
 
         // 文件列表的删除
-        fileRemove: action(file => {
-            const index = this.fileData.indexOf(file)
-            let newFileList = this.fileData.slice()
-            newFileList = newFileList.filter((value, inde_x) => inde_x != index);
-            this.fileData = newFileList
-        }),
+        // fileRemove: action(file => {
+        //     const index = this.fileData.indexOf(file)
+        //     let newFileList = this.fileData.slice()
+        //     newFileList = newFileList.filter((value, inde_x) => inde_x != index);
+        //     this.fileData = newFileList
+        // }),
 
         workEnd: action( values => {
             const { dataSource, isAlter } = this;
@@ -190,11 +190,10 @@ class tableStore {
             //     this.fileName = undefined
             // }
             // 如果上传了文件
-            if (this.fileData.length > 0) {
-                this.formData[isAlter] = this.fileData
-            }
-            this.fileData = []
-            console.log(this.formData)
+            // if (this.fileData.length > 0) {
+            //     this.formData[isAlter] = this.fileData
+            // }
+            // this.fileData = []
 
             dataSource[isAlter].finishStatus = values['finishStatus']
             dataSource[isAlter].finishTime = values['finishTime']
@@ -216,14 +215,14 @@ class tableStore {
             }
             this.dataSource = dataSource,
             this.count = dataSource.length + 1
-            this.formData.splice(key-1, 1)
+            // this.formData.splice(key-1, 1)
         }),
 
         // 清空表格
         resetTable: action(() => {
             this.dataSource = []
             this.count = 1
-            this.formData = []
+            // this.formData = []
         }),
 
         // 显示对话框

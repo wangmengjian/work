@@ -39,7 +39,7 @@ class table extends Component {
                 Pagination={false}
                 // rowSelection={}
                 // rowKey={}
-                // size={"middle"}
+                size={"middle"}
             />
             <Row type="flex" justify="end">
                 <Col>

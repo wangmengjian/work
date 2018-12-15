@@ -42,10 +42,10 @@ class table extends Component {
 
         return <Fragment>
             <Row>
-                <Col span={16}>
+                <Col span={17}>
                     <Button
                         type="primary"
-                        onClick={() => this.props.history.push('/work/employee/newItems')}
+                        onClick={actions.showModal}
                     >
                         新增工作项
                     </Button>
@@ -58,8 +58,7 @@ class table extends Component {
                 pagination={false}
                 rowKey={'id'}
                 loading={store.loading}
-                size="small"
-                scroll={{ y : 470 }}
+                size="middle"
                 bordered
             /><br/>
             <Row type="flex" justify="end">

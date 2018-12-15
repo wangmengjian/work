@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {Provider, observer} from 'mobx-react'
 import store from './stores/tableStore'
 import Table from './modules/table'
+import Modal from './modules/modal'
 
 @observer
 class NormalItems extends Component {
@@ -32,6 +33,7 @@ class NormalItems extends Component {
 
                 <div className="content">
                     <Table currentIndex={currentIndex}/>
+                    <Modal/>
                 </div>
             </Fragment>
         </Provider>

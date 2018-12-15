@@ -34,8 +34,7 @@ class modal extends Component {
         form.validateFields((err, values) => {
                 if (!err) {
                     store.reason = values.reason
-                    store.actions.disagree(form)
-                    // form.resetFields()
+                    store.actions.submit(form)
                 }
             },
         );
@@ -50,13 +49,13 @@ class modal extends Component {
             title="填写不通过原因"
             visible={store.visible}
             onCancel={actions.hideModal}
-            style={{width: 230, height: 150}}
+            width={400}
             footer={[
-                <Button onClick={actions.hideModal}>取消</Button>,
-                <Button type={"primary"} onClick={this.pushToTable} loading={store.loadingDisButton}>提交</Button>,
+                <Button key="cancel" onClick={actions.hideModal}>取消</Button>,
+                <Button key="submit" type={"primary"} onClick={this.pushToTable} loading={store.loadingDisButton}>提交</Button>,
             ]}
         >
-            <Form hideRequiredMark={true}>
+            <Form>
                 <FormItem label={"原因"} labelCol={{span: 6}}>
                     {getFieldDecorator('reason', {
                         rules: [{ required: true, message: '请选择原因' }]

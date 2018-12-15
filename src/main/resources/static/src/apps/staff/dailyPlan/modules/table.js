@@ -33,11 +33,11 @@ class table extends Component {
             } else {
                 finishStatus = 'uncompleted'
             }
-            if (store.formData[i] !== 0) {
-                for (let j=0; j < store.formData[i].length; j++) {
-                    form.append('workScheduleDetailDtoList['+i+'].pictures', store.formData[i][j])
-                }
-            }
+            // if (store.formData[i] !== 0) {
+            //     for (let j=0; j < store.formData[i].length; j++) {
+            //         form.append('workScheduleDetailDtoList['+i+'].pictures', store.formData[i][j])
+            //     }
+            // }
             form.append('workScheduleDetailDtoList['+i+'].id', dataSource[i].id)
             form.append('workScheduleDetailDtoList['+i+'].finishStatus', finishStatus)
             if (dataSource[i].finishTime !== null && dataSource[i].finishTime !== undefined) {
@@ -86,13 +86,12 @@ class table extends Component {
         // store.fileData = []
         store.actions.showModal()
         store.isAlter = index
-        store.fileData = store.formData[store.isAlter]
+        // store.fileData = store.formData[store.isAlter]
     }
 
     render() {
         const store = this.props.store
         const date = new Date();
-        const today = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
 
         const columns = [
             {   title: '#', dataIndex: 'key', width: 50, render: (text, record, index) => {
@@ -114,7 +113,7 @@ class table extends Component {
                                         '暂无指导书' : <a href={record.workInstructor}>查看指导书</a>
                                 }&nbsp;&nbsp;
                                 {
-                                    store.submitStatus ?
+                                    !store.submitStatus ?
                                         <a href="javascript:;" onClick={() => this.workEnd(record, index)}>填写完成情况</a> : null
                                 }
                             </Fragment>
@@ -151,8 +150,8 @@ class table extends Component {
                 pagination={false}
                 loading={store.loading}
                 rowKey={"id"}
-                size="small"
-                scroll={{ y : 470 }}
+                size="middle"
+                scroll={{ y : 460 }}
                 bordered
             />
         </Fragment>

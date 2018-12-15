@@ -48,7 +48,7 @@ class table extends Component {
                     <FormItem>
                         <Button
                             type={'primary'}
-                            onClick={actions.agree}
+                            onClick={actions.submit}
                             disabled={store.selectedRowKeys.length > 0 ? false : true}
                             loading={store.loadingArgButton}
                         >
@@ -89,17 +89,6 @@ class table extends Component {
                         pageSize={store.pageSize}
                     />
                 </Col>
-                {/*<Col className="gutter-row" span={3}>*/}
-                {/*<span>每页条数:&nbsp;&nbsp;&nbsp;</span>*/}
-                {/*<Select*/}
-                {/*defaultValue={store.pageSize}*/}
-                {/*onChange={value => actions.handlePageSizeChange(value)}*/}
-                {/*>*/}
-                {/*<Option key={10}>10</Option>*/}
-                {/*<Option key={20}>20</Option>*/}
-                {/*<Option key={30}>30</Option>*/}
-                {/*</Select>*/}
-                {/*</Col>*/}
             </Row>
         </Fragment>
     }

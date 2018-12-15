@@ -19,7 +19,7 @@ class modal extends Component {
             visible={visible}
             onOk={this.pushToTable}
             onCancel={actions.hideModal}
-            style={{width: 360, height: 300}}
+            style={{height: 300}}
         >
 
         </Modal>

@@ -19,6 +19,10 @@ import NewItemsLeader from './apps/leader/newItems/newItems'
 import NormalItemsLeader from './apps/leader/normalItems/normalItems'
 import menus from './config/menus'
 
+// 人事
+import NormalItemsPersonnel from './apps/personnel/normalItems/normalItems'
+import NewItemsPersonnel from './apps/personnel/newItems/newItems'
+
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -65,7 +69,7 @@ class SideMenu extends Component {
         //defaultSelectedKeys	初始选中的菜单项 key 数组
         return (
             <Menu
-                mode='inline'
+                // mode='inline'
                 theme="dark"
                 onSelect = {this.navigate}
                 defaultOpenKeys={[getOpenKeys()]}
@@ -123,6 +127,10 @@ class Work extends Component {
                                     <Route path="/work/leader/workItems/dailyUnfinished"><DailyUnfinished /></Route>
                                     <Route path="/work/leader/workItems/itemsReview"><ItemsReview /></Route>
                                     <Route path="/work/leader/plan/dailyPlan"><DailyPlanLeader /></Route>
+
+                                    {/* 人事 */}
+                                    <Route path="/work/personnel/normalItems"><NormalItemsPersonnel /></Route>
+                                    <Route path="/work/personnel/newItems"><NewItemsPersonnel /></Route>
                                 </Switch>
                             </div>
                         </Content>

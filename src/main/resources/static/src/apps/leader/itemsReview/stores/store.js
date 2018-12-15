@@ -1,6 +1,6 @@
 import {observable, action } from 'mobx';
 import axios from "axios";
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 
 class store {
     @observable workName = undefined    // 查询条件：工作项名称
@@ -26,51 +26,55 @@ class store {
 
     actions = {
 
-        agree: action(() => {
-            this.loadingArgButton = true
-            axios({
-                method: 'post',
-                url: '/api/work/audit/leader/agreeAuditWork',
-                data: this.selectedRowKeys
-            })
-                .then(response => {
-                    if (response.data.status.code === 1){
-                        message.success("审批提交成功")
-                        this.loadingArgButton = false
-                        this.actions.search(1, 10)
-                    } else {
-                        message.error("提交失败: " + response.data.status.message)
-                    }
-                })
-        }),
+        submit: action((form) => {
+            if (this.reason !== undefined) {
+                this.loadingDisButton = true
+            } else {
+                this.loadingArgButton = true
+            }
 
-        disagree: action((form) => {
-            let data = []
-            this.loadingDisButton = true
-
+            const object = new FormData()
             if (this.reason !== undefined) {
                 for (let i in this.selectedRowKeys) {
-                    let object = {}
-                    object.auditItemId = this.selectedRowKeys[i]
-                    object.auditFailReason = this.reason
-                    data.push(object)
+                    object.append('workAuditDetailList['+i+'].auditItemId', this.selectedRowKeys[i])
+                    object.append('workAuditDetailList['+i+'].auditFailReason', this.reason)
+                    object.append('workAuditDetailList['+i+'].auditStatus', 'disagree')
+                }
+            } else {
+                for (let i in this.selectedRowKeys) {
+                    object.append('workAuditDetailList['+i+'].auditItemId', this.selectedRowKeys[i])
+                    object.append('workAuditDetailList['+i+'].auditStatus', 'agree')
                 }
             }
 
+            console.log(object)
+
             axios({
                 method: 'post',
-                url: '/api/work/audit/leader/disagreeAuditWork',
-                data: data
+                url: '/api/work/audit/leader/auditWork',
+                data: object
             })
                 .then(response => {
                     if (response.data.status.code === 1){
                         this.loadingDisButton = false
-                        this.actions.hideModal()
-                        form.resetFields()
-                        message.success("审批提交成功")
+                        this.loadingArgButton = false
                         this.actions.search(1, 10)
+                        this.reason = undefined
+                        this.actions.hideModal()
+                        if (this.reason !== undefined) {
+                            form.resetFields()
+                        }
+                        Modal.success({
+                            title: '提交成功',
+                            content: response.data.status.message,
+                        });
                     } else {
-                        message.error("提交失败: " + response.data.status.message)
+                        Modal.error({
+                            title: '提交失败',
+                            content: response.data.status.message,
+                        });
+                        this.loadingDisButton = false
+                        this.loadingArgButton = false
                     }
                 })
         }),

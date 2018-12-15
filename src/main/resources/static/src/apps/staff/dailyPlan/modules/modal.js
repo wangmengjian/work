@@ -24,15 +24,15 @@ class modal extends Component {
         const { getFieldDecorator } = this.props.form
         const store = this.props.store
         const { visible, actions, fileData } = store
-        const props = {
-            action: '/api/work/schedule/employee/submitSchedule',
-            beforeUpload: actions.beforeUploadHandle,
-            fileList: fileData,
-            onChange: actions.fileChange,
-            onRemove: actions.fileRemove,
-            listType: 'picture',
-            className: 'upload-list-inline',
-        }
+        // const props = {
+        //     action: '/api/work/schedule/employee/submitSchedule',
+        //     beforeUpload: actions.beforeUploadHandle,
+        //     fileList: fileData,
+        //     onChange: actions.fileChange,
+        //     onRemove: actions.fileRemove,
+        //     listType: 'picture',
+        //     className: 'upload-list-inline',
+        // }
 
         return <Modal
             title="填写完成信息"
@@ -63,7 +63,7 @@ class modal extends Component {
                             </FormItem>
                             <FormItem label={"心得"} labelCol={{span: 6}}>
                                 {getFieldDecorator('finishFeedback')(
-                                    <TextArea style={{width: 220, height: 100}}/>
+                                    <TextArea autosize={{ minRows: 2, maxRows: 6 }} style={{ width: 280 }}/>
                                 )}
                             </FormItem>
                             <FormItem label={"完成时间"} labelCol={{span: 6}}>
@@ -73,15 +73,15 @@ class modal extends Component {
                                     <TimePicker format="HH:mm"/>
                                 )}
                             </FormItem>
-                            <FormItem labelCol={{span: 6}}>
-                                {getFieldDecorator('file')(
-                                    <Upload {...props}>
-                                        {
-                                            <Button><Icon type="upload" /> 上传工作照片</Button>
-                                        }
-                                    </Upload>
-                                )}
-                            </FormItem>
+                            {/*<FormItem labelCol={{span: 6}}>*/}
+                                {/*{getFieldDecorator('file')(*/}
+                                    {/*<Upload {...props}>*/}
+                                        {/*{*/}
+                                            {/*<Button><Icon type="upload" /> 上传工作照片</Button>*/}
+                                        {/*}*/}
+                                    {/*</Upload>*/}
+                                {/*)}*/}
+                            {/*</FormItem>*/}
                         </div>
                     )
                 }

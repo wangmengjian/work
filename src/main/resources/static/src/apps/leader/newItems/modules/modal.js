@@ -38,9 +38,9 @@ class modal extends Component {
             visible={visible}
             onOk={this.pushToTable}
             onCancel={actions.hideModal}
-            style={{width: 360, height: 300}}
+            style={{height: 300}}
         >
-            <Form hideRequiredMark={true}>
+            <Form>
                 <FormItem label={"工作项类型"} labelCol={{span: 6}}>
                     {getFieldDecorator('workFrom', {
                         rules: [{ required: true, message: '请输入名称' }],
@@ -63,7 +63,7 @@ class modal extends Component {
                     {getFieldDecorator('workContent', {
                         rules: [{ required: true, message: '请输入内容' }],
                     })(
-                        <TextArea style={{width: 280, height: 100}}/>
+                        <TextArea autosize={{ minRows: 2, maxRows: 6 }} style={{ width: 280 }}/>
                     )}
                 </FormItem>
                 <FormItem label={"标准工作时间"} labelCol={{span: 6}}>
