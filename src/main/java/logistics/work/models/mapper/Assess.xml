@@ -41,7 +41,7 @@
                 and finish_status=#{finishStatus}
             </if>
             <if test="workName!=null">
-                and wsd.work_name like "%"#{workName}"%"
+                and wp.work_name like "%"#{workName}"%"
             </if>
             <if test="beginTime!=null">
                 and ws.date>#{beginTime}
@@ -81,7 +81,7 @@
                 and finish_status=#{finishStatus}
             </if>
             <if test="workName!=null">
-                and wsd.work_name like "%"#{workName}"%"
+                and wp.work_name like "%"#{workName}"%"
             </if>
             <if test="beginTime!=null">
                 and ws.date>#{beginTime}

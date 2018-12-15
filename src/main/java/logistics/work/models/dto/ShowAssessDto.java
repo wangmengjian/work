@@ -1,5 +1,8 @@
 package logistics.work.models.dto;
 
+/**
+ * 显示考核的工作
+ */
 public class ShowAssessDto {
     private Integer id;
     private String finishStatus;

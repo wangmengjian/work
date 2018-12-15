@@ -7,5 +7,5 @@ import java.util.Map;
 
 public interface AssessDao {
     public List<ShowAssessDto> queryAllAssess(Map<String,Object> params);
-    public List<ShowAssessDto> queryAllAssessCount(Map<String,Object> params);
+    public int queryAllAssessCount(Map<String,Object> params);
 }
