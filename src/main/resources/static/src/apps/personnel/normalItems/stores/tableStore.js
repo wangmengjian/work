@@ -5,17 +5,23 @@ import { message, Modal } from 'antd';
 class tableStore {
     // 分页
     @observable current = 1
-    @observable pageSize = 10
+    @observable pageSize = 8
+
+    @observable fileData = []   // 上传列表源
 
     // 表格源数组
     @observable dataSource = []
     @observable all = undefined
 
     @observable loading = false
+    @observable loadingButton = false
 
+    @observable id = undefined
     @observable workName = undefined
     @observable employeeId = undefined
     @observable employeeList = []
+
+    @observable visible = false
 
     actions = {
         search: action((pageNumber) => {
@@ -42,7 +48,7 @@ class tableStore {
         }),
 
         submit: action((values, form) => {
-            this.loadingNewItem = true
+            this.loadingButton = true
             const object = new FormData()
 
             if (this.fileData.length > 0) {
@@ -73,7 +79,46 @@ class tableStore {
                             content: response.data.status.message,
                         });
                     }
-                    this.loadingNewItem = false
+                    this.loadingButton = false
+                })
+        }),
+
+        alter: action((values, form) => {
+            this.loadingButton = true
+            const data = new FormData()
+
+            data.append("workMinutes", values['workMinutes']);
+            data.append("workName", values['workContent']);
+            data.append("workContent", values['workContent']);
+            data.append("id", this.id);
+
+            // 上传了文件
+            if (this.fileData.length > 0) {
+                data.append("file", this.fileData[0]);
+            }
+
+            axios({
+                method: 'post',
+                url: '/api/work/schedule/personnel/updateWork',
+                data: data
+            })
+                .then(response => {
+                    if (response.data.status.code === 1){
+                        Modal.success({
+                            title: '提交成功',
+                            content: response.data.status.message,
+                        })
+                        this.actions.hideModal()
+                        this.fileData = []
+                        form.resetFields()
+                        this.actions.search(1)
+                    } else {
+                        Modal.error({
+                            title: '提交失败',
+                            content: response.data.status.message,
+                        });
+                    }
+                    this.loadingButton = false
                 })
         }),
 

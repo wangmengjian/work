@@ -44,10 +44,10 @@ class table extends Component {
                 dataSource={store.dataSource}
                 columns={columns}
                 pagination={false}
-                scroll={{ y: 460 }}
                 loading={store.loading}
                 rowKey={"id"}
-                size={'middle'}
+                // scroll={{ y: 460 }}
+                // size={'middle'}
             />
         </Fragment>
     }

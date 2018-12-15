@@ -51,11 +51,11 @@ class table extends Component {
                 columns={columns}
                 rowSelection={rowSelection}
                 pagination={false}
-                rowKey={'id'}
                 loading={store.loading}
-                size={"middle"}
-                scroll={{ y : 460 }}
-                bordered
+                rowKey={'id'}
+                // size={"middle"}
+                // scroll={{ y : 460 }}
+                // bordered
             />
             {/*<Row>*/}
                 {/*<Col className="gutter-row" span={21}>*/}

@@ -2,6 +2,8 @@ import React, {Component, Fragment} from 'react';
 import {Provider, observer} from 'mobx-react'
 import store from './stores/tableStore'
 import Table from './modules/table'
+import Modal from './modules/modal'
+import { Form } from 'antd'
 
 @observer
 class NormalItems extends Component {
@@ -15,13 +17,14 @@ class NormalItems extends Component {
     render() {
         const currentIndex = store.currentIndex
 
-        return <Provider store={store}>
+        return <Provider store={store} form={this.props.form}>
             <Fragment>
                 <div className="content">
                     <Table currentIndex={currentIndex}/>
+                    <Modal />
                 </div>
             </Fragment>
         </Provider>
     }
 }
-export default NormalItems
+export default Form.create()(NormalItems)

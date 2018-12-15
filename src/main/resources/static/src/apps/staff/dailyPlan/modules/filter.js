@@ -60,9 +60,6 @@ class filter extends Component {
                         <Button type={"primary"} onClick={this.handleSearch}>查询</Button>
                     </FormItem>
                 </Col>
-                {/*<Col className="gutter-row" span={2}>*/}
-                    {/*<Button onClick={() => this.props.form.resetFields()}>重置</Button>*/}
-                {/*</Col>*/}
             {/*</Row>*/}
         </Form>
     }

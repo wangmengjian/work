@@ -79,13 +79,6 @@ class search extends Component {
                         </Button>
                     </FormItem>
                 </Col>
-                <Col className="gutter-row" span={2}>
-                    <FormItem>
-                        <Button onClick={this.reset}>
-                            重置
-                        </Button>
-                    </FormItem>
-                </Col>
             {/*</Row>*/}
         </Fragment>
     }

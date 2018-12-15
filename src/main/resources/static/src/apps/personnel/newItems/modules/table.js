@@ -85,14 +85,17 @@ class table extends Component {
                 }},
             {   title: '名称', dataIndex: 'workName', width: 150},
             {   title: '内容', dataIndex: 'workContent', width: 180},
-            {   title: '作业指导书', dataIndex: 'file', width: 200},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 100, render: (text) => {
                     return <span>{text}&nbsp;分钟</span>
                 }},
-            {   title: '选项', dataIndex: 'operation', width: 80, render: (text, record) => {
+            {   title: '选项', dataIndex: 'operation', width: 180, render: (text, record) => {
                     return (
                         dataSource.length >= 1 ? (
                             <Fragment>
+                                {
+                                    ( record.file === null || record.file === '' || record.file === undefined ) ?
+                                        null : <a href={record.file}>查看指导书&nbsp;&nbsp;</a>
+                                }
                                 <a href="javascript:;" onClick={() => actions.handleDelete(record.key)}>删除</a>&nbsp;&nbsp;
                                 <a href="javascript:;" onClick={() => this.handleAlter(record)}>修改</a>
                             </Fragment>
@@ -124,10 +127,9 @@ class table extends Component {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={false}
-                scroll={{ y: 460 }}
-                // rowSelection={}
                 rowKey={"key"}
-                size={"middle"}
+                // scroll={{ y: 460 }}
+                // size={"middle"}
             /><br/>
         </Fragment>
     }

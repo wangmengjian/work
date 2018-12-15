@@ -56,10 +56,10 @@ class table extends Component {
                 dataSource={store.dataSource}
                 columns={columns}
                 pagination={false}
-                rowKey={'id'}
                 loading={store.loading}
-                size="middle"
-                bordered
+                rowKey={'id'}
+                // size="middle"
+                // bordered
             /><br/>
             <Row type="flex" justify="end">
                 <Col>

@@ -37,9 +37,6 @@ class filter extends Component {
                 <Col className="gutter-row" span={2}>
                     <Button type={"primary"} onClick={this.handleSearch}>查询</Button>
                 </Col>
-                <Col className="gutter-row" span={2}>
-                    <Button onClick={() => this.props.form.resetFields()}>重置</Button>
-                </Col>
             </Row>
         </Form>
     }

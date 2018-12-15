@@ -58,11 +58,11 @@ class sonTable extends Component {
                 columns={columns}
                 rowSelection={rowSelection}
                 pagination={false}
-                rowKey={'id'}
                 loading={store.loadingButton}
-                size={"middle"}
-                scroll={{ y : 400 }}
-                bordered
+                rowKey={'id'}
+                // size={"middle"}
+                // scroll={{ y : 400 }}
+                // bordered
             />
         </Modal>
     }

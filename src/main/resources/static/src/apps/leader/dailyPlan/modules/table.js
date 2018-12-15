@@ -72,9 +72,9 @@ class table extends Component {
                 rowSelection={rowSelection}
                 loading={store.loading}
                 rowKey={'id'}
-                size={"middle"}
-                scroll={{ y : 460 }}
-                bordered
+                // scroll={{ y : 460 }}
+                // size={"middle"}
+                // bordered
             /><br/>
             <Row type='flex' justify='end'>
                 <Col>

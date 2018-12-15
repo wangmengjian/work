@@ -76,8 +76,8 @@ class table extends Component {
                 pagination={false}
                 loading={store.loading}
                 rowKey={'id'}
-                size={"middle"}
-                scroll={{ y : 460 }}
+                // size={"middle"}
+                // scroll={{ y : 460 }}
             /><br/>
             <Row type="flex" justify="end">
                 <Col>

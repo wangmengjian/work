@@ -119,10 +119,9 @@ class table extends Component {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={false}
-                scroll={{ y: 460 }}
-                // rowSelection={}
                 rowKey={"key"}
-                size={"middle"}
+                // scroll={{ y: 460 }}
+                // size={"middle"}
             /><br/>
         </Fragment>
     }

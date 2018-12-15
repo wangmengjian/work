@@ -6,12 +6,32 @@ import Search from './search'
 
 const Option = Select.Option
 
-@inject('store')
+@inject('store', 'form')
 @observer
 class table extends Component {
 
     componentDidMount() {
         this.props.store.actions.search(1)
+    }
+
+    handleAlter = (record, index) => {
+        const { form, store } = this.props
+        console.log(record)
+        form.setFieldsValue({
+            workFrom: record.workFrom === 'w3' ? '常规工作项' : '临时工作项',
+            workName: record.workName,
+            workContent: record.workContent,
+            workMinutes: record.workMinutes,
+            // file: record.workInstructor
+        })
+        store.fileData = []
+        store.id = store.dataSource[index].id
+        // if (store.formData.length > 0) {
+        //     if (store.formData[record.key-1] !== null) {
+        //         store.fileData.push(store.formData[record.key-1])
+        //     }
+        // }
+        store.actions.showModal()
     }
 
     render() {
@@ -22,16 +42,20 @@ class table extends Component {
                     return (store.current-1)*(store.pageSize)+index+1
                 }},
             {   title: '员工姓名', dataIndex: 'employeeName', width: 80},
-            {   title: '类型', dataIndex: 'workFrom', width: 120},
             {   title: '名称', dataIndex: 'workName', width: 150},
             {   title: '内容', dataIndex: 'workContent', width: 180},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 100, render: (text) => {
                     return <span>{text}&nbsp;分钟</span>
                 }},
-            {   title: '选项', dataIndex: 'operation', width: 150, render: (text, record) => {
+            {   title: '选项', dataIndex: 'operation', width: 150, render: (text, record, index) => {
                     return (
-                        record.workInstructor === null || record.workInstructor === '' ?
-                        '暂无指导书' : <a href={record.workInstructor}>查看指导书</a>
+                        <Fragment>
+                            {
+                                record.workInstructor === null || record.workInstructor === '' ?
+                                    null : <a href={record.workInstructor}>查看指导书&nbsp;&nbsp;</a>
+                            }
+                            <a href="javascript:;" onClick={() => this.handleAlter(record, index)}>修改</a>
+                        </Fragment>
                     )
             }}
         ];
@@ -52,20 +76,20 @@ class table extends Component {
                 dataSource={store.dataSource}
                 columns={columns}
                 pagination={false}
-                rowKey={'id'}
                 loading={store.loading}
-                size="middle"
-                scroll={{ y : 470 }}
-                bordered
+                rowKey={'id'}
+                // size="middle"
+                // scroll={{ y : 470 }}
+                // bordered
             /><br/>
             <Row type="flex" justify="end">
                 <Col>
                     <Pagination
                         current={store.current}
                         onChange={ page => actions.search(page, store.pageSize)}
-                        total={store.all}
-                        showTotal={total => `共有 ${total} 条记录`}
                         pageSize={store.pageSize}
+                        total={store.all}
+                        // showTotal={total => `共有 ${total} 条记录`}
                     />
                 </Col>
             </Row>

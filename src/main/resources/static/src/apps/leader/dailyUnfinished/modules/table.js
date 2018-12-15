@@ -37,9 +37,8 @@ class table extends Component {
                 dataSource={store.dataSource}
                 columns={columns}
                 Pagination={false}
-                // rowSelection={}
                 // rowKey={}
-                size={"middle"}
+                // size={"middle"}
             />
             <Row type="flex" justify="end">
                 <Col>

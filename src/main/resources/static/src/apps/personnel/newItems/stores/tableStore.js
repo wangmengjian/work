@@ -95,7 +95,7 @@ class tableStore {
             }
 
             this.fileData = []
-            console.log(newData)
+
             // isAlter 有值，意味着是通过修改表格触发的该函数
             if (isAlter === undefined) {
                 this.dataSource = [...dataSource, newData]
