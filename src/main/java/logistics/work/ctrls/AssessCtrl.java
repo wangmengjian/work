@@ -64,6 +64,19 @@ public class AssessCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
+
+    /**
+     * 员工查询工作审核情况
+     * @param workName
+     * @param assessGrade
+     * @param beginTime
+     * @param endTime
+     * @param pageNumber
+     * @param pageSize
+     * @param finishStatus
+     * @param workFrom
+     * @return
+     */
     @GetMapping("/employee/queryAssess")
     public Result employeeQueryAssess(@RequestParam(value = "workName",required = false)String workName,
                                       @RequestParam(value = "assessGrade",required = false)String assessGrade,

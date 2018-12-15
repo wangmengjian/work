@@ -109,7 +109,7 @@
                 user_id=#{employeeId}
             </if>
             <if test="date!=null">
-                and `date`=#{date}
+                and date_format(`date`,'%e %b %y') = date_format(#{date}, '%e %b %y')
             </if>
         </where>
     </select>
