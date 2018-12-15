@@ -7,7 +7,7 @@
             resultType="logistics.work.models.dto.WorkScheduleDto">
         select *
         from work_schedule
-        where user_id=#{userId} and `date`=#{date}
+        where user_id=#{userId} and date_format(`date`,'%e %b %y') = date_format(#{date}, '%e %b %y')
     </select>
     <select id="queryWorkScheduleDetailByScheduleId" parameterType="Integer"
             resultType="logistics.work.models.dto.WorkScheduleDetailDto">
