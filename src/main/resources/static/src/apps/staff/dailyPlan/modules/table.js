@@ -150,8 +150,8 @@ class table extends Component {
                 pagination={false}
                 loading={store.loading}
                 rowKey={"id"}
+                scroll={{ y : 460 }}
                 // size="middle"
-                // scroll={{ y : 460 }}
                 // bordered
             />
         </Fragment>

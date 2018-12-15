@@ -2,14 +2,16 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Link, Route, Switch, withRouter } from 'react-router-dom';
 import { Layout, Menu, Icon, Divider } from 'antd';
+import menus from './config/menus'
 
 // 员工
 import NormalItems from './apps/staff/normalItems/normalItems'
 import NewItems from './apps/staff/newItems/newItems'
-import NewItem from './apps/staff/newItem/newItem'
 import DailyPlan from './apps/staff/dailyPlan/dailyPlan'
 import PlanHistory from './apps/staff/planHistory/planHistory'
 import NewPlan from './apps/staff/newPlan/newPlan'
+import MyAssess from './apps/staff/myAssess/myAssess'
+
 
 // 领导
 import DailyPlanLeader from './apps/leader/dailyPlan/dailyPlan'
@@ -17,7 +19,7 @@ import DailyUnfinished from './apps/leader/dailyUnfinished/dailyUnfinished'
 import ItemsReview from './apps/leader/itemsReview/itemsReview'
 import NewItemsLeader from './apps/leader/newItems/newItems'
 import NormalItemsLeader from './apps/leader/normalItems/normalItems'
-import menus from './config/menus'
+import PlanReview from './apps/leader/planReview/planReview'
 
 // 人事
 import NormalItemsPersonnel from './apps/personnel/normalItems/normalItems'
@@ -120,6 +122,7 @@ class Work extends Component {
                                     <Route path="/work/employee/dailyPlan"><DailyPlan /></Route>
                                     <Route path="/work/employee/planHistory"><PlanHistory /></Route>
                                     <Route path="/work/employee/newPlan"><NewPlan /></Route>
+                                    <Route path="/work/employee/myAssess"><MyAssess /></Route>
 
                                     {/* 领导 */}
                                     <Route path="/work/leader/workItems/normalItems"><NormalItemsLeader /></Route>
@@ -127,6 +130,7 @@ class Work extends Component {
                                     <Route path="/work/leader/workItems/dailyUnfinished"><DailyUnfinished /></Route>
                                     <Route path="/work/leader/workItems/itemsReview"><ItemsReview /></Route>
                                     <Route path="/work/leader/plan/dailyPlan"><DailyPlanLeader /></Route>
+                                    <Route path="/work/leader/plan/access"><PlanReview /></Route>
 
                                     {/* 人事 */}
                                     <Route path="/work/personnel/normalItems"><NormalItemsPersonnel /></Route>

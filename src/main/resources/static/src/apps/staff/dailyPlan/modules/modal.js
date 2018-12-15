@@ -63,7 +63,7 @@ class modal extends Component {
                             </FormItem>
                             <FormItem label={"心得"} labelCol={{span: 6}}>
                                 {getFieldDecorator('finishFeedback')(
-                                    <TextArea autosize={{ minRows: 2, maxRows: 6 }} style={{ width: 280 }}/>
+                                    <TextArea autosize={{ minRows: 2, maxRows: 6 }} style={{ width: 220 }}/>
                                 )}
                             </FormItem>
                             <FormItem label={"完成时间"} labelCol={{span: 6}}>

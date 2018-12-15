@@ -10,6 +10,10 @@ export default {
             icon: 'team',
             name: '我的工作计划',
         },{
+            key:'work/employee/myAssess',
+            icon: 'user',
+            name:'我的考核'
+        },{
             key: 'work/leader/workItems',
             icon: 'user',
             name: '工作项管理',
@@ -33,10 +37,11 @@ export default {
             menus:[{
                 key:'work/leader/plan/dailyPlan',
                 name:'查看员工日计划'
-            },{
-                key:'work/leader/plan/access',
-                name:'日计划考核'
             }]
+        },{
+            key:'work/leader/plan/access',
+            icon: 'user',
+            name:'部门考核'
         },{
             key: 'work/personnel/normalItems',
             icon: 'user',

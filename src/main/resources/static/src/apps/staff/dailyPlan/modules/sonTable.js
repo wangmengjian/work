@@ -45,7 +45,7 @@ class sonTable extends Component {
                 <Button
                     key="submit"
                     type={'primary'}
-                    onClick={() => actions.submit()}
+                    onClick={actions.submit}
                     loading={store.loadingNewPlanButton}
                     disabled={store.selectedRowKeys.length > 0 ? false : true}
                 >

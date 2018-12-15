@@ -67,6 +67,7 @@ class store {
                 workName: values['workName'],
                 workContent: values['workContent'],
                 workMinutes: values['workMinutes'],
+                employee: values['employee'],
                 workFrom: this.workFrom[count-1].substring(2)
             };
             // 如果当前工作项上传了文件

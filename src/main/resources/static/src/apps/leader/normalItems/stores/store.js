@@ -6,7 +6,7 @@ class store {
     // 分页
     @observable all = undefined
     @observable current = 1
-    @observable pageSize = 10
+    @observable pageSize = 8
     // 表格源数组
     @observable dataSource = []
 

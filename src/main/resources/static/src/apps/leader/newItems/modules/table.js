@@ -49,7 +49,8 @@ class table extends Component {
             workFrom: record.workFrom === '常规工作项' ? 'w3常规工作项':'w2临时工作项',
             workName: record.workName,
             workContent: record.workContent,
-            workMinutes: record.workMinutes
+            workMinutes: record.workMinutes,
+            employee: record.employee
         })
         store.fileData = []
         if (store.formData.length > 0) {
@@ -80,6 +81,7 @@ class table extends Component {
             {   title: '内容', dataIndex: 'workContent', width: 150},
             {   title: '作业指导书', dataIndex: 'file', width: 120},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 120},
+            {   title: '执行人', dataIndex: 'employee', width: 120},
             {   title: '选项', dataIndex: 'operation', width: 80, render: (text, record) => {
                     return (
                         dataSource.length >= 1 ? (
@@ -98,7 +100,11 @@ class table extends Component {
                     <Button type={"primary"} onClick={this.newItem}>新增</Button>
                 </Col>
                 <Col className="gutter-row" span={20}>
-                    <Button type={"primary"} onClick={this.submit} loading={store.loading}>提交</Button>
+                    <Button
+                        type={"primary"}
+                        onClick={this.submit}
+                        loading={store.loading}
+                        disabled={store.dataSource.length > 0 ? false : true}>提交</Button>
                 </Col>
                 <Col className="gutter-row" span={2}>
                     <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>

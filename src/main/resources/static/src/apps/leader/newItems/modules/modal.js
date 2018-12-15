@@ -12,7 +12,7 @@ class modal extends Component {
 
     pushToTable = () => {
         const { form, store } = this.props
-        form.validateFields(['workFrom','workName','workContent','workMinutes'], (err, values) => {
+        form.validateFields((err, values) => {
                 if (!err) {
                     store.actions.handleAdd(values)
                     form.resetFields()
@@ -85,7 +85,7 @@ class modal extends Component {
                     &nbsp;&nbsp;分钟
                 </FormItem>
                 <FormItem label={"员工姓名"} labelCol={{span: 6}}>
-                    {getFieldDecorator('workName', {
+                    {getFieldDecorator('employee', {
                         rules: [{ required: true, message: '请选择员工' }],
                     })(
                         <Select

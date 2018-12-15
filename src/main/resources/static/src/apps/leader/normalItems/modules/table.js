@@ -10,7 +10,7 @@ const Option = Select.Option
 class table extends Component {
 
     componentDidMount() {
-        this.props.store.actions.search(1, 10)
+        this.props.store.actions.search(1, this.props.store.pageSize)
     }
 
     render() {
@@ -42,8 +42,11 @@ class table extends Component {
 
         return <Fragment>
             <Row>
-                <Col span={8}>
+                <Col span={2}>
                     <Button type={'primary'} disabled={store.selectedRowKeys.length > 0 ? false : true}>删除</Button>
+                </Col>
+                <Col span={6}>
+                    <Button type={'primary'} disabled={store.selectedRowKeys.length > 0 ? false : true}>安排工作</Button>
                 </Col>
                 <Search/>
             </Row>
