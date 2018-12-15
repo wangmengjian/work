@@ -42,4 +42,18 @@ public class AssessService {
         }
         return assessDao.assessWork(workAssessList);
     }
+
+    /**
+     * 员工查询所有工作考核情况
+     * @param params
+     * @return
+     */
+    public Map<String,Object> employeQueryAllAssess(Map<String,Object> params){
+        List<ShowAssessDto> showAssessDtoList=assessDao.employeeQueryAllAssess(params);
+        Map<String,Object> result=new HashMap<>();
+        result.put("data",showAssessDtoList);
+        result.put("total",showAssessDtoList.size());
+        result.put("all",assessDao.employeeQueryAllAssessCount(params));
+        return result;
+    }
 }
