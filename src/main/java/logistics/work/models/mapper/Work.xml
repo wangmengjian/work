@@ -155,7 +155,7 @@
                 and employee.id=#{employeeId}
             </if>
             <if test="workName!=null">
-                and wp.work_name=#{workName}
+                and wp.work_name="%"#{workName}"%"
             </if>
         </where>
         order by update_time desc
@@ -175,7 +175,7 @@
                 and employee.id=#{employeeId}
             </if>
             <if test="workName!=null">
-                and wp.work_name=#{workName}
+                and wp.work_name="%"#{workName}"%"
             </if>
         </where>
     </select>
