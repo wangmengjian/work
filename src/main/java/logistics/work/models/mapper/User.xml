@@ -10,8 +10,12 @@
         where id=(select employee_id from `user`where `user`.id=#{userId})
     </select>
     <select id="queryEmployeeByDeptNumber" parameterType="String" resultType="logistics.work.models.domain.Employee">
-        select
-employee.*
+select
+`user`.id,
+employee.id as employeeId,
+employee.emp_name,
+employee.emp_job,
+employee.dept_number
 from employee
 left join `user`
 on `user`.employee_id=employee.id
@@ -22,7 +26,14 @@ where employee.dept_number=#{deptNumber} and employee.emp_job not like '经理'
         from department
     </select>
     <select id="queryAllEmployee" resultType="logistics.work.models.domain.Employee">
-        select *
-        from employee
+select
+`user`.id,
+employee.id as employeeId,
+employee.emp_name,
+employee.emp_job,
+employee.dept_number
+from employee
+left join `user`
+on `user`.employee_id=employee.id
     </select>
 </mapper>

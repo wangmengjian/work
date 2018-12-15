@@ -26,4 +26,13 @@ public class UserCtrl extends BaseCtrl {
         User user=(User) session.getAttribute("USER_SESSION");
         return this.send(userService.queryEmployeeByUserId(user.getId()));
     }
+
+    /**
+     * 查询所有的员工
+     * @return
+     */
+    @GetMapping("/queryAllEmployee")
+    public Result queryAllEmployee(){
+        return this.send(userService.queryAllEmployee());
+    }
 }

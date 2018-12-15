@@ -2,17 +2,17 @@ package logistics.work.models.domain;
 
 public class Employee {
     private Integer id;
-    private Integer userId;
+    private Integer employeeId;
     private String empName;
     private String empJob;
     private String deptNumber;
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getEmployeeId() {
+        return employeeId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setEmployeeId(Integer employeeId) {
+        this.employeeId = employeeId;
     }
 
     public Integer getId() {

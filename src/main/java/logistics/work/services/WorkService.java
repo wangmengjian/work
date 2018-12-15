@@ -101,20 +101,5 @@ public class WorkService {
         workPool.setWorkInstructor(instructor);
         return workDao.updateWork(workPool);
     }
-    public Map<String,Object> queryAllEmployee(){
-        List<DeptDto> deptDtoList=userDao.queryAllDept();
-        List<Employee> employeeList=userDao.queryAllEmployee();
-        for(DeptDto deptDto:deptDtoList){
-            List<Employee> employeeList1=new ArrayList<>();
-            for(Employee employee:employeeList){
-                if(deptDto.getDeptNumber().equals(employee.getDeptNumber())){
-                    employeeList1.add(employee);
-                }
-            }
-            deptDto.setEmployeeList(employeeList1);
-        }
-        Map<String,Object> result=new HashMap<>();
-        result.put("data",deptDtoList);
-        return result;
-    }
+
 }
