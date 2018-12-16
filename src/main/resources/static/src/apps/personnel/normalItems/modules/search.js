@@ -46,7 +46,6 @@ class search extends Component {
         const { getFieldDecorator } = this.props.form
         const store = this.props.store
         return <Fragment>
-            <Row>
                 <Col className="gutter-row" span={6}>
                     <FormItem label={"工作项名称"} labelCol={{span: 6}}>
                         {getFieldDecorator('workName')(
@@ -78,7 +77,6 @@ class search extends Component {
                         </Button>
                     </FormItem>
                 </Col>
-            </Row>
 
         </Fragment>
     }

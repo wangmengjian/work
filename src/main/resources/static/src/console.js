@@ -5,12 +5,12 @@ import { Layout, Menu, Icon, Divider } from 'antd';
 import menus from './config/menus'
 
 // 员工
-import NormalItems from './apps/staff/normalItems/normalItems'
-import NewItems from './apps/staff/newItems/newItems'
-import DailyPlan from './apps/staff/dailyPlan/dailyPlan'
-import PlanHistory from './apps/staff/planHistory/planHistory'
-import NewPlan from './apps/staff/newPlan/newPlan'
-import MyAssess from './apps/staff/myAssess/myAssess'
+import NormalItems from './apps/employee/normalItems/normalItems'
+import NewItems from './apps/employee/newItems/newItems'
+import DailyPlan from './apps/employee/dailyPlan/dailyPlan'
+import PlanHistory from './apps/employee/planHistory/planHistory'
+import NewPlan from './apps/employee/newPlan/newPlan'
+import MyAssess from './apps/employee/myAssess/myAssess'
 
 
 // 领导

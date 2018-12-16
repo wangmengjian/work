@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Table, Pagination, Row, Col, Select, Button, Form } from 'antd'
+import { Table, Row, Col, Select, Button, Form } from 'antd'
 import Search from './search'
 
 const FormItem = Form.Item
@@ -54,23 +54,18 @@ class table extends Component {
                 dataSource={store.dataSource}
                 columns={columns}
                 rowSelection={rowSelection}
-                pagination={false}
+                pagination={{
+                    pageSize: store.pageSize,
+                    total: store.all,
+                    current: store.current,
+                    onChange: actions.search
+                }}
                 loading={store.loading}
                 rowKey={'id'}
                 // size={"middle"}
                 // scroll={{ y : 460 }}
                 // bordered
             /><br/>
-            <Row type="flex" justify="end">
-                <Col>
-                    <Pagination
-                        current={store.current}
-                        onChange={ page => actions.search(page, store.pageSize)}
-                        total={store.all}
-                        pageSize={store.pageSize}
-                    />
-                </Col>
-            </Row>
         </Fragment>
     }
 }

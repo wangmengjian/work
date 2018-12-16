@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Table, Pagination, Button, Row, Col, Select, Form } from 'antd'
+import { Table, Button, Row, Col, Select, Form } from 'antd'
 import Search from './search'
 
 const Option = Select.Option
@@ -73,23 +73,17 @@ class table extends Component {
                 dataSource={store.dataSource}
                 columns={columns}
                 rowSelection={rowSelection}
-                pagination={false}
+                pagination={{
+                    pageSize: store.pageSize,
+                    total: store.all,
+                    current: store.current,
+                    onChange: actions.search
+                }}
                 loading={store.loading}
                 rowKey={'id'}
                 // size={"middle"}
                 // scroll={{ y : 460 }}
             /><br/>
-            <Row type="flex" justify="end">
-                <Col>
-                    <Pagination
-                        current={store.current}
-                        onChange={ page => actions.search(page, store.pageSize)}
-                        total={store.all}
-                        showTotal={total => `共有 ${total} 条记录`}
-                        pageSize={store.pageSize}
-                    />
-                </Col>
-            </Row>
         </Fragment>
     }
 }

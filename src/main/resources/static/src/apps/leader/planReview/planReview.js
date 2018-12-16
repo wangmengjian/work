@@ -3,30 +3,28 @@ import {Provider} from 'mobx-react'
 import store from './stores/store'
 import Table from './modules/table'
 import Modal from './modules/modal'
+import { Tabs } from 'antd'
+
+const TabPane = Tabs.TabPane
 
 class planReview extends Component {
 
     // 切换 div
     switchTab(currentIndex) {
-        store.currentIndex = currentIndex
+        store.currentIndex = parseInt(currentIndex)
         store.actions.search(1, store.pageSize)
     }
 
     render() {
-        const currentIndex = store.currentIndex
         return <Provider store={store}>
             <Fragment>
-                <div className="head">
-                    <ul className="tab">
-                        <div style={{ float: 'right', marginRight: 50 }}>
-                            <li className={currentIndex === 1 ? 'on':''} onClick={() => this.switchTab(1)}>全部的</li>
-                            <li className={currentIndex === 2 ? 'on':''} onClick={() => this.switchTab(2)}>未完成</li>
-                            <li className={currentIndex === 3 ? 'on':''} onClick={() => this.switchTab(3)}>已完成</li>
-                            <li className={currentIndex === 4 ? 'on':''} onClick={() => this.switchTab(4)}>常规工作</li>
-                            <li className={currentIndex === 5 ? 'on':''} onClick={() => this.switchTab(5)}>临时工作</li>
-                        </div>
-                    </ul>
-                </div>
+                <Tabs defaultActiveKey="1" onChange={this.switchTab}>
+                    <TabPane tab="全部的" key="1" />
+                    <TabPane tab="未完成" key="2" />
+                    <TabPane tab="已完成" key="3" />
+                    <TabPane tab="常规工作" key="4" />
+                    <TabPane tab="临时工作" key="5" />
+                </Tabs>
                 <div className="content">
                     <Table/>
                     <Modal/>

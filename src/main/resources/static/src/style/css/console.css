@@ -84,3 +84,7 @@
     padding: 20px 30px 0 30px;
     background: #fff;
 }
+
+.ant-tabs-bar {
+    margin-bottom: 0px;
+}

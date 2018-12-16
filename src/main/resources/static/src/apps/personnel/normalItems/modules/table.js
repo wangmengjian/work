@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { withRouter } from 'react-router-dom'
-import { Table, Pagination, Select, Row, Col, Button } from 'antd'
+import { Table, Select, Row, Col } from 'antd'
 import Search from './search'
 
 const Option = Select.Option
@@ -63,36 +63,30 @@ class table extends Component {
         return <Fragment>
             <Row>
                 <Col span={8}>
-                    <Button
-                        type="primary"
-                        // onClick={actions.showModal}
-                    >
-                        新增工作项
-                    </Button>
+                    {/*<Button*/}
+                        {/*type="primary"*/}
+                        {/*// onClick={actions.showModal}*/}
+                    {/*>*/}
+                        {/*新增工作项*/}
+                    {/*</Button>*/}
                 </Col>
                 <Search/>
             </Row>
             <Table
                 dataSource={store.dataSource}
                 columns={columns}
-                pagination={false}
+                pagination={{
+                    pageSize: store.pageSize,
+                    total: store.all,
+                    current: store.current,
+                    onChange: actions.search
+                }}
                 loading={store.loading}
                 rowKey={'id'}
                 // size="middle"
                 // scroll={{ y : 470 }}
                 // bordered
             /><br/>
-            <Row type="flex" justify="end">
-                <Col>
-                    <Pagination
-                        current={store.current}
-                        onChange={ page => actions.search(page, store.pageSize)}
-                        pageSize={store.pageSize}
-                        total={store.all}
-                        // showTotal={total => `共有 ${total} 条记录`}
-                    />
-                </Col>
-            </Row>
         </Fragment>
     }
 }

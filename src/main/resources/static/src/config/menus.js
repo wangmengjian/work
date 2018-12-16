@@ -7,7 +7,7 @@ export default {
             name: '我的工作项',
         },{
             key: 'work/employee/dailyPlan',
-            icon: 'team',
+            icon: 'ordered-list',
             name: '我的工作计划',
         },{
             key:'work/employee/myAssess',
@@ -31,13 +31,9 @@ export default {
                 name:'工作项审批'
             }]
         },{
-            key: 'work/leader/plan',
-            icon: 'user',
-            name: '日计划管理',
-            menus:[{
-                key:'work/leader/plan/dailyPlan',
-                name:'查看员工日计划'
-            }]
+            key:'work/leader/plan/dailyPlan',
+            icon: 'ordered-list',
+            name:'部门工作计划'
         },{
             key:'work/leader/plan/access',
             icon: 'user',
@@ -54,7 +50,7 @@ export default {
     ],
 
     // 员工
-    staff: [
+    employee: [
         {
             key: 'work/employee/workItems',
             icon: 'user',
