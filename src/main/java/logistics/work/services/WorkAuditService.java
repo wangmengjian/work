@@ -88,20 +88,21 @@ public class WorkAuditService {
         List<WorkPool> addWorkPool=new ArrayList<>();//需要添加到工作池中的
         List<WorkPool> updateWorkPool=new ArrayList<>();//更改工作池
         List<WorkAudit> workAuditList=workAuditDao.queryAllAuditByDetail(workAuditDetails);
-        for(WorkAudit workAudit:workAuditList){
-            WorkPool workPool=new WorkPool();
-            workPool.setUserId(workAudit.getWorkUserId());
-            workPool.setWorkName(workAudit.getWorkName());
-            workPool.setWorkContent(workAudit.getWorkContent());
-            workPool.setWorkInstructor(workAudit.getWorkInstructor());
-            workPool.setWorkFrom(workAudit.getWorkFrom());
-            workPool.setWorkMinutes(workAudit.getWorkMinutes());
-            if(workAudit.getOriginWorkId()!=null){
-                workPool.setId(workAudit.getOriginWorkId());
-                updateWorkPool.add(workPool);
-            }
-            else{
-                addWorkPool.add(workPool);
+        if(workAuditList!=null&&workAuditList.size()>0) {
+            for (WorkAudit workAudit : workAuditList) {
+                WorkPool workPool = new WorkPool();
+                workPool.setUserId(workAudit.getWorkUserId());
+                workPool.setWorkName(workAudit.getWorkName());
+                workPool.setWorkContent(workAudit.getWorkContent());
+                workPool.setWorkInstructor(workAudit.getWorkInstructor());
+                workPool.setWorkFrom(workAudit.getWorkFrom());
+                workPool.setWorkMinutes(workAudit.getWorkMinutes());
+                if (workAudit.getOriginWorkId() != null) {
+                    workPool.setId(workAudit.getOriginWorkId());
+                    updateWorkPool.add(workPool);
+                } else {
+                    addWorkPool.add(workPool);
+                }
             }
         }
         if(addWorkPool.size()>0) {
@@ -112,35 +113,41 @@ public class WorkAuditService {
         }
         /*更改记录的审核状态*/
         List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
-        for(WorkAudit workAudit:workAuditList){
-            WorkAuditDetail workAuditDetail=new WorkAuditDetail();
-            workAuditDetail.setAuditItemId(workAudit.getId());
-            workAuditDetail.setAuditStatus("agree");
-            workAuditDetail.setAuditUserId(userId);
-            workAuditDetailList.add(workAuditDetail);
+        if(workAuditList!=null&&workAuditList.size()>0) {
+            for (WorkAudit workAudit : workAuditList) {
+                WorkAuditDetail workAuditDetail = new WorkAuditDetail();
+                workAuditDetail.setAuditItemId(workAudit.getId());
+                workAuditDetail.setAuditStatus("agree");
+                workAuditDetail.setAuditUserId(userId);
+                workAuditDetailList.add(workAuditDetail);
+            }
         }
         workAuditDao.updateAuditStatus(workAuditDetailList);
 
         //遍历临时工作项，直接添加到当日工作计划中
         Map<Integer,List<WorkPool>> temporary=new HashMap<>();
-        for(WorkPool workPool:addWorkPool){
-            if(workPool.getWorkFrom().equals("w3"))continue;
-            List<WorkPool> idList=temporary.get(workPool.getUserId());
-            if(idList==null){
-                idList=new ArrayList<>();
-                temporary.put(workPool.getUserId(),idList);
+        if(addWorkPool!=null&&addWorkPool.size()>0) {
+            for (WorkPool workPool : addWorkPool) {
+                if (workPool.getWorkFrom().equals("w3")) continue;
+                List<WorkPool> idList = temporary.get(workPool.getUserId());
+                if (idList == null) {
+                    idList = new ArrayList<>();
+                    temporary.put(workPool.getUserId(), idList);
+                }
+                idList.add(workPool);
             }
-            idList.add(workPool);
         }
-        for(Integer id:temporary.keySet()){
-            Integer scheduleId=workScheduleDao.queryTodayScheduleId(id);
-            WorkSchedule workSchedule=new WorkSchedule();
-            workSchedule.setUserId(id);
-            if(scheduleId==null) {
-                workScheduleDao.addSchedule(workSchedule);
-                scheduleId = workSchedule.getId();
+        if(temporary.size()>0) {
+            for (Integer id : temporary.keySet()) {
+                Integer scheduleId = workScheduleDao.queryTodayScheduleId(id);
+                WorkSchedule workSchedule = new WorkSchedule();
+                workSchedule.setUserId(id);
+                if (scheduleId == null) {
+                    workScheduleDao.addSchedule(workSchedule);
+                    scheduleId = workSchedule.getId();
+                }
+                workScheduleDao.addScheduleDetail(temporary.get(id), scheduleId);
             }
-            workScheduleDao.addScheduleDetail(temporary.get(id),scheduleId);
         }
         return workAuditList.size();
     }
@@ -161,5 +168,15 @@ public class WorkAuditService {
         }
         workAuditDao.updateAuditStatus(workAuditDetailList);
         return workAuditDetailList.size();
+    }
+
+    /**
+     * 员工取消申请
+     * @param id
+     * @return
+     */
+    @Transactional
+    public int employeeCancelAudit(Integer id){
+        return workAuditDao.updateAuditStatusById(id);
     }
 }

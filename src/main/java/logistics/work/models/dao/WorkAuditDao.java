@@ -21,4 +21,11 @@ public interface WorkAuditDao {
     public int updateAuditStatus(List<WorkAuditDetail> workAuditDetailList);
     /*查询所有的审核工作项*/
     public List<WorkAudit> queryAllAuditByDetail(List<WorkAuditDetail> workAuditDetailList);
+    /*查询审核明细*/
+    public WorkAuditDetail queryWorkAuditDetailById(Integer id);
+    /*删除审核的工作*/
+    public int deleteAudit(Integer id);
+    /*删除对应的审核明细*/
+    public int deleteAuditDetail(Integer id);
+    public int updateAuditStatusById(Integer id);
 }

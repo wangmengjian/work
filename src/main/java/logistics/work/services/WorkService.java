@@ -2,9 +2,11 @@ package logistics.work.services;
 
 import logistics.work.common.FileUtils;
 import logistics.work.models.dao.UserDao;
+import logistics.work.models.dao.WorkAuditDao;
 import logistics.work.models.dao.WorkDao;
 import logistics.work.models.dao.WorkScheduleDao;
 import logistics.work.models.domain.Employee;
+import logistics.work.models.domain.WorkAuditDetail;
 import logistics.work.models.domain.WorkPool;
 import logistics.work.models.dto.DeptDto;
 import logistics.work.models.dto.ShowWorkAuditConditionDto;
@@ -26,7 +28,8 @@ public class WorkService {
     private WorkScheduleDao workScheduleDao;
     @Autowired
     private UserDao userDao;
-
+    @Autowired
+    private WorkAuditDao workAuditDao;
     /**
      * 查询员工提交的所有工作项的审核记录
      * @param params
@@ -93,7 +96,7 @@ public class WorkService {
      * @return
      */
     @Transactional
-    public int updateWork(@Valid WorkPool workPool) throws Exception {
+    public int updateWork(WorkPool workPool) throws Exception {
         String instructor = null;
         if (workPool.getFile() != null) {
             instructor = FileUtils.upload(workPool.getFile());
@@ -102,4 +105,16 @@ public class WorkService {
         return workDao.updateWork(workPool);
     }
 
+    /**
+     * 删除审核记录
+     * @param id
+     * @return
+     */
+    @Transactional
+    public int deleteAuditRecord(Integer id){
+        WorkAuditDetail workAuditDetail=workAuditDao.queryWorkAuditDetailById(id);
+        workAuditDao.deleteAuditDetail(id);
+        workAuditDao.deleteAudit(workAuditDetail.getAuditItemId());
+        return 1;
+    }
 }

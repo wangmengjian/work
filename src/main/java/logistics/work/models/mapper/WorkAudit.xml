@@ -129,4 +129,22 @@
             #{item.auditItemId}
         </foreach>
     </select>
+    <select id="queryWorkAuditDetailById" parameterType="Integer" resultType="logistics.work.models.domain.WorkAuditDetail">
+        select *
+        from work_audit_detail as wad
+        where wad.id=#{id}
+    </select>
+    <delete id="deleteAudit" parameterType="Integer">
+        delete from work_audit
+        where id=#{id}
+    </delete>
+    <delete id="deleteAuditDetail" parameterType="Integer">
+        delete from work_audit_detail
+        where id=#{id}
+    </delete>
+    <update id="updateAuditStatusById" parameterType="Integer">
+        update work_audit_detail
+        set audit_status='cancel'
+        where  id=#{id}
+    </update>
 </mapper>

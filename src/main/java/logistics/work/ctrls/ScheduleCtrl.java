@@ -1,11 +1,11 @@
 package logistics.work.ctrls;
 
 import logistics.work.common.Constants;
-import logistics.work.common.FileUtils;
 import logistics.work.common.ParamUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
 import logistics.work.models.domain.WorkAudit;
+import logistics.work.models.domain.WorkAuditDetail;
 import logistics.work.models.domain.WorkPool;
 import logistics.work.models.dto.WorkAuditDto;
 import logistics.work.models.dto.WorkPoolDto;
@@ -132,7 +132,14 @@ public class ScheduleCtrl extends BaseCtrl {
         params.put("workFrom",workFrom);
         return this.send(workService.queryWorkByWorkName(params));
     }
-
+    @DeleteMapping("/employee/deleteAudit")
+    public Result employeeDeleteAuditRecord(@RequestParam(value = "id",required = true)Integer id){
+        try{
+            return this.send(workService.deleteAuditRecord(id));
+        }catch(Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
 
     /**
      * 员工查询常规工作池
@@ -173,6 +180,19 @@ public class ScheduleCtrl extends BaseCtrl {
         }
     }
 
+    /**
+     * 员工取消申请
+     * @param id
+     * @return
+     */
+    @PostMapping("/employee/cancelAudit")
+    public Result employeeCancelAudit(Integer id){
+        try{
+            return this.send(workAuditService.employeeCancelAudit(id));
+        }catch(Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
 
     /**
      * 领导查询部门员工的常规工作项
