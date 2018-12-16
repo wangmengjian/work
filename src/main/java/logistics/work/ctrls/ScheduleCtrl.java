@@ -219,7 +219,19 @@ public class ScheduleCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
-
+    /**
+     * 领导新增员工常规工作项
+     * @param workPoolDto
+     * @return
+     */
+    @RequestMapping("/leader/addWork")
+    public Result leaderAddWork(@Valid WorkPoolDto workPoolDto){
+        try{
+            return this.send(workService.addWork(workPoolDto.getWorkPoolList()));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
     /**
      * 人事查询部门员工的工作
      * @param workName
