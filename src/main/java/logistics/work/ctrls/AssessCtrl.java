@@ -85,7 +85,8 @@ public class AssessCtrl extends BaseCtrl {
                                       @RequestParam(value = "pageNumber",required = false)Integer pageNumber,
                                       @RequestParam(value = "pageSize",required = false)Integer pageSize,
                                       @RequestParam(value = "finishStatus",required = false)String finishStatus,
-                                      @RequestParam(value = "workFrom",required = false)String workFrom){
+                                      @RequestParam(value = "workFrom",required = false)String workFrom,
+                                      @RequestParam(value = "assessStatus",required = false)Integer assessStatus){
         Map<String,Object> params= ParamUtils.setPageInfo(pageNumber,pageSize);
         params.put("workName",workName);
         params.put("assessGrade",assessGrade);
@@ -93,6 +94,7 @@ public class AssessCtrl extends BaseCtrl {
         params.put("endTime",endTime);
         params.put("finishStatus",finishStatus);
         params.put("workFrom",workFrom);
+        params.put("assessStatus",assessStatus);
         try{
             return this.send(assessService.employeQueryAllAssess(params));
         }catch (Exception e){

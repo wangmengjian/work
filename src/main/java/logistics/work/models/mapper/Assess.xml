@@ -152,6 +152,12 @@
             <if test="endTime!=null">
                 and #{endTime}>finish_time
             </if>
+            <if test="assessStatus==1">
+                and wa.id is not null
+            </if>
+            <if test="assessStatus==0">
+                and wa.id is null
+            </if>
         </where>
         order by ws.date desc, finish_time desc
         limit #{pageStart},#{pageSize}
