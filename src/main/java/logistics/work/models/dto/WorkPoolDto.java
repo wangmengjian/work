@@ -6,7 +6,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * 新增员工的常规工作项（不需要审核）
+ * 新增员工的常规工作项
  */
 public class WorkPoolDto {
     @Valid

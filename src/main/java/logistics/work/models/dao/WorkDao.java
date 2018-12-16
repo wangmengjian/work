@@ -26,4 +26,6 @@ public interface WorkDao {
     public int addWork(List<WorkPool> workPoolList);
     /*更改常规工作项*/
     public int updateWork(WorkPool workPool);
+    /*根据工作项id查询工作项*/
+    public List<WorkPool> queryWorkPool(List<WorkPool> workPoolList);
 }

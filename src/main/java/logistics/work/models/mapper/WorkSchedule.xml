@@ -91,8 +91,8 @@
     <insert id="addScheduleDetail">
         insert into work_schedule_detail(schedule_id,work_id,work_from)
         values
-        <foreach collection="idList" separator="," item="id">
-            (#{scheduleId},#{id},'w3')
+        <foreach collection="workPoolList" separator="," item="item">
+            (#{scheduleId},#{item.id},#{item.workFrom})
         </foreach>
     </insert>
     <select id="queryTodayScheduleId" parameterType="Integer" resultType="Integer">

@@ -4,9 +4,11 @@ import logistics.work.common.FileUtils;
 import logistics.work.models.dao.UserDao;
 import logistics.work.models.dao.WorkAuditDao;
 import logistics.work.models.dao.WorkDao;
+import logistics.work.models.dao.WorkScheduleDao;
 import logistics.work.models.domain.WorkAudit;
 import logistics.work.models.domain.WorkAuditDetail;
 import logistics.work.models.domain.WorkPool;
+import logistics.work.models.domain.WorkSchedule;
 import logistics.work.models.dto.ShowDeptAllAuditInf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class WorkAuditService {
     private UserDao userDao;
     @Autowired
     private WorkDao workDao;
+    @Autowired
+    private WorkScheduleDao workScheduleDao;
     /**
      * 提交审核
      * @param params
@@ -81,8 +85,8 @@ public class WorkAuditService {
     @Transactional
     public int agreeAuditWork(List<WorkAuditDetail> workAuditDetails,Integer userId){
         if(workAuditDetails.size()<=0)return 0;
-        List<WorkPool> addWorkPool=new ArrayList<>();
-        List<WorkPool> updateWorkPool=new ArrayList<>();
+        List<WorkPool> addWorkPool=new ArrayList<>();//需要添加到工作池中的
+        List<WorkPool> updateWorkPool=new ArrayList<>();//更改工作池
         List<WorkAudit> workAuditList=workAuditDao.queryAllAuditByDetail(workAuditDetails);
         for(WorkAudit workAudit:workAuditList){
             WorkPool workPool=new WorkPool();
@@ -106,7 +110,7 @@ public class WorkAuditService {
         if(updateWorkPool.size()>0) {
             workDao.updateAgreeWork(updateWorkPool);
         }
-        /*更改审核记录的完成状态*/
+        /*更改记录的审核状态*/
         List<WorkAuditDetail> workAuditDetailList=new ArrayList<>();
         for(WorkAudit workAudit:workAuditList){
             WorkAuditDetail workAuditDetail=new WorkAuditDetail();
@@ -116,6 +120,28 @@ public class WorkAuditService {
             workAuditDetailList.add(workAuditDetail);
         }
         workAuditDao.updateAuditStatus(workAuditDetailList);
+
+        //遍历临时工作项，直接添加到当日工作计划中
+        Map<Integer,List<WorkPool>> temporary=new HashMap<>();
+        for(WorkPool workPool:addWorkPool){
+            if(workPool.getWorkFrom().equals("w3"))continue;
+            List<WorkPool> idList=temporary.get(workPool.getUserId());
+            if(idList==null){
+                idList=new ArrayList<>();
+                temporary.put(workPool.getUserId(),idList);
+            }
+            idList.add(workPool);
+        }
+        for(Integer id:temporary.keySet()){
+            Integer scheduleId=workScheduleDao.queryTodayScheduleId(id);
+            WorkSchedule workSchedule=new WorkSchedule();
+            workSchedule.setUserId(id);
+            if(scheduleId==null) {
+                workScheduleDao.addSchedule(workSchedule);
+                scheduleId = workSchedule.getId();
+            }
+            workScheduleDao.addScheduleDetail(temporary.get(id),scheduleId);
+        }
         return workAuditList.size();
     }
 

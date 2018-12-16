@@ -191,4 +191,12 @@
         set work_name=#{workName},work_content=#{workContent},work_minutes=#{workMinutes},work_instructor=#{workInstructor}
         where id=#{id}
     </update>
+    <select id="queryWorkPool" resultType="logistics.work.models.domain.WorkPool" parameterType="logistics.work.models.domain.WorkPool">
+        select *
+        from work_pool
+        where id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </select>
 </mapper>

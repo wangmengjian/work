@@ -1,5 +1,6 @@
 package logistics.work.models.dao;
 
+import logistics.work.models.domain.WorkPool;
 import logistics.work.models.domain.WorkSchedule;
 import logistics.work.models.dto.WorkScheduleDetailDto;
 import logistics.work.models.dto.WorkScheduleDto;
@@ -20,7 +21,7 @@ public interface WorkScheduleDao {
     /*生成工作计划*/
     public int addSchedule(WorkSchedule workSchedule);
     /*添加工作计划明细*/
-    public int addScheduleDetail(@Param("idList") List<Integer> idList, @Param("scheduleId")Integer scheduleId);
+    public int addScheduleDetail(@Param("workPoolList") List<WorkPool> workPoolList, @Param("scheduleId")Integer scheduleId);
     /*查询今日日计划id*/
     public Integer queryTodayScheduleId(Integer userId);
     /*领导查询工作计划*/

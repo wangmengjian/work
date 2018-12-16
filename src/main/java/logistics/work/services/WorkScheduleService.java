@@ -1,7 +1,9 @@
 package logistics.work.services;
 
 import logistics.work.common.FileUtils;
+import logistics.work.models.dao.WorkDao;
 import logistics.work.models.dao.WorkScheduleDao;
+import logistics.work.models.domain.WorkPool;
 import logistics.work.models.domain.WorkSchedule;
 import logistics.work.models.dto.WorkScheduleDetailDto;
 import logistics.work.models.dto.WorkScheduleDto;
@@ -18,7 +20,8 @@ import java.util.Map;
 public class WorkScheduleService {
     @Autowired
     private WorkScheduleDao workScheduleDao;
-
+    @Autowired
+    private WorkDao workDao;
     /**
      * 员工查询日计划
      * @param params
@@ -72,7 +75,9 @@ public class WorkScheduleService {
     @Transactional
     public int newSchedule(Map<String,Object> params){
         Integer userId=(Integer) params.get("userId");
-        List<Integer> idList= (List<Integer>) params.get("idList");
+        List<WorkPool> _workPoolList= (List<WorkPool>) params.get("workPoolList");
+        if(_workPoolList==null||_workPoolList.size()<=0)return 0;
+        List<WorkPool> workPoolList=workDao.queryWorkPool(_workPoolList);
         WorkSchedule workSchedule=new WorkSchedule();
         workSchedule.setUserId(userId);
         Integer scheduleId=workScheduleDao.queryTodayScheduleId(userId);
@@ -81,9 +86,7 @@ public class WorkScheduleService {
             scheduleId = workSchedule.getId();
         }
         int result=0;
-        if(idList!=null&&idList.size()>0) {
-            result = workScheduleDao.addScheduleDetail(idList, scheduleId);
-        }
+        result=workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
         return result;
     }
 

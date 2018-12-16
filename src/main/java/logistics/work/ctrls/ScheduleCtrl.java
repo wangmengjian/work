@@ -155,15 +155,16 @@ public class ScheduleCtrl extends BaseCtrl {
 
     /**
      * 生成日工作计划
-     * @param idList
+     * @param workPoolDto
+     * @param session
      * @return
      */
     @PostMapping("/employee/newSchedule")
-    public Result employeeNewSchedule(@RequestBody List<Integer> idList,
+    public Result employeeNewSchedule(WorkPoolDto workPoolDto,
                                       HttpSession session){
         User user= (User) session.getAttribute(Constants.userSession);
         Map<String,Object> params=new HashMap<>();
-        params.put("idList",idList);
+        params.put("workPoolList",workPoolDto.getWorkPoolList());
         params.put("userId",user.getId());
         try{
             return this.send(workScheduleService.newSchedule(params));
