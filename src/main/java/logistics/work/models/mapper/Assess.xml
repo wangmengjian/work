@@ -32,6 +32,7 @@
         on sc1.`code`=wsd.finish_status
         <where>
             assess_time is null
+            and ws.submit_status like 'submitted'
             <if test="assessGrade!=null">
                 and assess_grade like #{assessGrade}
             </if>
@@ -76,6 +77,7 @@
         on sc1.`code`=wsd.finish_status
         <where>
             assess_time is null
+            and ws.submit_status like 'submitted'
             <if test="assessGrade!=null">
                 and assess_grade like #{assessGrade}
             </if>
@@ -116,7 +118,9 @@
         wp.work_minutes,
         ws.date as beginTime,
         wsd.finish_time,
-        wa.assess_grade
+        wa.assess_grade,
+        wa.assess_desc,
+        case when wa.id is null then 0 else 1 end as assessStatus
         from work_schedule_detail as wsd
         left join work_pool as wp
         on wp.id=wsd.work_id
@@ -129,8 +133,9 @@
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
         <where>
+            ws.submit_status like 'submitted'
             <if test="assessGrade!=null">
-                assess_grade like #{assessGrade}
+                and assess_grade like #{assessGrade}
             </if>
             <if test="finishStatus!=null">
                 and finish_status=#{finishStatus}
@@ -166,8 +171,9 @@
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
         <where>
+            ws.submit_status like 'submitted'
             <if test="assessGrade!=null">
-                assess_grade like #{assessGrade}
+                and assess_grade like #{assessGrade}
             </if>
             <if test="finishStatus!=null">
                 and finish_status=#{finishStatus}

@@ -14,6 +14,24 @@ public class ShowAssessDto {
     private String finishTime;
     private String assessGrade;
     private String empName;
+    private String assessDesc;
+    private Integer assessStatus;
+
+    public Integer getAssessStatus() {
+        return assessStatus;
+    }
+
+    public void setAssessStatus(Integer assessStatus) {
+        this.assessStatus = assessStatus;
+    }
+
+    public String getAssessDesc() {
+        return assessDesc;
+    }
+
+    public void setAssessDesc(String assessDesc) {
+        this.assessDesc = assessDesc;
+    }
 
     public Integer getId() {
         return id;
