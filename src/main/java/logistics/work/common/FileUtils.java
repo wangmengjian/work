@@ -8,8 +8,6 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,33 +25,12 @@ public class FileUtils {
         for(MultipartFile file:files){
             String key=dirName+"/"+Util.getVerifyRandom(12)+"/"+file.getOriginalFilename();
             try {
-                Response response = uploadManager.put(file.getInputStream(),key,upToken,null,null);
-                fileList.add(domain+file.getOriginalFilename());
+                uploadManager.put(file.getInputStream(),key,upToken,null,null);
+                fileList.add(domain+key);
             } catch (QiniuException e) {
                 e.printStackTrace();
             }
         }
         return fileList;
-    }
-    public static void download(HttpServletResponse response,String dirName)throws Exception{
-        File root=new File(dirName);
-        File[] files=root.listFiles();
-        for(File file:files){
-            try {
-                BufferedInputStream inputStream=new BufferedInputStream(new FileInputStream(file));
-                response.setHeader("Content-Disposition", "inline;filename="+file.getName());
-                response.setContentType("application/octet-stream");
-                BufferedOutputStream outputStream=new BufferedOutputStream(response.getOutputStream());
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = inputStream.read(buffer, 0, 1024)) > 0) {
-                    outputStream.write(buffer, 0, len);
-                }
-                inputStream.close();
-                outputStream.close();
-                outputStream.flush();
-            } catch (Exception e) {
-            }
-        }
     }
 }
