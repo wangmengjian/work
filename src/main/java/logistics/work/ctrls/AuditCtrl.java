@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/work/audit")
+@RequestMapping("/work/audit")
 public class AuditCtrl extends BaseCtrl{
     @Autowired
     private WorkAuditService workAuditService;

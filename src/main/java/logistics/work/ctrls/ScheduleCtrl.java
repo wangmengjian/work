@@ -25,7 +25,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/work/schedule")
+@RequestMapping("/work/schedule")
 public class ScheduleCtrl extends BaseCtrl {
     @Autowired
     private WorkAuditService workAuditService;

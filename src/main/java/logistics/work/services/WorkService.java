@@ -83,7 +83,7 @@ public class WorkService {
         for(WorkPool workPool:workPoolList){
             String instructor = null;
             if (workPool.getFile() != null) {
-                instructor = FileUtils.upload(workPool.getFile());
+                instructor = FileUtils.upload(workPool.getFile(),"instructor").get(0);
             }
             workPool.setWorkInstructor(instructor);
         }
@@ -99,7 +99,7 @@ public class WorkService {
     public int updateWork(WorkPool workPool) throws Exception {
         String instructor = null;
         if (workPool.getFile() != null) {
-            instructor = FileUtils.upload(workPool.getFile());
+            instructor = FileUtils.upload(workPool.getFile(),"instructor").get(0);
         }
         workPool.setWorkInstructor(instructor);
         return workDao.updateWork(workPool);

@@ -24,7 +24,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 bootJar {
     mustRunAfter tasks.clean
-    archiveName 'data-v0.1.0.jar'
+    archiveName 'work-v0.1.0.jar'
 }
 
 sourceSets {

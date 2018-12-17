@@ -41,7 +41,7 @@ public class WorkAuditService {
             for (WorkAudit workAudit : workAuditList) {
                 String instructor = null;
                 if (workAudit.getFile() != null) {
-                    instructor = FileUtils.upload(workAudit.getFile());
+                    instructor = FileUtils.upload(workAudit.getFile(),"instructor").get(0);
                 }
                 workAudit.setWorkUserId(userId);
                 workAudit.setWorkInstructor(instructor);

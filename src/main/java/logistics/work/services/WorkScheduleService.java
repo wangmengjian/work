@@ -59,7 +59,7 @@ public class WorkScheduleService {
         for(WorkScheduleDetailDto workScheduleDetailDto:workScheduleDto.getWorkScheduleDetailDtoList()){
             String finishPicture=null;
             if(workScheduleDetailDto.getPictures()!=null&&workScheduleDetailDto.getPictures().length>0){
-                finishPicture=FileUtils.upload(workScheduleDetailDto.getPictures());
+                finishPicture=FileUtils.upload(workScheduleDetailDto.getPictures(),"pictures").get(0);
             }
             workScheduleDetailDto.setFinishPicture(finishPicture);
         }

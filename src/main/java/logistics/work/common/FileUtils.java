@@ -1,20 +1,39 @@
 package logistics.work.common;
 
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.util.Auth;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileUtils {
-    public static String upload(MultipartFile[] files) throws Exception {
-        File root = new File("G:/workFile/" +Util.getVerifyRandom(12) );
-        root.mkdirs();
+    private final static String accessKey="bCNHpv29KW0PFzVtS4_TK5KKJYdWKawxiOO9_6xA";
+    private final static String secretKey="RBbeHJg04nNNF-Ah5kPSugpuIuj3-qXh00V3j__n";
+    private final static String domain="http://pjuzxdszq.bkt.clouddn.com/";
+    public static List<String> upload(MultipartFile[] files,String dirName) throws Exception {
+        Configuration cfg = new Configuration(Zone.autoZone());
+        UploadManager uploadManager = new UploadManager(cfg);
+        String bucket="workspace";
+        Auth auth = Auth.create(accessKey, secretKey);
+        String upToken = auth.uploadToken(bucket);
+        List<String> fileList=new ArrayList<>();
         for(MultipartFile file:files){
-            File file1 = new File(root.getAbsolutePath() + "/" + file.getOriginalFilename());
-            file1.createNewFile();
-            file.transferTo(file1);
+            String key=dirName+"/"+Util.getVerifyRandom(12)+"/"+file.getOriginalFilename();
+            try {
+                Response response = uploadManager.put(file.getInputStream(),key,upToken,null,null);
+                fileList.add(domain+file.getOriginalFilename());
+            } catch (QiniuException e) {
+                e.printStackTrace();
+            }
         }
-        return root.getAbsolutePath();
+        return fileList;
     }
     public static void download(HttpServletResponse response,String dirName)throws Exception{
         File root=new File(dirName);

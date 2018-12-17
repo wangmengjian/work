@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/work/assess")
+@RequestMapping("/work/assess")
 public class AssessCtrl extends BaseCtrl {
     @Autowired
     private AssessService assessService;
