@@ -38,9 +38,6 @@ class table extends Component {
         const store = this.props.store
         const { actions } = store
         const columns = [
-            {   title: '#', dataIndex: 'index', width: 70, render: (text, record, index) => {
-                    return (store.current-1)*(store.pageSize)+index+1
-                }},
             {   title: '员工姓名', dataIndex: 'employeeName', width: 80},
             {   title: '名称', dataIndex: 'workName', width: 150},
             {   title: '内容', dataIndex: 'workContent', width: 180},

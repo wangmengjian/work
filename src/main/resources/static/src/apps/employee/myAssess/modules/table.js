@@ -18,24 +18,27 @@ class table extends Component {
         const store = this.props.store
         const { actions } = store
         const columns = [
-            {   title: '#', dataIndex: 'index', width: 70, render: (text, record, index) => {
-                    return (store.current-1)*(store.pageSize)+index+1
-                }},
-            {   title: '状态', dataIndex: 'finishStatus', width: 120},
+            {   title: '完成状态', dataIndex: 'finishStatus', width: 110},
             {   title: '类型', dataIndex: 'workFrom', width: 80, render: (text, record, index) => {
                     return text === '常规工作项' ? '常规' : '临时'
                 }},
             {   title: '名称', dataIndex: 'workName', width: 150},
-            {   title: '内容', dataIndex: 'workContent', width: 180},
-            {   title: '标准时间', dataIndex: 'workMinutes', width: 100, render: (text) => {
+            {   title: '内容', dataIndex: 'workContent', width: 200},
+            {   title: '标准时间', dataIndex: 'workMinutes', width: 120, render: (text) => {
                     return <span>{text}&nbsp;分钟</span>
                 }},
             {   title: '开始时间', dataIndex: 'beginTime', width: 200},
             {   title: '完成时间', dataIndex: 'finishTime', width: 200, render: (text) => {
                     return text === '' || text === null || text === undefined ? '无' : text
                 }},
-            {   title: '等级', dataIndex: 'assessGrade', width: 180, render: (text) => {
+            {   title: '等级', dataIndex: 'assessGrade', width: 80, render: (text) => {
                     return text === '' || text === null || text === undefined ? '无' : text
+                }},
+            {   title: '评价', dataIndex: 'assessDesc', width: 200, render: (text) => {
+                    return text === '' || text === null || text === undefined ? '无' : text
+                }},
+            {   title: '考核状态', dataIndex: 'assessStatus', width: 120, render: (text) => {
+                    return text === 1 ? '已考核' : '未考核'
                 }},
         ];
 

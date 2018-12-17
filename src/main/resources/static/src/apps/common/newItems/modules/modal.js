@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Modal, Button, Input, Form, Radio, Upload, Icon } from 'antd'
+import { Modal, Button, Input, Form, Radio, Upload, Icon, InputNumber, message, Select } from 'antd'
+import axios from "axios/index";
 
+const Option = Select.Option
 const FormItem = Form.Item
 const { TextArea } = Input
 
@@ -9,9 +11,23 @@ const { TextArea } = Input
 @observer
 class modal extends Component {
 
+    componentDidMount() {
+        axios({
+            method: 'get',
+            url: '/api/work/user/deptEmployees',
+        })
+            .then(response => {
+                if (response.data.status.code === 1){
+                    this.props.store.employeeList = response.data.result.data
+                } else {
+                    message.error("获取下拉框数据失败: " + response.data.status.message)
+                }
+            })
+    }
+
     pushToTable = () => {
         const { form, store } = this.props
-        form.validateFields(['workFrom','workName','workContent','workMinutes','file'], (err, values) => {
+        form.validateFields(['workFrom','workName','workContent','workMinutes','file','employeeId'], (err, values) => {
                 if (!err) {
                     store.actions.handleAdd(values)
                     form.resetFields()
@@ -22,7 +38,8 @@ class modal extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form
-        const { visible, actions, fileData } = this.props.store
+        const store = this.props.store
+        const { visible, actions, fileData } = store
         const props = {
             name: 'file',
             action: '/api/work/schedule/employee/addWork',
@@ -40,14 +57,31 @@ class modal extends Component {
             style={{height: 300}}
         >
             <Form>
+                <FormItem className={"select"} label={"员工姓名"} labelCol={{span: 6}}>
+                    {getFieldDecorator('employeeId', {
+                        rules: [{ required: true, message: '请选择员工' }]
+                    })(
+                        <Select
+                            showSearch
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                            style={{ width: 180 }}
+                        >
+                            {
+                                store.employeeList.map(item => {
+                                    return <Option key={item.id}>{item.empName}</Option>
+                                })
+                            }
+                        </Select>
+                    )}
+                </FormItem>
                 <FormItem label={"工作项类型"} labelCol={{span: 6}}>
                     {getFieldDecorator('workFrom', {
                         rules: [{ required: true, message: '请输入名称' }],
-                        initialValue: 'w3常规工作项'
+                        initialValue: '常规工作项'
                     })(
                         <Radio.Group buttonStyle="solid">
-                            <Radio.Button value="w3常规工作项">常规工作项</Radio.Button>
-                            <Radio.Button value="w2临时工作项">临时工作项</Radio.Button>
+                            <Radio.Button value="常规工作项">常规工作项</Radio.Button>
+                            <Radio.Button value="临时工作项">临时工作项</Radio.Button>
                         </Radio.Group>
                     )}
                 </FormItem>
@@ -67,19 +101,9 @@ class modal extends Component {
                 </FormItem>
                 <FormItem label={"标准工作时间"} labelCol={{span: 6}}>
                     {getFieldDecorator('workMinutes', {
-                        validateFirst: true,    // 规则校验不通过后停止校验后来的规则
-                        rules: [{
-                            required: true,
-                            message: '请输入时间'
-                        }, {
-                            type: 'number',
-                            message: '只能输入数字',
-                            transform(value) {
-                                return Number(value)?Number(value):'';
-                            }
-                        }],
+                        rules: [{ required: true, message: '请输入时间' }]
                     })(
-                        <Input style={{width: 160}}/>
+                        <InputNumber min={1} max={300}/>
                     )}
                     &nbsp;&nbsp;分钟
                 </FormItem>

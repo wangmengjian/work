@@ -40,19 +40,13 @@ class tableStore {
                     url = url + "assessGrade=差"
                     break
                 case 6:
-                    url = url + "finishStatus=completed"
+                    url = url + "assessStatus=1"
                     break
                 case 7:
-                    url = url + "finishStatus=uncompleted"
-                    break
-                case 8:
-                    url = url + "workFrom=w3"
-                    break
-                case 9:
-                    url = url + "workFrom=w2"
+                    url = url + "assessStatus=0"
                     break
             }
-            console.log(url)
+
             axios({
                 method: 'get',
                 url: url,

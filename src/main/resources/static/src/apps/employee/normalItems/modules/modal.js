@@ -5,7 +5,7 @@ import { Modal, Button, InputNumber, Input , Form, Radio, Upload, Icon } from 'a
 const FormItem = Form.Item
 const { TextArea } = Input
 
-@inject('store')
+@inject('store', 'form')
 @observer
 class modal extends Component {
 
@@ -32,7 +32,7 @@ class modal extends Component {
         }
 
         return <Modal
-            title="新建工作项"
+            title={store.isAlter ? "修改工作项" : "新增工作项"}
             visible={visible}
             onCancel={actions.hideModal}
             style={{height: 300}}
@@ -44,7 +44,7 @@ class modal extends Component {
                     onClick={this.beforeSubmit}
                     loading={store.loadingNewItem}
                 >
-                    添加
+                    {store.isAlter ? "修改" : "添加"}
                 </Button>
             ]}
         >
@@ -96,4 +96,4 @@ class modal extends Component {
     }
 }
 
-export default Form.create()(modal)
+export default modal

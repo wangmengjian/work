@@ -10,9 +10,6 @@ class sonTable extends Component {
         const store = this.props.store
         const { actions } = store
         const columns = [
-            {   title: '#', dataIndex: 'index', width: 80, render: (text, record, index) => {
-                    return index+1
-                }},
             {   title: '名称', dataIndex: 'workName', width: 150},
             {   title: '内容', dataIndex: 'workContent', width: 200},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 150, render: (text) => {

@@ -17,9 +17,6 @@ class table extends Component {
         const store = this.props.store
         const { actions, selectedRowKeys } = store
         const columns = [
-            {   title: '#', dataIndex: 'index', width: 50, render: (text, record, index) => {
-                    return index + 1
-                }},
             {   title: '名称', dataIndex: 'workName', width: 180},
             {   title: '内容', dataIndex: 'workContent', width: 180},
             {   title: '标准时间', dataIndex: 'workMinutes', width: 120},

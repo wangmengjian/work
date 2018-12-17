@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Table, Button, Row, Col, message } from 'antd'
+import { withRouter } from 'react-router-dom'
+import { Table, Button, Row, Col, message, Modal } from 'antd'
 import axios from "axios";
 
 @inject('store', 'form')
@@ -16,25 +17,36 @@ class table extends Component {
 
         for (let i=0; i < dataSource.length; i++) {
             if (store.formData[i] !== undefined && store.formData[i] !== null) {
-                form.append('workAuditDetails['+i+'].file', store.formData[i])
+                form.append('workPoolList['+i+'].file', store.formData[i])
             }
-            form.append('workAudits['+i+'].workFrom', store.workFrom[i].substring(0,2))
-            form.append('workAudits['+i+'].workName', dataSource[i].workName)
-            form.append('workAudits['+i+'].workContent', dataSource[i].workContent)
-            form.append('workAudits['+i+'].workMinutes', dataSource[i].workMinutes)
+            form.append('workPoolList['+i+'].workFrom', store.workFrom[i])
+            form.append('workPoolList['+i+'].workName', dataSource[i].workName)
+            form.append('workPoolList['+i+'].workContent', dataSource[i].workContent)
+            form.append('workPoolList['+i+'].workMinutes', dataSource[i].workMinutes)
+            form.append('workPoolList['+i+'].userId', dataSource[i].userId)
         }
-        console.log(store.formData)
-        console.log(store.workFrom)
-        console.log(dataSource)
+
+        let url = undefined
+        if (this.props.history.location.pathname.indexOf('leader') > -1) {
+            // 领导新增工作项
+            url = '/api/work/schedule/leader/addWork'
+        } else {
+            // 人事新增工作项
+            url = '/api/work/schedule/personnel/addWork'
+        }
+
         axios({
             method: 'post',
-            url: '/api/work/schedule/employee/addWork',
+            url: url,
             data: form
         })
             .then(response => {
                 if (response.data.status.code === 1){
                     actions.resetTable()
-                    message.success("提交成功: " + response.data.status.message)
+                    Modal.success({
+                        title: '提交成功',
+                        content: response.data.status.message,
+                    });
                 } else {
                     message.error("提交失败: " + response.data.status.message)
                 }
@@ -46,11 +58,12 @@ class table extends Component {
     handleAlter = record => {
         const { form, store } = this.props
         form.setFieldsValue({
-            workFrom: record.workFrom === '常规工作项' ? 'w3常规工作项':'w2临时工作项',
+            workFrom: record.workFrom === 'w3' ? '常规工作项' : '临时工作项',
             workName: record.workName,
             workContent: record.workContent,
             workMinutes: record.workMinutes,
-            employee: record.employee
+            employeeId: record.userId,
+            file: record.file
         })
         store.fileData = []
         if (store.formData.length > 0) {
@@ -73,19 +86,23 @@ class table extends Component {
         const store = this.props.store
         const { actions, dataSource } = store
         const columns = [
-            {   title: '#', dataIndex: 'key', width: 50, render: (text, record, index) => {
-                    return index + 1
+            {   title: '员工', dataIndex: 'employee', width: 120},
+            {   title: '类型', dataIndex: 'workFrom', width: 150, render: (text, record, index) => {
+                    return text === 'w3' ? '常规工作项' : '临时工作项'
                 }},
-            {   title: '类型', dataIndex: 'workFrom', width: 180},
-            {   title: '名称', dataIndex: 'workName', width: 180},
-            {   title: '内容', dataIndex: 'workContent', width: 150},
-            {   title: '作业指导书', dataIndex: 'file', width: 120},
-            {   title: '标准时间', dataIndex: 'workMinutes', width: 120},
-            {   title: '执行人', dataIndex: 'employee', width: 120},
-            {   title: '选项', dataIndex: 'operation', width: 80, render: (text, record) => {
+            {   title: '名称', dataIndex: 'workName', width: 150},
+            {   title: '内容', dataIndex: 'workContent', width: 180},
+            {   title: '标准时间', dataIndex: 'workMinutes', width: 100, render: (text) => {
+                    return <span>{text}&nbsp;分钟</span>
+                }},
+            {   title: '选项', dataIndex: 'operation', width: 180, render: (text, record) => {
                     return (
                         dataSource.length >= 1 ? (
                             <Fragment>
+                                {
+                                    ( record.file === null || record.file === '' || record.file === undefined ) ?
+                                        null : <a href={record.file}>查看指导书&nbsp;&nbsp;</a>
+                                }
                                 <a href="javascript:;" onClick={() => actions.handleDelete(record.key)}>删除</a>&nbsp;&nbsp;
                                 <a href="javascript:;" onClick={() => this.handleAlter(record)}>修改</a>
                             </Fragment>
@@ -104,7 +121,10 @@ class table extends Component {
                         type={"primary"}
                         onClick={this.submit}
                         loading={store.loading}
-                        disabled={store.dataSource.length > 0 ? false : true}>提交</Button>
+                        disabled={dataSource.length > 0 ? false : true}
+                    >
+                        提交
+                    </Button>
                 </Col>
                 <Col className="gutter-row" span={2}>
                     <Button style={{float: 'right'}} onClick={actions.resetTable}>清空</Button>
@@ -114,12 +134,12 @@ class table extends Component {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={false}
-                // rowKey={"key"}
+                rowKey={"key"}
                 // scroll={{ y: 460 }}
                 // size={"middle"}
-            />
+            /><br/>
         </Fragment>
     }
 }
 
-export default table
+export default withRouter(table)

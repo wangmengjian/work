@@ -126,9 +126,9 @@ class tableStore {
         submit: action(() => {
             this.loadingNewPlanButton = true
 
-            let data = {}
+            let data = new FormData()
             for (let i in this.selectedRowKeys) {
-                data['workPoolList['+i+'].id'] = this.selectedRowKeys[i]
+                data.append('workPoolList['+i+'].id', this.selectedRowKeys[i])
             }
 
             axios({

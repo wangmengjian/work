@@ -16,6 +16,8 @@ class tableStore {
 
     @observable loading = false
 
+    @observable employeeList = []
+
     actions = {
 
         // 监听文件变化
@@ -36,6 +38,7 @@ class tableStore {
                 'application/msword',
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation'
             ]
             if (type.indexOf(file.type) > -1) {
                 this.fileData = [...this.fileData, file]
@@ -60,13 +63,15 @@ class tableStore {
 
         handleAdd: action( values => {
             const { count, dataSource, isAlter } = this;
-            this.workFrom = [...this.workFrom, values['workFrom']]
+            this.workFrom = [...this.workFrom, values['workFrom'] === '常规工作项' ? 'w3' : 'w2']
             const newData = {
                 key: count,
                 workName: values['workName'],
                 workContent: values['workContent'],
                 workMinutes: values['workMinutes'],
-                workFrom: this.workFrom[count-1].substring(2)
+                userId: values['employeeId'],       // 员工Id , 提交时使用
+                employee: this.employeeList.filter(item => item.id === parseInt(values['employeeId']))[0].empName,    // 员工姓名，仅展示表格
+                workFrom: this.workFrom[count-1]
             };
 
             // 如果当前工作项上传了文件
@@ -91,7 +96,7 @@ class tableStore {
             }
 
             this.fileData = []
-            console.log(newData)
+
             // isAlter 有值，意味着是通过修改表格触发的该函数
             if (isAlter === undefined) {
                 this.dataSource = [...dataSource, newData]

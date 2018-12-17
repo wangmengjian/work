@@ -24,10 +24,8 @@ class MyAssess extends Component {
                         <TabPane tab="中" key="3" />
                         <TabPane tab="良" key="4" />
                         <TabPane tab="差" key="5" />
-                        <TabPane tab="已完成" key="6" />
-                        <TabPane tab="未完成" key="7" />
-                        <TabPane tab="常规工作" key="8" />
-                        <TabPane tab="临时工作" key="9" />
+                        <TabPane tab="已考核" key="6" />
+                        <TabPane tab="未考核" key="7" />
                     </Tabs>
                 {/*</div>*/}
 

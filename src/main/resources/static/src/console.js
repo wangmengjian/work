@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Link, Route, Switch, withRouter } from 'react-router-dom';
-import { Layout, Menu, Icon, Divider } from 'antd';
+import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
+import { Layout, Menu, Icon } from 'antd';
 import menus from './config/menus'
 
 // 员工
 import NormalItems from './apps/employee/normalItems/normalItems'
-import NewItems from './apps/employee/newItems/newItems'
 import DailyPlan from './apps/employee/dailyPlan/dailyPlan'
 import PlanHistory from './apps/employee/planHistory/planHistory'
 import NewPlan from './apps/employee/newPlan/newPlan'
@@ -15,15 +14,14 @@ import MyAssess from './apps/employee/myAssess/myAssess'
 
 // 领导
 import DailyPlanLeader from './apps/leader/dailyPlan/dailyPlan'
-import DailyUnfinished from './apps/leader/dailyUnfinished/dailyUnfinished'
 import ItemsReview from './apps/leader/itemsReview/itemsReview'
-import NewItemsLeader from './apps/leader/newItems/newItems'
+import NewItemsLeader from './apps/common/newItems/newItems'
 import NormalItemsLeader from './apps/leader/normalItems/normalItems'
 import PlanReview from './apps/leader/planReview/planReview'
 
 // 人事
 import NormalItemsPersonnel from './apps/personnel/normalItems/normalItems'
-import NewItemsPersonnel from './apps/personnel/newItems/newItems'
+import NewItemsPersonnel from './apps/common/newItems/newItems'
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -97,15 +95,15 @@ class Work extends Component {
 
     render() {
         return <Layout style={{height:"100vh"}}>
-                <Header style={{ backgroundColor: '#0d5ca7' }}>
-                    <div className="logo" style={{display: 'table-cell'}}>
-                        <Link to="/" style={{ textDecoration: 'none' }}>
-                            <span style={{color: '#fff', fontSize: 20}}><strong>工作笔记</strong></span>
-                            <Divider type='vertical' style={{ height: 20 }}/>
-                            <span style={{ color: 'white' }}>每天进步一点点</span>
-                        </Link>
-                    </div>
-                </Header>
+                {/*<Header style={{ backgroundColor: '#0d5ca7' }}>*/}
+                    {/*<div className="logo" style={{display: 'table-cell'}}>*/}
+                        {/*<Link to="/" style={{ textDecoration: 'none' }}>*/}
+                            {/*<span style={{color: '#fff', fontSize: 20}}><strong>工作笔记</strong></span>*/}
+                            {/*<Divider type='vertical' style={{ height: 20 }}/>*/}
+                            {/*<span style={{ color: 'white' }}>每天进步一点点</span>*/}
+                        {/*</Link>*/}
+                    {/*</div>*/}
+                {/*</Header>*/}
                 <Layout>
                     <Sider defaultselectedseys={['1']} collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} >
                         {/*<Link to="/"><div className="logo"><h2 style={{color: '#fff'}}>工作笔记</h2></div></Link>*/}
@@ -117,24 +115,22 @@ class Work extends Component {
                                 <Switch>
                                     <Route path="/" exact></Route>
                                     {/* 员工 */}
-                                    <Route path="/work/employee/normalItems"><NormalItems /></Route>
-                                    <Route path="/work/employee/newItems"><NewItems /></Route>
-                                    <Route path="/work/employee/dailyPlan"><DailyPlan /></Route>
-                                    <Route path="/work/employee/planHistory"><PlanHistory /></Route>
-                                    <Route path="/work/employee/newPlan"><NewPlan /></Route>
-                                    <Route path="/work/employee/myAssess"><MyAssess /></Route>
+                                    <Route path="/work/employee/normalItems" component={NormalItems}/>
+                                    <Route path="/work/employee/dailyPlan" component={DailyPlan}/>
+                                    <Route path="/work/employee/planHistory" component={PlanHistory}/>
+                                    <Route path="/work/employee/newPlan" component={NewPlan}/>
+                                    <Route path="/work/employee/myAssess" component={MyAssess}/>
 
                                     {/* 领导 */}
-                                    <Route path="/work/leader/workItems/normalItems"><NormalItemsLeader /></Route>
-                                    <Route path="/work/leader/workItems/newItems"><NewItemsLeader /></Route>
-                                    <Route path="/work/leader/workItems/dailyUnfinished"><DailyUnfinished /></Route>
-                                    <Route path="/work/leader/workItems/itemsReview"><ItemsReview /></Route>
-                                    <Route path="/work/leader/plan/dailyPlan"><DailyPlanLeader /></Route>
-                                    <Route path="/work/leader/plan/access"><PlanReview /></Route>
+                                    <Route path="/work/leader/workItems/normalItems" component={NormalItemsLeader}/>
+                                    <Route path="/work/leader/workItems/newItems" component={NewItemsLeader}/>
+                                    <Route path="/work/leader/workItems/itemsReview" component={ItemsReview}/>
+                                    <Route path="/work/leader/dailyPlan" component={DailyPlanLeader}/>
+                                    <Route path="/work/leader/access" component={PlanReview}/>
 
                                     {/* 人事 */}
-                                    <Route path="/work/personnel/normalItems"><NormalItemsPersonnel /></Route>
-                                    <Route path="/work/personnel/newItems"><NewItemsPersonnel /></Route>
+                                    <Route path="/work/personnel/normalItems" component={NormalItemsPersonnel}/>
+                                    <Route path="/work/personnel/newItems" component={NewItemsPersonnel}/>
                                 </Switch>
                             </div>
                         </Content>

@@ -24,18 +24,15 @@ export default {
                 key:'work/leader/workItems/newItems',
                 name:'新增工作项'
             },{
-                key:'work/leader/workItems/dailyUnfinished',
-                name:'查看未完成工作项'
-            },{
                 key:'work/leader/workItems/itemsReview',
                 name:'工作项审批'
             }]
         },{
-            key:'work/leader/plan/dailyPlan',
+            key:'work/leader/dailyPlan',
             icon: 'ordered-list',
             name:'部门工作计划'
         },{
-            key:'work/leader/plan/access',
+            key:'work/leader/access',
             icon: 'user',
             name:'部门考核'
         },{

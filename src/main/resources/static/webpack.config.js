@@ -17,7 +17,10 @@ const config = {
                     plugins: ['transform-decorators-legacy', 'transform-class-properties']
                 }
             }
-        }, {
+        },{
+            test: /\.less$/,
+            use: 'css-loader!less-loader'
+        },{
             test: /\.css$/,
             use: 'style-loader!css-loader'
         }]

@@ -94,9 +94,6 @@ class table extends Component {
         const date = new Date();
 
         const columns = [
-            {   title: '#', dataIndex: 'key', width: 50, render: (text, record, index) => {
-                    return index + 1
-                }},
             {   title: '状态', dataIndex: 'finishStatus', width: 120},
             {   title: '类型', dataIndex: 'workFrom', width: 150},
             {   title: '名称', dataIndex: 'workName', width: 160},

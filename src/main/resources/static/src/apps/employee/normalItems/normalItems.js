@@ -3,7 +3,7 @@ import {Provider} from 'mobx-react'
 import store from './stores/tableStore'
 import Table from './modules/table'
 import Modal from './modules/modal'
-import { Tabs } from 'antd'
+import { Tabs, Form } from 'antd'
 
 const TabPane = Tabs.TabPane
 
@@ -16,7 +16,7 @@ class NormalItems extends Component {
     }
 
     render() {
-        return <Provider store={store}>
+        return <Provider store={store} form={this.props.form}>
             <Fragment>
 
                 {/*<div style={{ float: 'right', marginRight: 50 }}>*/}
@@ -38,4 +38,4 @@ class NormalItems extends Component {
         </Provider>
     }
 }
-export default NormalItems
+export default Form.create()(NormalItems)
