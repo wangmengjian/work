@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nankingdata.yc.work.models.dao.WorkAuditDao">
+    <insert id="addWorkAudit" parameterType="com.nankingdata.yc.work.models.domain.WorkAudit" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into
+        work_audit(work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id,audit_submit_time)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.workUserId},#{item.originWorkId},NOW())
+        </foreach>
+    </insert>
+    <insert id="addWorkAuditDetail" parameterType="com.nankingdata.yc.work.models.domain.WorkAuditDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into work_audit_detail(audit_item_id)
+        values
+        <foreach collection="list" separator="," item="detail">
+            (#{detail.auditItemId})
+        </foreach>
+    </insert>
+    <select id="queryDeptAllAuditInfByPage" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.ShowDeptAllAuditInf">
+        select
+        wa.id,
+        wa.work_name,
+        wa.work_content,
+        users.real_name as submitter,
+        wa.work_instructor,
+        wa.work_minutes,
+        sc.`name` as workFrom,
+        wa.audit_submit_time
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join `users`
+        on wa.work_user_id=`users`.id
+        left join sys_config as sc
+        on wa.work_from=sc.code
+        <where>
+            wad.audit_status='unaudited'
+            <if test="deptNumber!=null">
+                and dept_number like #{deptNumber}
+            </if>
+            <if test="workName!=null">
+                and wa.work_name like "%"#{workName}"%"
+            </if>
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+        </where>
+        order by wa.audit_submit_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="queryDeptAllAuditInfCount" parameterType="java.util.Map"
+            resultType="Integer">
+        select count(*)
+        from (
+        select
+        wa.id
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join `users`
+        on wa.work_user_id=`users`.id
+        left join sys_config as sc
+        on wa.work_from=sc.code
+        <where>
+            and wad.audit_status='unaudited'
+            <if test="workName!=null">
+                and wa.work_name like "%"#{workName}"%"
+            </if>
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+        </where>
+        ) a
+    </select>
+    <update id="updateAuditStatus" parameterType="com.nankingdata.yc.work.models.domain.WorkAuditDetail">
+        update work_audit_detail
+        set
+        audit_user_id=
+        case audit_item_id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.auditItemId} then #{item.auditUserId}
+        </foreach>
+        end,
+        audit_time=
+        case audit_item_id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.auditItemId} then NOW()
+        </foreach>
+        end,
+        audit_fail_reason=
+        case audit_item_id
+        <foreach collection="list" item="item"
+                 separator=" ">
+            when #{item.auditItemId} then #{item.auditFailReason}
+        </foreach>
+        end,
+        audit_status=
+        case audit_item_id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.auditItemId} then #{item.auditStatus}
+        </foreach>
+        end
+        where audit_item_id in
+        <foreach collection="list" separator="," item="item" open="(" close=")">
+            #{item.auditItemId}
+        </foreach>
+    </update>
+    <select id="queryAllAuditByDetail" parameterType="com.nankingdata.yc.work.models.domain.WorkAuditDetail" resultType="com.nankingdata.yc.work.models.domain.WorkAudit">
+        select *
+        from work_audit
+        where id
+        in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.auditItemId}
+        </foreach>
+    </select>
+    <select id="queryWorkAuditDetailById" parameterType="Integer" resultType="com.nankingdata.yc.work.models.domain.WorkAuditDetail">
+        select *
+        from work_audit_detail as wad
+        where wad.id=#{id}
+    </select>
+    <delete id="deleteAudit" parameterType="Integer">
+        delete from work_audit
+        where id=#{id}
+    </delete>
+    <delete id="deleteAuditDetail" parameterType="Integer">
+        delete from work_audit_detail
+        where id=#{id}
+    </delete>
+    <update id="updateAuditStatusById" parameterType="Integer">
+        update work_audit_detail
+        set audit_status='cancel'
+        where  id=#{id}
+    </update>
+</mapper>

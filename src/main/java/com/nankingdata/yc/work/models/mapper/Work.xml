@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nankingdata.yc.work.models.dao.WorkDao">
+    <select id="querySubmitRecordByPage" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.ShowWorkAuditConditionDto">
+        select
+        wad.id,
+        sc1.`name` as audit_status,
+        wa.work_name,
+        wa.work_content,
+        wa.work_instructor,
+        wa.work_minutes,
+        wa.origin_work_id,
+        wad.audit_time as time,
+        wad.audit_fail_reason,
+        sc2.`name` as workFrom
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join sys_config as sc1
+        on wad.audit_status=sc1.code
+        left join sys_config as sc2
+        on wa.work_from=sc2.code
+        <where>
+            wa.work_user_id=#{userId}
+            <if test="workName!=null">
+                and work_name like "%"#{workName}"%"
+            </if>
+            <if test="auditStatus!=null">
+                and wad.audit_status like #{auditStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wa.work_from like #{workFrom}
+            </if>
+        </where>
+        order by time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="querySubmitRecordCount" parameterType="java.util.Map"
+            resultType="Integer">
+        select count(*)
+        from work_audit_detail as wad
+        left join work_audit as wa
+        on wad.audit_item_id=wa.id
+        left join sys_config as sc1
+        on wad.audit_status=sc1.code
+        <where>
+            wa.work_user_id=#{userId}
+            <if test="workName!=null">
+                and work_name like "%"#{workName}"%"
+            </if>
+            <if test="auditStatus!=null">
+                and wad.audit_status like #{auditStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wa.work_from like #{workFrom}
+            </if>
+        </where>
+    </select>
+    <select id="queryUnAddWork" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.domain.WorkPool">
+        select
+        wp.id,
+        wp.work_name,
+        wp.work_content,
+        wp.work_instructor,
+        wp.work_minutes
+        from work_pool as wp
+        LEFT JOIN `users`
+        on `users`.id=wp.user_id
+        <where>
+            <if test="scheduleId!=null">
+                wp.id not in (
+                select work_id
+                from work_schedule_detail as wsd
+                where schedule_id=#{scheduleId})
+            </if>
+            and wp.work_from='w3'
+            and wp.user_id=#{userId}
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+    <select id="queryWorkPoolCount" parameterType="java.util.Map" resultType="Integer">
+        select
+        count(*)
+        from work_pool as wp
+        <where>
+            <if test="employeeId!=null">
+                wp.user_id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+        </where>
+    </select>
+    <insert id="addAgreeWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,update_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},NOW())
+        </foreach>
+    </insert>
+    <update id="updateAgreeWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
+        update work_pool
+        set work_name=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workName}
+        </foreach>,
+        work_content=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workContent}
+        </foreach>,
+        work_instructor=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workInstructor}
+        </foreach>,
+        work_minutes=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workMinutes}
+        </foreach>,
+        work_from=
+        <foreach collection="list" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.workFrom}
+        </foreach>,
+        update_time = NOW()
+        where id in
+        (
+        <foreach collection="list" item="item" separator=",">
+            #{item.id}
+        </foreach>
+        )
+    </update>
+    <select id="queryWorkByEmployeeId" resultType="com.nankingdata.yc.work.models.domain.WorkPool" parameterType="java.util.Map">
+        select
+        wp.*,
+        users.real_name as employeeName
+        from work_pool wp
+        left join `users`
+        on wp.user_id=`users`.id
+        <where>
+            work_from='w3'
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name="%"#{workName}"%"
+            </if>
+        </where>
+        order by update_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="queryWorkCountByEmployeeId" resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from work_pool wp
+        left join `users`
+        on wp.user_id=`users`.id
+        <where>
+            work_from='w3'
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name="%"#{workName}"%"
+            </if>
+        </where>
+    </select>
+    <insert id="addWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
+        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom})
+        </foreach>
+    </insert>
+    <update id="updateWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
+        update work_pool
+        set work_name=#{workName},work_content=#{workContent},work_minutes=#{workMinutes},work_instructor=#{workInstructor}
+        where id=#{id}
+    </update>
+    <select id="queryWorkPool" resultType="com.nankingdata.yc.work.models.domain.WorkPool" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
+        select *
+        from work_pool
+        where id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </select>
+</mapper>

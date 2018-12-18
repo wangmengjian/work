@@ -8,6 +8,6 @@
         <setting name="callSettersOnNulls" value="true" />
     </settings>
     <typeAliases>
-        <package name="logistics.work.models.domain" />
+        <package name="com.nankingdata.yc.work.models.domain" />
     </typeAliases>
 </configuration>
