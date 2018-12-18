@@ -1,9 +1,12 @@
 package logistics.work.ctrls;
 
-import logistics.work.common.FileUtils;
 import logistics.work.common.Result;
 import logistics.work.models.domain.User;
 import logistics.work.services.UserService;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,19 +14,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.*;
 
 @RestController
 @RequestMapping("/work/user")
 public class UserCtrl extends BaseCtrl {
-    @PostMapping("/test")
-    public String test(MultipartFile[] files){
+    @GetMapping("/test")
+    public void test(MultipartFile[] files, HttpServletResponse response){
+        OkHttpClient client = new OkHttpClient();
+        Request req = new Request.Builder().url("http://pjuzxdszq.bkt.clouddn.com/instructor/318x77iK9w72/%E8%AF%84%E5%88%86%E8%A1%A8.docx").build();
+        Response resp = null;
         try {
-            return FileUtils.upload(files,"instructor").get(0);
-        } catch (Exception e) {
+            resp = client.newCall(req).execute();
+            if(resp.isSuccessful()) {
+                ResponseBody body = resp.body();
+                InputStream is = body.byteStream();
+                ByteArrayOutputStream writer = new ByteArrayOutputStream();
+                byte[] buff = new byte[1024 * 2];
+                int len = 0;
+                try {
+                    while((len = is.read(buff)) != -1) {
+                        writer.write(buff, 0, len);
+                    }
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(body.contentType().toString());
+                response.setHeader("Content-Type",body.contentType().toString());
+                byte[] data=writer.toByteArray();
+                response.getWriter().print(data);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Unexpected code " + resp);
         }
-        return null;
     }
 
     @Autowired

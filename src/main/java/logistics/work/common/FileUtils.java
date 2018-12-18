@@ -25,7 +25,7 @@ public class FileUtils {
         for(MultipartFile file:files){
             String key=dirName+"/"+Util.getVerifyRandom(12)+"/"+file.getOriginalFilename();
             try {
-                uploadManager.put(file.getInputStream(),key,upToken,null,null);
+                Response response=uploadManager.put(file.getInputStream(),key,upToken,null,null);
                 fileList.add(domain+key);
             } catch (QiniuException e) {
                 e.printStackTrace();

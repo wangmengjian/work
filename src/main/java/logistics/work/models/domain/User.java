@@ -3,19 +3,9 @@ package logistics.work.models.domain;
 import java.io.Serializable;
 
 public class User implements Serializable {
-//    private static final long serialVersionUID=7973803588625391441L;
     private Integer id;
     private String username;
     private String password;
-    private String flag;
-
-    public String getFlag() {
-        return flag;
-    }
-
-    public void setFlag(String flag) {
-        this.flag = flag;
-    }
 
     public Integer getId() {
         return id;
