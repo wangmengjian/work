@@ -2,6 +2,8 @@ package com.nankingdata.yc.work.models.domain;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotNull;
  */
 public class WorkPool {
     private Integer id;
+    @NotNull(message="请选择员工")
     private Integer userId;
     private String employeeName;
     @NotNull(message = "请填写工作名称")
@@ -17,6 +20,8 @@ public class WorkPool {
     private String workContent;
     private String workInstructor;
     @NotNull(message="请填写标准工时")
+    @Min(value=1,message = "标准时间有误")
+    @Max(value=720,message = "标准时间有误")
     private Integer workMinutes;
     private String workFrom;
     private MultipartFile[] file;

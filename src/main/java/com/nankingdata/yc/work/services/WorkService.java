@@ -9,10 +9,14 @@ import com.nankingdata.yc.work.models.domain.WorkAuditDetail;
 import com.nankingdata.yc.work.models.domain.WorkPool;
 import com.nankingdata.yc.work.models.domain.WorkSchedule;
 import com.nankingdata.yc.work.models.dto.ShowWorkAuditConditionDto;
+import com.nankingdata.yc.work.models.dto.WorkScheduleDetailDto;
+import com.nankingdata.yc.work.models.dto.WorkScheduleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,12 +74,12 @@ public class WorkService {
     }
 
     /**
-     * 新增员工常规工作项（无需审核）
+     * 人事新增员工常规工作项（无需审核）
      * @param workPoolList
      * @return
      */
     @Transactional
-    public int addWork(List<WorkPool> workPoolList) throws Exception {
+    public int personnelAddWork(List<WorkPool> workPoolList) throws Exception {
         for(WorkPool workPool:workPoolList){
             String instructor = null;
             if (workPool.getFile() != null) {
@@ -124,16 +128,62 @@ public class WorkService {
         if(workPoolList==null||workPoolList.size()<=0){
             return 0;
         }
+        for(WorkPool workPool:workPoolList){
+            workPool.setWorkFrom("w3");
+        }
         Integer employeeId=workPoolList.get(0).getUserId();
         Integer scheduleId=workScheduleDao.queryTodayScheduleId(employeeId);
         WorkSchedule workSchedule=new WorkSchedule();
         workSchedule.setUserId(employeeId);
+
         if(scheduleId==null) {
             workScheduleDao.addSchedule(workSchedule);
             scheduleId = workSchedule.getId();
         }
+        /*查询计划中已有的常规工作项*/
+        Map<String,Object> params=new HashMap<>();
+        params.put("userId",employeeId);
+        params.put("scheduleId",scheduleId);
+        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetail(params);
+        List<WorkPool> notExistWork=new ArrayList<>();
+        if(workScheduleDetailDtoList!=null&&workScheduleDetailDtoList.size()>0){
+            for(WorkPool workPool:workPoolList){
+                int i=0;
+                for(;i<workScheduleDetailDtoList.size();i++){
+                    if(workScheduleDetailDtoList.get(i).getWorkId()==workPool.getId()){
+                        break;
+                    }
+                }
+                if(i==workScheduleDetailDtoList.size()){
+                    notExistWork.add(workPool);
+                }
+            }
+        }else{
+            notExistWork=workPoolList;
+        }
         int result=0;
-        result=workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
+        if(notExistWork!=null&&notExistWork.size()>0) {
+            result = workScheduleDao.addScheduleDetail(notExistWork, scheduleId);
+        }
         return result;
+    }
+
+    /**
+     * 领导新增员工的工作项
+     * @param workPool
+     * @return
+     */
+    @Transactional
+    public int leaderAddWork(WorkPool workPool)throws Exception {
+        String instructor = null;
+        if (workPool.getFile() != null) {
+            instructor = FileUtils.upload(workPool.getFile(),"instructor").get(0);
+        }
+        workPool.setWorkInstructor(instructor);
+        List<WorkPool> workPoolList=new ArrayList<>();
+        workPoolList.add(workPool);
+        workDao.addWork(workPoolList);
+        Integer scheduleId=workScheduleDao.queryTodayScheduleId(workPool.getUserId());
+        return workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
     }
 }

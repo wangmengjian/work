@@ -175,7 +175,7 @@
             </if>
         </where>
     </select>
-    <insert id="addWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
+    <insert id="addWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true" keyProperty="id">
         insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from)
         values
         <foreach collection="list" item="item" separator=",">

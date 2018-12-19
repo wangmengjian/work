@@ -22,7 +22,7 @@ public interface WorkDao {
     public List<WorkPool> queryWorkByEmployeeId(Map<String,Object> params);
     /*查询部门下员工的常规工作项*/
     public int queryWorkCountByEmployeeId(Map<String,Object> params);
-    /*添加常规工作项*/
+    /*添加工作项*/
     public int addWork(List<WorkPool> workPoolList);
     /*更改常规工作项*/
     public int updateWork(WorkPool workPool);

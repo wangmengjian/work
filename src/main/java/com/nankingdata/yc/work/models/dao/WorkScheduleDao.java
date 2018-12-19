@@ -13,7 +13,9 @@ public interface WorkScheduleDao {
     /*根据日期查询工作计划*/
     public WorkScheduleDto queryWorkScheduleByDate(Map<String,Object> params);
     /*根据工作计划查询明细*/
-    public List<WorkScheduleDetailDto> queryWorkScheduleDetailByScheduleId(Map<String,Object> params);
+    public List<WorkScheduleDetailDto> queryWorkScheduleDetail(Map<String,Object> params);
+    /*查询计划明细总数*/
+    public Integer queryWorkScheduleDetailCount(Map<String,Object> params);
     /*更改工作计划明细完成情况*/
     public int updateScheduleDetail(List<WorkScheduleDetailDto> workScheduleDetailDtoList);
     /*更改工作计划提交状态*/
@@ -26,8 +28,4 @@ public interface WorkScheduleDao {
     public Integer queryTodayScheduleId(Integer userId);
     /*领导查询工作计划*/
     public WorkScheduleDto leaderQuerySchedule(Map<String,Object> params);
-    /*领导查询工作计划明细*/
-    public List<WorkScheduleDetailDto> leaderQueryScheduleDetail(Map<String,Object> params);
-    /*领导查询工作计划明细*/
-    public int leaderQueryScheduleDetailCount(Map<String,Object> params);
 }

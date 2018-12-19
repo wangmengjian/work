@@ -18,6 +18,15 @@ public class WorkScheduleDetailDto {
     private String finishPicture;
     private String finishFeedback;
     private String finishTime;
+    private Integer workId;
+
+    public Integer getWorkId() {
+        return workId;
+    }
+
+    public void setWorkId(Integer workId) {
+        this.workId = workId;
+    }
 
     public String getFinishTime() {
         return finishTime;

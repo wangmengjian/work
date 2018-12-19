@@ -40,9 +40,11 @@ public class WorkScheduleService {
             return result;
         }
         params.put("scheduleId",workScheduleDto.getId());
-        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetailByScheduleId(params);
+        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetail(params);
         workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList);
         result.put("data",workScheduleDto);
+        result.put("total",workScheduleDetailDtoList.size());
+        result.put("all",workScheduleDao.queryWorkScheduleDetailCount(params));
         return result;
     }
 
@@ -105,14 +107,15 @@ public class WorkScheduleService {
         if(workScheduleDto==null){
             result.put("data",null);
             result.put("total",0);
+            result.put("all",0);
             return result;
         }
         params.put("scheduleId",workScheduleDto.getId());
-        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.leaderQueryScheduleDetail(params);
+        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetail(params);
         workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList);
         result.put("data",workScheduleDto);
         result.put("total",workScheduleDetailDtoList.size());
-        result.put("all",workScheduleDao.leaderQueryScheduleDetailCount(params));
+        result.put("all",workScheduleDao.queryWorkScheduleDetailCount(params));
         return result;
     }
 }

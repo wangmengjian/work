@@ -37,14 +37,13 @@ public class AuthFilter implements Filter {
     }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        //chain.doFilter(request,response);
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
         String url = req.getRequestURI();
-        /*Users user=new Users();
+        Users user=new Users();
         user.setId(1);
-        session.setAttribute("user",user);*/
+        session.setAttribute("user",user);
         Users users= (Users) session.getAttribute("user");
         if(url.startsWith("/work")&&users==null){
             sentMsg(res,"-2","用户未登录");
