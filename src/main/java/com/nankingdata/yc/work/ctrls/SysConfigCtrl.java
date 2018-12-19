@@ -21,4 +21,5 @@ public class SysConfigCtrl extends BaseCtrl{
     public Result queryFailReason(){
         return this.send(sysConfigService.querySysCofnig(Constants.failReason));
     }
+
 }

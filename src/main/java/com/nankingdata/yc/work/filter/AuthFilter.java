@@ -1,6 +1,7 @@
 package com.nankingdata.yc.work.filter;
 
-import com.nankingdata.yc.work.common.Users;
+import com.nankingdata.yc.common.Authority;
+import com.nankingdata.yc.common.Users;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 @WebFilter(filterName="authFilter", urlPatterns={"/*"})
 @Component
@@ -20,21 +23,34 @@ public class AuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig args) throws ServletException {}
-
+    private void sentMsg(ServletResponse res, String code, String msg) throws IOException{
+        res.setContentType("application/json");
+        PrintWriter writer = res.getWriter();
+        writer.write("{\n" +
+                "    \"status\": {\n" +
+                "        \"code\": "+code+",\n" +
+                "        \"message\": \""+msg+"\"\n" +
+                "    },\n" +
+                "    \"result\": null\n" +
+                "}");
+        writer.close();
+    }
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest)request;
-        HttpServletResponse res = (HttpServletResponse)response;
-        /*HttpSession session = req.getSession();
-        Users users =new Users();
-        users.setId(1);
-        users.setRealName("wmj");
-        session.setAttribute("user", users);*/
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        //chain.doFilter(request,response);
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+        HttpSession session = req.getSession();
         String url = req.getRequestURI();
-        if (url.startsWith("/api")) {
-            filterChain.doFilter(request, response);
-        } else{
-            filterChain.doFilter(request,response);
+        /*Users user=new Users();
+        user.setId(1);
+        session.setAttribute("user",user);*/
+        Users users= (Users) session.getAttribute("user");
+        if(url.startsWith("/work")&&users==null){
+            sentMsg(res,"-2","用户未登录");
+            return;
+        }else{
+            chain.doFilter(request,response);
         }
     }
 
@@ -42,6 +58,7 @@ public class AuthFilter implements Filter {
     public void destroy() {
 
     }
+
 
     public String[] getOpenUrl() {
         if(this.openUrl == null || this.openUrl.isEmpty()) {

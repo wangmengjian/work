@@ -1,6 +1,6 @@
 package com.nankingdata.yc.work.ctrls;
 
-import com.nankingdata.yc.work.common.Users;
+import com.nankingdata.yc.common.Users;
 import com.nankingdata.yc.work.models.domain.WorkAudit;
 import com.nankingdata.yc.work.models.dto.WorkScheduleDto;
 import com.nankingdata.yc.work.common.Constants;
@@ -240,16 +240,27 @@ public class ScheduleCtrl extends BaseCtrl {
     }
     /**
      * 领导新增员工常规工作项
-     * @param workPoolDto
+     * @param workPool 常规工作项
      * @return
      */
-    @RequestMapping("/leader/addWork")
-    public Result leaderAddWork(@Valid WorkPoolDto workPoolDto){
+    @RequestMapping("/leader/addNormalWork")
+    public Result leaderAddNormalWork(@Valid WorkPool workPool){
+        List<WorkPool> workPoolList=new ArrayList<>();
+        workPoolList.add(workPool);
         try{
-            return this.send(workService.addWork(workPoolDto.getWorkPoolList()));
+            return this.send(workService.addWork(workPoolList));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }
+    }
+
+    /**
+     * 领导分配工作
+     * @param workPoolDto
+     * @return
+     */
+    public Result leaderAllotWork(@Valid WorkPoolDto workPoolDto){
+        return null;
     }
     /**
      * 人事查询部门员工的工作

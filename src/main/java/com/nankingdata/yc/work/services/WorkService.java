@@ -7,6 +7,7 @@ import com.nankingdata.yc.work.models.dao.WorkDao;
 import com.nankingdata.yc.work.models.dao.WorkScheduleDao;
 import com.nankingdata.yc.work.models.domain.WorkAuditDetail;
 import com.nankingdata.yc.work.models.domain.WorkPool;
+import com.nankingdata.yc.work.models.domain.WorkSchedule;
 import com.nankingdata.yc.work.models.dto.ShowWorkAuditConditionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,7 @@ public class WorkService {
     }
 
     /**
-     * 直接添加工作项（无需审核）
+     * 新增员工常规工作项（无需审核）
      * @param workPoolList
      * @return
      */
@@ -81,6 +82,7 @@ public class WorkService {
                 instructor = FileUtils.upload(workPool.getFile(),"instructor").get(0);
             }
             workPool.setWorkInstructor(instructor);
+            workPool.setWorkFrom("w3");
         }
         return workDao.addWork(workPoolList);
     }
@@ -111,5 +113,27 @@ public class WorkService {
         workAuditDao.deleteAuditDetail(id);
         workAuditDao.deleteAudit(workAuditDetail.getAuditItemId());
         return 1;
+    }
+
+    /**
+     * 领导分配常规工作项
+     * @param workPoolList
+     * @return
+     */
+    public int allotWork(List<WorkPool> workPoolList){
+        if(workPoolList==null||workPoolList.size()<=0){
+            return 0;
+        }
+        Integer employeeId=workPoolList.get(0).getUserId();
+        Integer scheduleId=workScheduleDao.queryTodayScheduleId(employeeId);
+        WorkSchedule workSchedule=new WorkSchedule();
+        workSchedule.setUserId(employeeId);
+        if(scheduleId==null) {
+            workScheduleDao.addSchedule(workSchedule);
+            scheduleId = workSchedule.getId();
+        }
+        int result=0;
+        result=workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
+        return result;
     }
 }
