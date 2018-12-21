@@ -1,7 +1,5 @@
 package com.nankingdata.yc.work.models.domain;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -24,14 +22,7 @@ public class WorkPool {
     @Max(value=720,message = "标准时间有误")
     private Integer workMinutes;
     private String workFrom;
-    private MultipartFile[] file;
 
-    public MultipartFile[] getFile() {
-        return file;
-    }
-    public void setFile(MultipartFile[] file) {
-        this.file = file;
-    }
     public String getEmployeeName() {
         return employeeName;
     }

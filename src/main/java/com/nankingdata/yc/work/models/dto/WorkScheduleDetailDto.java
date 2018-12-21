@@ -19,6 +19,8 @@ public class WorkScheduleDetailDto {
     private String finishFeedback;
     private String finishTime;
     private Integer workId;
+    private String finishCondition;
+
 
     public Integer getWorkId() {
         return workId;
@@ -42,17 +44,6 @@ public class WorkScheduleDetailDto {
 
     public void setFinishFeedback(String finishFeedback) {
         this.finishFeedback = finishFeedback;
-    }
-
-    private String finishCondition;
-    private MultipartFile[] pictures;
-
-    public MultipartFile[] getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(MultipartFile[] pictures) {
-        this.pictures = pictures;
     }
 
     public Integer getId() {

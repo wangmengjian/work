@@ -38,12 +38,7 @@ public class WorkAuditService {
         Integer userId= (Integer) params.get("userId");
         if(workAuditList!=null&&workAuditList.size()>0) {
             for (WorkAudit workAudit : workAuditList) {
-                String instructor = null;
-                if (workAudit.getFile() != null) {
-                    instructor = FileUtils.upload(workAudit.getFile(),"instructor").get(0);
-                }
                 workAudit.setWorkUserId(userId);
-                workAudit.setWorkInstructor(instructor);
             }
         }
         workAuditDao.addWorkAudit(workAuditList);

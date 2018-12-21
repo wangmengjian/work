@@ -58,13 +58,6 @@ public class WorkScheduleService {
     public int submitSchedule(WorkScheduleDto workScheduleDto) throws Exception {
         workScheduleDao.updateSchedule(workScheduleDto.getId());
         if(workScheduleDto.getWorkScheduleDetailDtoList()==null)return 0;
-        for(WorkScheduleDetailDto workScheduleDetailDto:workScheduleDto.getWorkScheduleDetailDtoList()){
-            String finishPicture=null;
-            if(workScheduleDetailDto.getPictures()!=null&&workScheduleDetailDto.getPictures().length>0){
-                finishPicture= FileUtils.upload(workScheduleDetailDto.getPictures(),"pictures").get(0);
-            }
-            workScheduleDetailDto.setFinishPicture(finishPicture);
-        }
         int result=workScheduleDao.updateScheduleDetail(workScheduleDto.getWorkScheduleDetailDtoList());
         return result;
     }

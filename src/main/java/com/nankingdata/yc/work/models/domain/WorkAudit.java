@@ -23,7 +23,6 @@ public class WorkAudit {
     @NotNull(message="工作项来源")
     private String workFrom;
     private String auditStatus;
-    private MultipartFile[] file;
     private Integer workUserId;
     private String auditSubmitTime;
 
@@ -51,14 +50,6 @@ public class WorkAudit {
 
     public void setWorkUserId(Integer workUserId) {
         this.workUserId = workUserId;
-    }
-
-    public MultipartFile[] getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile[] file) {
-        this.file = file;
     }
 
     public Integer getId() {

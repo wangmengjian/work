@@ -81,11 +81,6 @@ public class WorkService {
     @Transactional
     public int personnelAddWork(List<WorkPool> workPoolList) throws Exception {
         for(WorkPool workPool:workPoolList){
-            String instructor = null;
-            if (workPool.getFile() != null) {
-                instructor = FileUtils.upload(workPool.getFile(),"instructor").get(0);
-            }
-            workPool.setWorkInstructor(instructor);
             workPool.setWorkFrom("w3");
         }
         return workDao.addWork(workPoolList);
@@ -98,11 +93,6 @@ public class WorkService {
      */
     @Transactional
     public int updateWork(WorkPool workPool) throws Exception {
-        String instructor = null;
-        if (workPool.getFile() != null) {
-            instructor = FileUtils.upload(workPool.getFile(),"instructor").get(0);
-        }
-        workPool.setWorkInstructor(instructor);
         return workDao.updateWork(workPool);
     }
 
@@ -175,15 +165,16 @@ public class WorkService {
      */
     @Transactional
     public int leaderAddWork(WorkPool workPool)throws Exception {
-        String instructor = null;
-        if (workPool.getFile() != null) {
-            instructor = FileUtils.upload(workPool.getFile(),"instructor").get(0);
-        }
-        workPool.setWorkInstructor(instructor);
         List<WorkPool> workPoolList=new ArrayList<>();
         workPoolList.add(workPool);
         workDao.addWork(workPoolList);
+        WorkSchedule workSchedule=new WorkSchedule();
+        workSchedule.setUserId(workPool.getUserId());
         Integer scheduleId=workScheduleDao.queryTodayScheduleId(workPool.getUserId());
+        if(scheduleId==null) {
+            workScheduleDao.addSchedule(workSchedule);
+            scheduleId = workSchedule.getId();
+        }
         return workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
     }
 }
