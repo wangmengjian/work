@@ -15,15 +15,8 @@ public class WorkScheduleDetail {
     private String finishFeedback;
     private String finishStatus;
     private String finishTime;
-    private Integer assessId;
-
-    public Integer getAssessId() {
-        return assessId;
-    }
-
-    public void setAssessId(Integer assessId) {
-        this.assessId = assessId;
-    }
+    private String beginTime;
+    private Integer allotUserId;
 
     public String getFinishFeedback() {
         return finishFeedback;

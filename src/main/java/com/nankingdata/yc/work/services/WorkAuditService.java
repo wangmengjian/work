@@ -55,16 +55,28 @@ public class WorkAuditService {
     }
 
     /**
-     * 查询未审核的工作
+     * 查询部门审核工作
      * @param params
      * @return
      */
     public Map<String,Object> queryDeptAllAuditInf(Map<String,Object> params){
-        List<ShowDeptAllAuditInf> showDeptAllAuditInfList=workAuditDao.queryDeptAllAuditInfByPage(params);
+        Integer auditStatus= (Integer) params.get("auditStatus");
+        List<ShowDeptAllAuditInf> showDeptAllAuditInfList=null;
+        Integer all=0;
+        if(auditStatus==0){
+            //查询部门未审核工作
+            showDeptAllAuditInfList=workAuditDao.queryDeptAllUnauditedWorkByPage(params);
+            all=workAuditDao.queryDeptAllUnauditedWorkCount(params);
+        }
+        else{
+            //领导个人的审核记录
+            showDeptAllAuditInfList=workAuditDao.queryAuditedRecord(params);
+            all=workAuditDao.queryAuditedRecordCount(params);
+        }
         Map<String,Object> result=new HashMap<>();
         result.put("data",showDeptAllAuditInfList);
         result.put("total",showDeptAllAuditInfList.size());
-        result.put("all",workAuditDao.queryDeptAllAuditInfCount(params));
+        result.put("all",all);
         return result;
     }
 

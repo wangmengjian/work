@@ -36,7 +36,10 @@ public class AssessCtrl extends BaseCtrl {
                             @RequestParam(value = "pageNumber",required = false)Integer pageNumber,
                             @RequestParam(value = "pageSize",required = false)Integer pageSize,
                             @RequestParam(value = "finishStatus",required = false)String finishStatus,
-                            @RequestParam(value = "workFrom",required = false)String workFrom){
+                            @RequestParam(value = "workFrom",required = false)String workFrom,
+                            @RequestParam(value = "deptStatus",required = true)Integer deptStatus,
+                            HttpSession session){
+        Users users= (Users) session.getAttribute("user");
         Map<String,Object> params= ParamUtils.setPageInfo(pageNumber,pageSize);
         params.put("workName",workName);
         params.put("employeeId",employeeId);
@@ -44,6 +47,8 @@ public class AssessCtrl extends BaseCtrl {
         params.put("endTime",endTime);
         params.put("finishStatus",finishStatus);
         params.put("workFrom",workFrom);
+        params.put("deptStatus",deptStatus);
+        params.put("departmentId",users.getDepartmentId());
         try{
             return this.send(assessService.queryWork(params));
         }catch (Exception e){
@@ -65,7 +70,31 @@ public class AssessCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
-
+    @GetMapping("/queryAssessRecords")
+    public Result leaderQueryAssessRecords(@RequestParam(value = "workName",required = false)String workName,
+                                           @RequestParam(value = "employeeId",required = false)Integer employeeId,
+                                           @RequestParam(value = "beginTime",required = false)String beginTime,
+                                           @RequestParam(value = "endTime",required = false)String endTime,
+                                           @RequestParam(value = "pageNumber",required = false)Integer pageNumber,
+                                           @RequestParam(value = "pageSize",required = false)Integer pageSize,
+                                           @RequestParam(value = "finishStatus",required = false)String finishStatus,
+                                           @RequestParam(value = "workFrom",required = false)String workFrom,
+                                           HttpSession session){
+        Users users= (Users) session.getAttribute("user");
+        Map<String,Object> params= ParamUtils.setPageInfo(pageNumber,pageSize);
+        params.put("workName",workName);
+        params.put("employeeId",employeeId);
+        params.put("beginTime",beginTime);
+        params.put("endTime",endTime);
+        params.put("finishStatus",finishStatus);
+        params.put("workFrom",workFrom);
+        params.put("assessUserId",users.getId());
+        try{
+            return this.send(assessService.leaderQueryAssessRecords(params));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
     /**
      * 员工查询工作审核情况
      * @param workName

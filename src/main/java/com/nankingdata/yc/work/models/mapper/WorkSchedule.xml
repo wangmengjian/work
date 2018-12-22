@@ -23,7 +23,8 @@
         wsd.finish_feedback,
         wsd.finish_condition,
         wsd.finish_time,
-        wsd.work_id
+        wsd.work_id,
+        wsd.begin_time
         from work_schedule_detail as wsd
         left join sys_config as sc1
         on wsd.work_from=sc1.`code`
@@ -116,10 +117,10 @@
         values(#{userId},NOW())
     </insert>
     <insert id="addScheduleDetail">
-        insert into work_schedule_detail(schedule_id,work_id,work_from)
+        insert into work_schedule_detail(schedule_id,work_id,work_from,begin_time,allot_user_id)
         values
         <foreach collection="workPoolList" separator="," item="item">
-            (#{scheduleId},#{item.id},#{item.workFrom})
+            (#{scheduleId},#{item.id},#{item.workFrom},NOW(),#{item.allotUserId})
         </foreach>
     </insert>
     <select id="queryTodayScheduleId" parameterType="Integer" resultType="Integer">

@@ -1,6 +1,5 @@
 package com.nankingdata.yc.work.models.domain;
 
-import java.util.Date;
 
 /**
  * 考核记录
@@ -9,7 +8,7 @@ public class WorkAssess {
     private Integer id;
     private Integer userId;
     private Integer assessUserId;
-    private Date assessTime;
+    private String assessTime;
     private String deleteStatus;
     private String assessGrade;
     private Integer scheduleDetailId;
@@ -47,11 +46,11 @@ public class WorkAssess {
         this.assessUserId = assessUserId;
     }
 
-    public Date getAssessTime() {
+    public String getAssessTime() {
         return assessTime;
     }
 
-    public void setAssessTime(Date assessTime) {
+    public void setAssessTime(String assessTime) {
         this.assessTime = assessTime;
     }
 

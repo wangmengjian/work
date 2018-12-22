@@ -164,7 +164,9 @@ public class WorkService {
      * @return
      */
     @Transactional
-    public int leaderAddWork(WorkPool workPool)throws Exception {
+    public int leaderAddWork(WorkPool workPool,Integer leaderId)throws Exception {
+        if(workPool==null)return 0;
+        else workPool.setAllotUserId(leaderId);
         List<WorkPool> workPoolList=new ArrayList<>();
         workPoolList.add(workPool);
         workDao.addWork(workPoolList);

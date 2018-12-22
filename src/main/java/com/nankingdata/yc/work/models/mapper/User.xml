@@ -3,37 +3,4 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nankingdata.yc.work.models.dao.UserDao">
-    <select id="queryDeptNumberByUserId" parameterType="Integer" resultType="String">
-        select
-        dept_number
-        from employee
-        where id=(select employee_id from `users`where `users`.id=#{userId})
-    </select>
-    <select id="queryEmployeeByDeptNumber" parameterType="String" resultType="com.nankingdata.yc.work.models.domain.Employee">
-select
-`users`.id,
-employee.id as employeeId,
-employee.emp_name,
-employee.emp_job,
-employee.dept_number
-from employee
-left join `users`
-on `users`.employee_id=employee.id
-where employee.dept_number=#{deptNumber} and employee.emp_job not like '经理'
-    </select>
-    <select id="queryAllDept" resultType="com.nankingdata.yc.work.models.dto.DeptDto">
-        select *
-        from department
-    </select>
-    <select id="queryAllEmployee" resultType="com.nankingdata.yc.work.models.domain.Employee">
-select
-`users`.id,
-employee.id as employeeId,
-employee.emp_name,
-employee.emp_job,
-employee.dept_number
-from employee
-left join `users`
-on `users`.employee_id=employee.id
-    </select>
 </mapper>

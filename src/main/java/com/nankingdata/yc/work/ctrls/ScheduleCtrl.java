@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @RestController
 @RequestMapping("/work/schedule")
 public class ScheduleCtrl extends BaseCtrl {
@@ -262,9 +261,11 @@ public class ScheduleCtrl extends BaseCtrl {
      * @return
      */
     @PostMapping("/leader/addWork")
-    public Result leaderAddWork(@Valid WorkPool workPool) {
+    public Result leaderAddWork(@Valid WorkPool workPool,HttpSession session) {
+        Users users= (Users) session.getAttribute("user");
+        Integer leaderId=users.getId();
         try {
-            return this.send(workService.leaderAddWork(workPool));
+            return this.send(workService.leaderAddWork(workPool,leaderId));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
         }

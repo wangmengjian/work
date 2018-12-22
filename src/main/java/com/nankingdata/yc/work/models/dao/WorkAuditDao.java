@@ -12,10 +12,14 @@ public interface WorkAuditDao {
     public int addWorkAuditDetail(List<WorkAuditDetail> workAuditDetailList);
     /*添加审核记录*/
     public int addWorkAudit(List<WorkAudit> workAuditList);
-    /*分页查询部门所有审核详情*/
-    public List<ShowDeptAllAuditInf> queryDeptAllAuditInfByPage(Map<String,Object> params);
-    /*查询部门所有审核详情的数量*/
-    public Integer queryDeptAllAuditInfCount(Map<String,Object> params);
+    /*分页查询部门所有未审核的工作*/
+    public List<ShowDeptAllAuditInf> queryDeptAllUnauditedWorkByPage(Map<String,Object> params);
+    /*查询部门所有未审核的工作总数*/
+    public Integer queryDeptAllUnauditedWorkCount(Map<String,Object> params);
+    /*查询领导自己的审核记录*/
+    public List<ShowDeptAllAuditInf> queryAuditedRecord(Map<String,Object> params);
+    /*查询领导审核记录总数*/
+    public Integer queryAuditedRecordCount(Map<String,Object> params);
     /*更改工作项的完成状态*/
     public int updateAuditStatus(List<WorkAuditDetail> workAuditDetailList);
     /*查询所有的审核工作项*/

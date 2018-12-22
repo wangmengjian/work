@@ -19,62 +19,120 @@
             (#{detail.auditItemId})
         </foreach>
     </insert>
-    <select id="queryDeptAllAuditInfByPage" parameterType="java.util.Map"
+    <select id="queryDeptAllUnauditedWorkByPage" parameterType="java.util.Map"
             resultType="com.nankingdata.yc.work.models.dto.ShowDeptAllAuditInf">
-        select
+        SELECT
         wa.id,
         wa.work_name,
         wa.work_content,
-        users.real_name as submitter,
+        users.real_name AS submitter,
         wa.work_instructor,
         wa.work_minutes,
-        sc.`name` as workFrom,
-        wa.audit_submit_time
-        from work_audit_detail as wad
-        left join work_audit as wa
-        on wad.audit_item_id=wa.id
-        left join `users`
-        on wa.work_user_id=`users`.id
-        left join sys_config as sc
-        on wa.work_from=sc.code
+        sc.`name` AS workFrom,
+        wa.audit_submit_time,
+        wad.audit_status
+        FROM
+        work_audit_detail AS wad
+        LEFT JOIN work_audit AS wa ON wad.audit_item_id = wa.id
+        LEFT JOIN usermanagement.`users` ON wa.work_user_id = `users`.id
+        LEFT JOIN sys_config AS sc ON wa.work_from = sc. CODE
         <where>
-            wad.audit_status='unaudited'
-            <if test="deptNumber!=null">
-                and dept_number like #{deptNumber}
-            </if>
+            wad.audit_status like 'unaudited'
             <if test="workName!=null">
                 and wa.work_name like "%"#{workName}"%"
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
             </if>
         </where>
         order by wa.audit_submit_time desc
         limit #{pageStart},#{pageSize}
     </select>
-    <select id="queryDeptAllAuditInfCount" parameterType="java.util.Map"
+    <select id="queryDeptAllUnauditedWorkCount" parameterType="java.util.Map"
             resultType="Integer">
         select count(*)
         from (
         select
         wa.id
-        from work_audit_detail as wad
-        left join work_audit as wa
-        on wad.audit_item_id=wa.id
-        left join `users`
-        on wa.work_user_id=`users`.id
-        left join sys_config as sc
-        on wa.work_from=sc.code
+        FROM
+        work_audit_detail AS wad
+        LEFT JOIN work_audit AS wa ON wad.audit_item_id = wa.id
+        LEFT JOIN usermanagement.`users` ON wa.work_user_id = `users`.id
+        LEFT JOIN sys_config AS sc ON wa.work_from = sc. CODE
         <where>
-            and wad.audit_status='unaudited'
+            wad.audit_status like 'unaudited'
             <if test="workName!=null">
                 and wa.work_name like "%"#{workName}"%"
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
             </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
+            </if>
         </where>
         ) a
+    </select>
+    <select id="queryAuditedRecord" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.ShowWorkAuditConditionDto">
+        SELECT
+        wa.id,
+        wa.work_name,
+        wa.work_content,
+        users.real_name AS submitter,
+        wa.work_instructor,
+        wa.work_minutes,
+        sc.`name` AS workFrom,
+        wa.audit_submit_time,
+        wad.audit_status
+        FROM
+        work_audit_detail AS wad
+        LEFT JOIN work_audit AS wa ON wad.audit_item_id = wa.id
+        LEFT JOIN usermanagement.`users` ON wa.work_user_id = `users`.id
+        LEFT JOIN sys_config AS sc ON wa.work_from = sc. CODE
+        <where>
+            wad.audit_status not like 'unaudited'
+            <if test="workName!=null">
+                and wa.work_name like "%"#{workName}"%"
+            </if>
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
+            </if>
+            <if test="auditUserId!=null">
+                and audit_user_id=#{auditUserId}
+            </if>
+        </where>
+        order by wad.audit_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="queryAuditedRecordCount" resultType="Integer" parameterType="java.util.Map">
+        SELECT
+        count(*)
+        FROM
+        work_audit_detail AS wad
+        LEFT JOIN work_audit AS wa ON wad.audit_item_id = wa.id
+        LEFT JOIN usermanagement.`users` ON wa.work_user_id = `users`.id
+        LEFT JOIN sys_config AS sc ON wa.work_from = sc. CODE
+        <where>
+            wad.audit_status not like 'unaudited'
+            <if test="workName!=null">
+                and wa.work_name like "%"#{workName}"%"
+            </if>
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
+            </if>
+            <if test="auditUserId!=null">
+                and audit_user_id=#{auditUserId}
+            </if>
+        </where>
     </select>
     <update id="updateAuditStatus" parameterType="com.nankingdata.yc.work.models.domain.WorkAuditDetail">
         update work_audit_detail

@@ -67,8 +67,6 @@
         wp.work_instructor,
         wp.work_minutes
         from work_pool as wp
-        LEFT JOIN `users`
-        on `users`.id=wp.user_id
         <where>
             <if test="scheduleId!=null">
                 wp.id not in (
@@ -145,7 +143,7 @@
         wp.*,
         users.real_name as employeeName
         from work_pool wp
-        left join `users`
+        left join usermanagement.`users`
         on wp.user_id=`users`.id
         <where>
             work_from='w3'
@@ -163,7 +161,7 @@
         select
         count(*)
         from work_pool wp
-        left join `users`
+        left join usermanagement.`users`
         on wp.user_id=`users`.id
         <where>
             work_from='w3'
@@ -176,10 +174,10 @@
         </where>
     </select>
     <insert id="addWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true" keyProperty="id">
-        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from)
+        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,allot_user_id)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom})
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.allotUserId})
         </foreach>
     </insert>
     <update id="updateWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">

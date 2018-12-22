@@ -3,7 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nankingdata.yc.work.models.dao.AssessDao">
-    <select id="queryAllAssess" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.ShowAssessDto">
+    <select id="queryAllAssess" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.ShowAssessDto">
         select
         wsd.id,
         sc1.name as finish_status,
@@ -11,10 +12,10 @@
         wp.work_content,
         sc.name as workFrom,
         wp.work_minutes,
-        ws.date as beginTime,
+        wsd.begin_time,
         wsd.finish_time,
         wa.assess_grade,
-        users.real_name
+        users.real_name as empName
         from work_schedule_detail as wsd
         left join work_pool as wp
         on wp.id=wsd.work_id
@@ -22,7 +23,7 @@
         on wsd.id=wa.schedule_detail_id
         left join work_schedule as ws
         on ws.id=wsd.schedule_id
-        left join `users`
+        left join usermanagement.`users`
         on ws.user_id=`users`.id
         left join sys_config as sc
         on sc.`code`=wp.work_from
@@ -47,13 +48,16 @@
                 and wp.work_name like "%"#{workName}"%"
             </if>
             <if test="beginTime!=null">
-                and ws.date>#{beginTime}
+                and wsd.begin_time>#{beginTime}
             </if>
             <if test="endTime!=null">
                 and #{endTime}>finish_time
             </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
+            </if>
         </where>
-        order by ws.date desc, finish_time desc
+        order by begin_time desc, finish_time desc
         limit #{pageStart},#{pageSize}
     </select>
     <select id="queryAllAssessCount" resultType="Integer" parameterType="java.util.Map">
@@ -65,7 +69,7 @@
         on wsd.id=wa.schedule_detail_id
         left join work_schedule as ws
         on ws.id=wsd.schedule_id
-        left join `users`
+        left join usermanagement.`users`
         on ws.user_id=`users`.id
         left join sys_config as sc
         on sc.`code`=wp.work_from
@@ -81,7 +85,7 @@
                 and users.id=#{employeeId}
             </if>
             <if test="finishStatus!=null">
-                and wsd.finish_status like #{finishStatus}
+                and finish_status=#{finishStatus}
             </if>
             <if test="workFrom!=null">
                 and wp.work_From like #{workFrom}
@@ -90,10 +94,13 @@
                 and wp.work_name like "%"#{workName}"%"
             </if>
             <if test="beginTime!=null">
-                and ws.date>#{beginTime}
+                and wsd.begin_time>#{beginTime}
             </if>
             <if test="endTime!=null">
                 and #{endTime}>finish_time
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
             </if>
         </where>
     </select>
@@ -104,7 +111,8 @@
             (#{item.assessUserId},NOW(),#{item.assessGrade},#{item.assessDesc},#{item.scheduleDetailId})
         </foreach>
     </insert>
-    <select id="employeeQueryAllAssess" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.ShowAssessDto">
+    <select id="employeeQueryAllAssess" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.ShowAssessDto">
         select
         wsd.id,
         sc1.name as finish_status,
@@ -191,6 +199,184 @@
             </if>
             <if test="endTime!=null">
                 and #{endTime}>finish_time
+            </if>
+        </where>
+    </select>
+    <select id="queryOtherDeptAssess" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.ShowAssessDto">
+        select
+        wsd.id,
+        sc1.name as finish_status,
+        wp.work_name,
+        wp.work_content,
+        sc.name as workFrom,
+        wp.work_minutes,
+        wsd.begin_time,
+        wsd.finish_time,
+        wa.assess_grade,
+        users.real_name as empName
+        from work_schedule_detail as wsd
+        left join work_pool as wp
+        on wp.id=wsd.work_id
+        left join work_assess as wa
+        on wsd.id=wa.schedule_detail_id
+        left join work_schedule as ws
+        on ws.id=wsd.schedule_id
+        left join usermanagement.`users`
+        on ws.user_id=`users`.id
+        left join sys_config as sc
+        on sc.`code`=wp.work_from
+        left join sys_config as sc1
+        on sc1.`code`=wsd.finish_status
+        <where>
+            assess_time is null
+            and ws.submit_status like 'submitted'
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="finishStatus!=null">
+                and finish_status=#{finishStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wp.work_From like #{workFrom}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+            <if test="beginTime!=null">
+                and wsd.begin_time>#{beginTime}
+            </if>
+            <if test="endTime!=null">
+                and #{endTime}>finish_time
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id &lt;&gt; #{departmentId}
+            </if>
+        </where>
+        order by begin_time desc, finish_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="queryOtherDeptAssessCount" parameterType="java.util.Map" resultType="Integer">
+        select count(*)
+        from work_schedule_detail as wsd
+        left join work_pool as wp
+        on wp.id=wsd.work_id
+        left join work_assess as wa
+        on wsd.id=wa.schedule_detail_id
+        left join work_schedule as ws
+        on ws.id=wsd.schedule_id
+        left join usermanagement.`users`
+        on ws.user_id=`users`.id
+        left join sys_config as sc
+        on sc.`code`=wp.work_from
+        left join sys_config as sc1
+        on sc1.`code`=wsd.finish_status
+        <where>
+            assess_time is null
+            and ws.submit_status like 'submitted'
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="finishStatus!=null">
+                and finish_status=#{finishStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wp.work_From like #{workFrom}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+            <if test="beginTime!=null">
+                and wsd.begin_time>#{beginTime}
+            </if>
+            <if test="endTime!=null">
+                and #{endTime}>finish_time
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id &lt;&gt; #{departmentId}
+            </if>
+        </where>
+    </select>
+    <select id="leaderQueryAssessRecords" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.AssessRecordDto">
+        select
+        wa.id,
+        wa.assess_time,
+        wa.assess_grade,
+        wa.assess_desc,
+        wp.work_name,
+        wp.work_content,
+        wp.work_instructor,
+        sc.name as workFrom,
+        users.real_name as empName,
+        wsd.begin_time,
+        wsd.finish_time,
+        wsd.finish_status
+        from work_assess as wa
+        left join work_schedule_detail as wsd
+        on wsd.id=wa.schedule_detail_id
+        left join work_pool as wp
+        on wp.id=wsd.work_id
+        left join usermanagement.users
+        on users.id=wp.user_id
+        left join sys_config as sc
+        on sc.`code`=wp.work_from
+        <where>
+            <if test="assessUserId!=null">
+                assess_user_id=#{assessUserId}
+            </if>
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="finishStatus!=null">
+                and finish_status=#{finishStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wp.work_From like #{workFrom}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+            <if test="beginTime!=null">
+                and wa.assess_time>#{beginTime}
+            </if>
+            <if test="endTime!=null">
+                and #{endTime}>wa.assess_time
+            </if>
+        </where>
+        order by assess_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="leaderQueryAssessRecordsCount" parameterType="java.util.Map" resultType="Integer">
+        select count(*)
+        from work_assess as wa
+        left join work_schedule_detail as wsd
+        on wsd.id=wa.schedule_detail_id
+        left join work_pool as wp
+        on wp.id=wsd.work_id
+        left join usermanagement.users
+        on users.id=wp.user_id
+        <where>
+            <if test="assessUserId!=null">
+                assess_user_id=#{assessUserId}
+            </if>
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+            <if test="finishStatus!=null">
+                and finish_status=#{finishStatus}
+            </if>
+            <if test="workFrom!=null">
+                and wp.work_From like #{workFrom}
+            </if>
+            <if test="workName!=null">
+                and wp.work_name like "%"#{workName}"%"
+            </if>
+            <if test="beginTime!=null">
+                and wa.assess_time>#{beginTime}
+            </if>
+            <if test="endTime!=null">
+                and #{endTime}>wa.assess_time
             </if>
         </where>
     </select>

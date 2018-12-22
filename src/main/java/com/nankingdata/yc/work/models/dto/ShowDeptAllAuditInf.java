@@ -1,7 +1,7 @@
 package com.nankingdata.yc.work.models.dto;
 
 /**
- * 显示部门中所有员工提交的待审核的工作项
+ * 显示部门中所有员工提交的审核详情
  */
 public class ShowDeptAllAuditInf {
     private Integer id;
@@ -12,6 +12,15 @@ public class ShowDeptAllAuditInf {
     private Integer workMinutes;
     private String workFrom;
     private String auditSubmitTime;
+    private String auditStatus;
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
+    }
 
     public Integer getId() {
         return id;

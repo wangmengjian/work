@@ -22,6 +22,15 @@ public class WorkPool {
     @Max(value=720,message = "标准时间有误")
     private Integer workMinutes;
     private String workFrom;
+    private Integer allotUserId;
+
+    public Integer getAllotUserId() {
+        return allotUserId;
+    }
+
+    public void setAllotUserId(Integer allotUserId) {
+        this.allotUserId = allotUserId;
+    }
 
     public String getEmployeeName() {
         return employeeName;

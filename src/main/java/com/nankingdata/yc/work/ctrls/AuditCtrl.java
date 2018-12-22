@@ -32,15 +32,17 @@ public class AuditCtrl extends BaseCtrl{
                                      @RequestParam(value="pageNumber", required = false)Integer pageNumber,
                                      @RequestParam(value = "pageSize",required = false)Integer pageSize,
                                      @RequestParam(value="employeeId",required = false)Integer employeeId,
+                                     @RequestParam(value = "auditStatus",required=true)Integer auditStatus,
                                      HttpSession session){
         Users users = (Users) session.getAttribute(Constants.userSession);
         Map<String,Object> params=ParamUtils.setPageInfo(pageNumber,pageSize);
         params.put("workName",workName);
-        params.put("userId", users.getId());
+        params.put("auditUserId", users.getId());
         params.put("employeeId",employeeId);
+        params.put("auditStatus",auditStatus);
+        params.put("departmentId",users.getDepartmentId());
         return this.send(workAuditService.queryDeptAllAuditInf(params));
     }
-
     /**
      * 审核员工的工作
      * @param workAuditDetailDto

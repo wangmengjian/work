@@ -1,8 +1,9 @@
 package com.nankingdata.yc.work.models.dao;
 
+import com.nankingdata.yc.common.Users;
+
+import java.util.List;
+
 public interface UserDao {
-    /*public String queryDeptNumberByUserId(Integer userId);
-    public List<Employee> queryEmployeeByDeptNumber(String deptNumber);
-    public List<DeptDto> queryAllDept();
-    public List<Employee> queryAllEmployee();*/
+    public Integer queryDeptIdByUserId(Integer userId);
 }

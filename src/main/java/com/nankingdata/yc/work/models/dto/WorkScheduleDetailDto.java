@@ -20,7 +20,15 @@ public class WorkScheduleDetailDto {
     private String finishTime;
     private Integer workId;
     private String finishCondition;
+    private String beginTime;
 
+    public String getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
 
     public Integer getWorkId() {
         return workId;
