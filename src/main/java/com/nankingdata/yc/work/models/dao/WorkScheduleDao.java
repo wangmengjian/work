@@ -27,5 +27,8 @@ public interface WorkScheduleDao {
     /*查询今日日计划id*/
     public Integer queryTodayScheduleId(Integer userId);
     /*领导查询工作计划*/
-    public WorkScheduleDto leaderQuerySchedule(Map<String,Object> params);
+    public List<WorkScheduleDto> leaderQuerySchedule(Map<String,Object> params);
+    /*部门工作计划的条数*/
+    public Integer leaderQueryScheduleCount(Map<String,Object> params);
+
 }

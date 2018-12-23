@@ -11,11 +11,29 @@ public class AssessRecordDto {
     private String workName;
     private String workContent;
     private String workInstructor;
+    private Integer workMinutes;
     private String workFrom;
     private String empName;
     private String beginTime;
     private String finishTime;
     private String finishStatus;
+    private float workEfficiency;
+
+    public float getWorkEfficiency() {
+        return workEfficiency;
+    }
+
+    public void setWorkEfficiency(float workEfficiency) {
+        this.workEfficiency = workEfficiency;
+    }
+
+    public Integer getWorkMinutes() {
+        return workMinutes;
+    }
+
+    public void setWorkMinutes(Integer workMinutes) {
+        this.workMinutes = workMinutes;
+    }
 
     public String getWorkFrom() {
         return workFrom;

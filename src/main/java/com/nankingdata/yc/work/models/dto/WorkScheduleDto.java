@@ -10,8 +10,18 @@ public class WorkScheduleDto {
     private String date;
     private String submitTime;
     private String submitStatus;
+    private String empName;
     @Valid
     private List<WorkScheduleDetailDto> workScheduleDetailDtoList;
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+
     public Integer getId() {
         return id;
     }

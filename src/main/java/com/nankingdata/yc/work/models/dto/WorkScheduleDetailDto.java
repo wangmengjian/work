@@ -21,6 +21,24 @@ public class WorkScheduleDetailDto {
     private Integer workId;
     private String finishCondition;
     private String beginTime;
+    private String empName;
+    private Integer scheduleId;
+
+    public Integer getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(Integer scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
 
     public String getBeginTime() {
         return beginTime;

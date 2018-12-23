@@ -16,6 +16,15 @@ public class ShowAssessDto {
     private String empName;
     private String assessDesc;
     private Integer assessStatus;
+    private float workEfficiency;
+
+    public float getWorkEfficiency() {
+        return workEfficiency;
+    }
+
+    public void setWorkEfficiency(float workEfficiency) {
+        this.workEfficiency = workEfficiency;
+    }
 
     public Integer getAssessStatus() {
         return assessStatus;

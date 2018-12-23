@@ -76,7 +76,7 @@
         </where>
         ) a
     </select>
-    <select id="queryAuditedRecord" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.ShowWorkAuditConditionDto">
+    <select id="queryAuditedRecord" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.ShowDeptAllAuditInf">
         SELECT
         wa.id,
         wa.work_name,

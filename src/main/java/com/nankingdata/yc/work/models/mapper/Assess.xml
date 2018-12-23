@@ -51,7 +51,7 @@
                 and wsd.begin_time>#{beginTime}
             </if>
             <if test="endTime!=null">
-                and #{endTime}>finish_time
+                and #{endTime}>wsd.begin_time
             </if>
             <if test="departmentId!=null">
                 and users.department_id=#{departmentId}
@@ -307,6 +307,7 @@
         wp.work_name,
         wp.work_content,
         wp.work_instructor,
+        wp.work_minutes,
         sc.name as workFrom,
         users.real_name as empName,
         wsd.begin_time,

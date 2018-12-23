@@ -243,10 +243,13 @@ public class ScheduleCtrl extends BaseCtrl {
     public Result leaderQuerySchedule(@RequestParam(value = "date", required = false) String date,
                                       @RequestParam(value = "employeeId", required = false) Integer employeeId,
                                       @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+                                      @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                      HttpSession session) {
+        Users users= (Users) session.getAttribute("user");
         Map<String, Object> params = ParamUtils.setPageInfo(pageNumber, pageSize);
         params.put("date", date);
-        params.put("userId", employeeId);
+        params.put("employeeId", employeeId);
+        params.put("departmentId",users.getDepartmentId());
         try {
             return this.send(workScheduleService.leaderQuerySchedule(params));
         } catch (Exception e) {
@@ -286,6 +289,15 @@ public class ScheduleCtrl extends BaseCtrl {
         }
     }
 
+    /**
+     * 删除常规工作项
+     * @param workPool
+     * @return
+     */
+    @DeleteMapping("/leader/deleteWork")
+    public Result leaderDeleteWork(WorkPool workPool){
+        return this.send(workService.deleteWork(workPool.getId()));
+    }
     /**
      * 人事查询部门员工的工作
      *

@@ -79,6 +79,7 @@
             <if test="workName!=null">
                 and wp.work_name like "%"#{workName}"%"
             </if>
+            and wp.delete_status='no'
         </where>
         order by update_time desc
     </select>
@@ -93,6 +94,7 @@
             <if test="workName!=null">
                 and wp.work_name like "%"#{workName}"%"
             </if>
+            and wp.delete_status='no'
         </where>
     </select>
     <insert id="addAgreeWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true"
@@ -153,6 +155,7 @@
             <if test="workName!=null">
                 and wp.work_name="%"#{workName}"%"
             </if>
+            and wp.delete_status='no'
         </where>
         order by update_time desc
         limit #{pageStart},#{pageSize}
@@ -171,6 +174,7 @@
             <if test="workName!=null">
                 and wp.work_name="%"#{workName}"%"
             </if>
+            and wp.delete_status='no'
         </where>
     </select>
     <insert id="addWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true" keyProperty="id">
@@ -192,5 +196,11 @@
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>
+        and delete_status='no'
     </select>
+    <delete id="deleteWork" parameterType="Integer">
+        update work_pool
+        set delete_status='yes'
+        where id=#{workId}
+    </delete>
 </mapper>

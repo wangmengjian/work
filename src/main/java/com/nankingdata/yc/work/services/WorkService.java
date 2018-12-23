@@ -27,8 +27,6 @@ public class WorkService {
     @Autowired
     private WorkScheduleDao workScheduleDao;
     @Autowired
-    private UserDao userDao;
-    @Autowired
     private WorkAuditDao workAuditDao;
     /**
      * 查询员工提交的所有工作项的审核记录
@@ -178,5 +176,15 @@ public class WorkService {
             scheduleId = workSchedule.getId();
         }
         return workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
+    }
+
+    /**
+     * 删除员工常规工作项
+     * @param workId
+     * @return
+     */
+    @Transactional
+    public int deleteWork(Integer workId){
+        return workDao.deleteWork(workId);
     }
 }

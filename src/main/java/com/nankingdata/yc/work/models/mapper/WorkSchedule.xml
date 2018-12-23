@@ -24,7 +24,9 @@
         wsd.finish_condition,
         wsd.finish_time,
         wsd.work_id,
-        wsd.begin_time
+        wsd.begin_time,
+        users.real_name as empName,
+        wsd.schedule_id
         from work_schedule_detail as wsd
         left join sys_config as sc1
         on wsd.work_from=sc1.`code`
@@ -32,9 +34,12 @@
         on wsd.work_id=wp.id
         left join sys_config as sc
         on wsd.finish_status=sc.`code`
+        left join usermanagement.`users`
+        on users.id=wp.user_id
         <where>
-            user_id=#{userId}
-            and schedule_id=#{scheduleId}
+            <if test="scheduleId!=null">
+                schedule_id=#{scheduleId}
+            </if>
             <if test="workFrom!=null">
                 and wsd.work_from=#{workFrom}
             </if>
@@ -43,6 +48,9 @@
             </if>
             <if test="finishStatus!=null">
                 and wsd.finish_status like #{finishStatus}
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
             </if>
         </where>
         order by wsd.finish_time asc
@@ -60,8 +68,7 @@
         left join sys_config as sc
         on wsd.finish_status=sc.`code`
         <where>
-            user_id=#{userId}
-            and schedule_id=#{scheduleId}
+            schedule_id=#{scheduleId}
             <if test="workFrom!=null">
                 and wsd.work_from=#{workFrom}
             </if>
@@ -130,11 +137,31 @@
     </select>
     <select id="leaderQuerySchedule" parameterType="java.util.Map"
             resultType="com.nankingdata.yc.work.models.dto.WorkScheduleDto">
-        select *
-        from work_schedule
+        select ws.*,users.real_name as empName
+        from work_schedule as ws
+        left join usermanagement.users
+        on ws.user_id=users.id
         <where>
+            users.department_id=#{departmentId}
             <if test="employeeId!=null">
-                user_id=#{employeeId}
+                and user_id=#{employeeId}
+            </if>
+            <if test="date!=null">
+                and date_format(`date`,'%e %b %y') = date_format(#{date}, '%e %b %y')
+            </if>
+        </where>
+        order by ws.submit_time desc
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="leaderQueryScheduleCount" parameterType="java.util.Map" resultType="Integer">
+        select count(*)
+        from work_schedule as ws
+        left join usermanagement.users
+        on ws.user_id=users.id
+        <where>
+            users.department_id=#{departmentId}
+            <if test="employeeId!=null">
+                and user_id=#{employeeId}
             </if>
             <if test="date!=null">
                 and date_format(`date`,'%e %b %y') = date_format(#{date}, '%e %b %y')

@@ -23,6 +23,15 @@ public class WorkPool {
     private Integer workMinutes;
     private String workFrom;
     private Integer allotUserId;
+    private Integer isDoing;
+
+    public Integer getIsDoing() {
+        return isDoing;
+    }
+
+    public void setIsDoing(Integer isDoing) {
+        this.isDoing = isDoing;
+    }
 
     public Integer getAllotUserId() {
         return allotUserId;

@@ -19,7 +19,7 @@ public class AuditCtrl extends BaseCtrl{
     private WorkAuditService workAuditService;
 
     /**
-     * 领导查询部门所有未审核的工作
+     * 领导查询部门审核的工作
      * @param workName
      * @param pageNumber
      * @param pageSize
@@ -27,7 +27,7 @@ public class AuditCtrl extends BaseCtrl{
      * @param session
      * @return
      */
-    @GetMapping("/leader/queryUnAuditedWork")
+    @GetMapping("/leader/queryAuditedWork")
     public Result queryUnAuditedWork(@RequestParam(value="workName",required = false)String workName,
                                      @RequestParam(value="pageNumber", required = false)Integer pageNumber,
                                      @RequestParam(value = "pageSize",required = false)Integer pageSize,
@@ -62,4 +62,5 @@ public class AuditCtrl extends BaseCtrl{
             return this.send(-1,"操作失败");
         }
     }
+
 }

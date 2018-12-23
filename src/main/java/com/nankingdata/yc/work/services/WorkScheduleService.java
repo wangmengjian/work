@@ -1,6 +1,7 @@
 package com.nankingdata.yc.work.services;
 
 import com.nankingdata.yc.work.common.FileUtils;
+import com.nankingdata.yc.work.models.dao.UserDao;
 import com.nankingdata.yc.work.models.domain.WorkSchedule;
 import com.nankingdata.yc.work.models.dto.WorkScheduleDto;
 import com.nankingdata.yc.work.models.dao.WorkDao;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,20 +97,31 @@ public class WorkScheduleService {
             LocalDate localDate=LocalDate.now();
             params.put("date",localDate.toString());
         }
-        WorkScheduleDto workScheduleDto=workScheduleDao.leaderQuerySchedule(params);
+        List<WorkScheduleDto> workScheduleDtoList=workScheduleDao.leaderQuerySchedule(params);
+        params.remove("pageStart");
+        params.remove("pageSize");
+        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetail(params);
         Map<String,Object> result=new HashMap<>();
-        if(workScheduleDto==null){
+        if(workScheduleDtoList==null||workScheduleDtoList.size()<=0){
             result.put("data",null);
             result.put("total",0);
             result.put("all",0);
             return result;
         }
-        params.put("scheduleId",workScheduleDto.getId());
-        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetail(params);
-        workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList);
-        result.put("data",workScheduleDto);
-        result.put("total",workScheduleDetailDtoList.size());
-        result.put("all",workScheduleDao.queryWorkScheduleDetailCount(params));
+        if(workScheduleDetailDtoList!=null&&workScheduleDetailDtoList.size()>0) {
+            for (WorkScheduleDto workScheduleDto : workScheduleDtoList) {
+                List<WorkScheduleDetailDto> workScheduleDetailDtoList1 = new ArrayList<>();
+                for (WorkScheduleDetailDto workScheduleDetailDto : workScheduleDetailDtoList) {
+                    if (workScheduleDetailDto.getScheduleId().equals(workScheduleDto.getId())) {
+                        workScheduleDetailDtoList1.add(workScheduleDetailDto);
+                    }
+                }
+                workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList1);
+            }
+        }
+        result.put("data",workScheduleDtoList);
+        result.put("total",workScheduleDtoList.size());
+        result.put("all",workScheduleDao.leaderQueryScheduleCount(params));
         return result;
     }
 }

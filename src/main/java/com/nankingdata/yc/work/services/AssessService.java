@@ -7,6 +7,9 @@ import com.nankingdata.yc.work.models.dto.ShowAssessDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +25,7 @@ public class AssessService {
      * @param params
      * @return
      */
-    public Map<String,Object> queryWork(Map<String,Object> params){
+    public Map<String,Object> queryWork(Map<String,Object> params) throws ParseException {
         Integer deptStatus= (Integer) params.get("deptStatus");
         List<ShowAssessDto> showAssessDtoList=null;
         int all=0;
@@ -32,6 +35,16 @@ public class AssessService {
         }else{
             showAssessDtoList=assessDao.queryOtherDeptAssess(params);
             all=assessDao.queryOtherDeptAssessCount(params);
+        }
+        for(ShowAssessDto showAssessDto:showAssessDtoList){
+            float workEfficiency=0;
+            if(showAssessDto.getFinishTime()!=null){
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date beginTime=simpleDateFormat.parse(showAssessDto.getBeginTime());
+                Date finishTime=simpleDateFormat.parse(showAssessDto.getFinishTime());
+                workEfficiency=(float)showAssessDto.getWorkMinutes()/((finishTime.getTime()-beginTime.getTime())/60000);
+            }
+            showAssessDto.setWorkEfficiency(workEfficiency);
         }
         Map<String,Object> result=new HashMap<>();
         result.put("data",showAssessDtoList);
@@ -58,9 +71,19 @@ public class AssessService {
      * @param params
      * @return
      */
-    public Map<String,Object> leaderQueryAssessRecords(Map<String,Object> params){
+    public Map<String,Object> leaderQueryAssessRecords(Map<String,Object> params) throws Exception {
         Map<String,Object> result=new HashMap<>();
         List<AssessRecordDto> assessRecordDtoList=assessDao.leaderQueryAssessRecords(params);
+        for(AssessRecordDto assessRecordDto:assessRecordDtoList){
+            float workEfficiency=0;
+            if(assessRecordDto.getFinishTime()!=null){
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date beginTime=simpleDateFormat.parse(assessRecordDto.getBeginTime());
+                Date finishTime=simpleDateFormat.parse(assessRecordDto.getFinishTime());
+                workEfficiency=(float)assessRecordDto.getWorkMinutes()/((finishTime.getTime()-beginTime.getTime())/60000);
+            }
+            assessRecordDto.setWorkEfficiency(workEfficiency);
+        }
         result.put("data",assessRecordDtoList);
         result.put("total",assessRecordDtoList.size());
         result.put("all",assessDao.leaderQueryAssessRecordsCount(params));
