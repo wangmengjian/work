@@ -10,6 +10,7 @@ import com.nankingdata.yc.work.models.dao.WorkScheduleDao;
 import com.nankingdata.yc.work.models.domain.WorkAuditDetail;
 import com.nankingdata.yc.work.models.domain.WorkPool;
 import com.nankingdata.yc.work.models.dto.ShowDeptAllAuditInf;
+import com.nankingdata.yc.work.models.dto.UpdateWorkDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,10 +90,11 @@ public class WorkAuditService {
     @Transactional
     public int agreeAuditWork(List<WorkAuditDetail> workAuditDetails,Integer userId){
         if(workAuditDetails.size()<=0)return 0;
-        List<WorkPool> addWorkPool=new ArrayList<>();//需要添加到工作池中的
-        List<WorkPool> updateWorkPool=new ArrayList<>();//更改工作池
-        List<WorkAudit> workAuditList=workAuditDao.queryAllAuditByDetail(workAuditDetails);
+        List<WorkPool> addWorkPool=new ArrayList<>();//需要添加到工作池中的工作项
+        List<WorkPool> updateWorkPool=new ArrayList<>();//需要更改的工作项
+        List<WorkAudit> workAuditList=workAuditDao.queryAllAuditByDetail(workAuditDetails);//查询部门员工所有的审核
         if(workAuditList!=null&&workAuditList.size()>0) {
+            /*遍历领导选择的所有的审核记录，将需要添加的和需要更新的分离*/
             for (WorkAudit workAudit : workAuditList) {
                 WorkPool workPool = new WorkPool();
                 workPool.setUserId(workAudit.getWorkUserId());
@@ -101,6 +103,7 @@ public class WorkAuditService {
                 workPool.setWorkInstructor(workAudit.getWorkInstructor());
                 workPool.setWorkFrom(workAudit.getWorkFrom());
                 workPool.setWorkMinutes(workAudit.getWorkMinutes());
+                workPool.setAuditRecordId(workAudit.getId());
                 if (workAudit.getOriginWorkId() != null) {
                     workPool.setId(workAudit.getOriginWorkId());
                     updateWorkPool.add(workPool);
@@ -111,8 +114,18 @@ public class WorkAuditService {
         }
         if(addWorkPool.size()>0) {
             workDao.addAgreeWork(addWorkPool);
+            /*新增的工作绑定到对应的审核详情*/
+            for(WorkPool workPool:addWorkPool){
+                for(WorkAudit workAudit:workAuditList){
+                    if(workPool.getAuditRecordId().equals(workAudit.getId())){
+                        workAudit.setOriginWorkId(workPool.getId());
+                    }
+                }
+            }
+            workAuditDao.addOriginWorkId(workAuditList);
         }
         if(updateWorkPool.size()>0) {
+
             workDao.updateAgreeWork(updateWorkPool);
         }
         /*更改记录的审核状态*/
@@ -141,6 +154,7 @@ public class WorkAuditService {
                 idList.add(workPool);
             }
         }
+        /*临时工作项添加时，需要判断是否存在日计划*/
         if(temporary.size()>0) {
             for (Integer id : temporary.keySet()) {
                 Integer scheduleId = workScheduleDao.queryTodayScheduleId(id);
@@ -171,6 +185,17 @@ public class WorkAuditService {
             workAuditDetail.setAuditUserId(userId);
         }
         workAuditDao.updateAuditStatus(workAuditDetailList);
+        List<WorkAudit> workAuditList=workAuditDao.queryAllAuditByDetail(workAuditDetailList);
+        List<WorkPool> workPoolList=new ArrayList<>();
+        for(WorkAudit workAudit:workAuditList){
+            if(workAudit.getOriginWorkId()!=null){
+                WorkPool workPool=new WorkPool();
+                workPool.setAuditStatus("agree");
+                workPool.setId(workAudit.getOriginWorkId());
+                workPoolList.add(workPool);
+            }
+        }
+        workDao.updateWorkAuditStatus(workPoolList);
         return workAuditDetailList.size();
     }
 
@@ -182,5 +207,32 @@ public class WorkAuditService {
     @Transactional
     public int employeeCancelAudit(Integer id){
         return workAuditDao.updateAuditStatusById(id);
+    }
+
+    /**
+     * 员工修改工作项
+     * @param updateWorkDto
+     * @return
+     */
+    @Transactional
+    public int employeeUpdateWork(UpdateWorkDto updateWorkDto){
+        /*修改工作项审核明细*/
+        workAuditDao.updateAuditDetail(updateWorkDto.getId());
+        WorkAuditDetail workAuditDetail=workAuditDao.queryWorkAuditDetailById(updateWorkDto.getId());
+        WorkAudit workAudit=new WorkAudit();
+        workAudit.setWorkName(updateWorkDto.getWorkName());
+        workAudit.setWorkContent(updateWorkDto.getWorkContent());
+        workAudit.setWorkInstructor(updateWorkDto.getWorkInstructor());
+        workAudit.setWorkMinutes(updateWorkDto.getWorkMinutes());
+        workAudit.setWorkFrom(updateWorkDto.getWorkFrom());
+        workAudit.setId(workAuditDetail.getAuditItemId());
+        WorkPool workPool=new WorkPool();
+        workPool.setId(updateWorkDto.getOriginWorkId());
+        workPool.setAuditStatus("unaudited");
+        List<WorkPool> workPoolList=new ArrayList<>();
+        workPoolList.add(workPool);
+        workDao.updateWorkAuditStatus(workPoolList);
+        /*修改工作项审核详情*/
+        return workAuditDao.updateAudit(workAudit);
     }
 }

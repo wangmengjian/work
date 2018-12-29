@@ -116,7 +116,7 @@
     <update id="updateSchedule" parameterType="com.nankingdata.yc.work.models.dto.WorkScheduleDto">
         update work_schedule
         set submit_time=NOW(),submit_status='submitted'
-        where id=#{scheduleId}
+        where id=#{scheduleId} and date_format(`date`,'%e %b %y') = date_format(now(), '%e %b %y')
     </update>
     <insert id="addSchedule" parameterType="com.nankingdata.yc.work.models.domain.WorkSchedule" useGeneratedKeys="true"
             keyProperty="id">
@@ -168,4 +168,13 @@
             </if>
         </where>
     </select>
+    <select id="queryScheduleById" parameterType="Integer" resultType="com.nankingdata.yc.work.models.domain.WorkSchedule">
+        select *
+        from work_schedule as ws
+        where id=#{scheduleId}
+    </select>
+    <delete id="employeeRemoveWork" parameterType="java.util.Map">
+        delete from work_schedule_detail
+        where id=#{id}
+    </delete>
 </mapper>

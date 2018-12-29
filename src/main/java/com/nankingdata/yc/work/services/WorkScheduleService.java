@@ -12,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class WorkScheduleService {
@@ -57,8 +55,9 @@ public class WorkScheduleService {
      * @throws Exception
      */
     @Transactional
-    public int submitSchedule(WorkScheduleDto workScheduleDto) throws Exception {
-        workScheduleDao.updateSchedule(workScheduleDto.getId());
+    public int submitSchedule(WorkScheduleDto workScheduleDto){
+        int result1=workScheduleDao.updateSchedule(workScheduleDto.getId());
+        if(result1==0)throw new RuntimeException("所选计划不允许提交");
         if(workScheduleDto.getWorkScheduleDetailDtoList()==null)return 0;
         int result=workScheduleDao.updateScheduleDetail(workScheduleDto.getWorkScheduleDetailDtoList());
         return result;
@@ -70,23 +69,22 @@ public class WorkScheduleService {
      * @return
      */
     @Transactional
-    public int newSchedule(Map<String,Object> params){
-        Integer userId=(Integer) params.get("userId");
-        List<WorkPool> _workPoolList= (List<WorkPool>) params.get("workPoolList");
-        if(_workPoolList==null||_workPoolList.size()<=0)return 0;
-        List<WorkPool> workPoolList=workDao.queryWorkPool(_workPoolList);
-        WorkSchedule workSchedule=new WorkSchedule();
+    public int newSchedule(Map<String,Object> params) {
+        Integer userId = (Integer) params.get("userId");
+        List<WorkPool> _workPoolList = (List<WorkPool>) params.get("workPoolList");
+        if (_workPoolList == null || _workPoolList.size() <= 0) return 0;
+        List<WorkPool> workPoolList = workDao.queryWorkPool(_workPoolList);
+        WorkSchedule workSchedule = new WorkSchedule();
         workSchedule.setUserId(userId);
-        Integer scheduleId=workScheduleDao.queryTodayScheduleId(userId);
-        if(scheduleId==null) {
+        Integer scheduleId = workScheduleDao.queryTodayScheduleId(userId);
+        if (scheduleId == null) {
             workScheduleDao.addSchedule(workSchedule);
             scheduleId = workSchedule.getId();
         }
-        int result=0;
-        result=workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
+        int result = 0;
+        result = workScheduleDao.addScheduleDetail(workPoolList, scheduleId);
         return result;
     }
-
     /**
      * 领导查询部门员工的工作计划
      * @param params
@@ -123,5 +121,14 @@ public class WorkScheduleService {
         result.put("total",workScheduleDtoList.size());
         result.put("all",workScheduleDao.leaderQueryScheduleCount(params));
         return result;
+    }
+
+    /**
+     * 员工从工作计划中移除工作项
+     * @param id
+     * @return
+     */
+    public int employeeRemoveWork(Integer id){
+        return workScheduleDao.employeeRemoveWork(id);
     }
 }

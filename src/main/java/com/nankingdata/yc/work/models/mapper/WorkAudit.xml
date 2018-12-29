@@ -197,4 +197,29 @@
         set audit_status='cancel'
         where  id=#{id}
     </update>
+    <update id="addOriginWorkId" parameterType="com.nankingdata.yc.work.models.domain.WorkAudit">
+        update work_audit
+        set
+        origin_work_id=
+        case id
+        <foreach collection="list" item="item" index="index"
+                 separator=" ">
+            when #{item.id} then #{item.originWorkId}
+        </foreach>
+        end
+        where id in
+        <foreach collection="list" separator="," item="item" open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+    <update id="updateAuditDetail" parameterType="com.nankingdata.yc.work.models.dto.UpdateWorkDto">
+        update work_audit_detail
+        set audit_status='unaudited',audit_user_id=null,audit_time=null,audit_fail_reason=null
+        where id=#{id}
+    </update>
+    <update id="updateAudit" parameterType="com.nankingdata.yc.work.models.domain.WorkAudit">
+        update work_audit
+        set work_name=#{workName},work_content=#{workContent},work_instructor=#{workInstructor},work_minutes=#{workMinutes},work_from=#{workFrom},audit_submit_time=NOW()
+        where id=#{id}
+    </update>
 </mapper>

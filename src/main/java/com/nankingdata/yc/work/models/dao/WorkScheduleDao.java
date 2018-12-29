@@ -30,5 +30,6 @@ public interface WorkScheduleDao {
     public List<WorkScheduleDto> leaderQuerySchedule(Map<String,Object> params);
     /*部门工作计划的条数*/
     public Integer leaderQueryScheduleCount(Map<String,Object> params);
-
+    /*员工从工作计划移除工作项*/
+    public Integer employeeRemoveWork(Integer id);
 }

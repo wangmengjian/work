@@ -13,6 +13,15 @@ public class ShowWorkAuditConditionDto {
     private String time;
     private String auditFailReason;
     private String workFrom;
+    private Integer originWorkId;
+
+    public Integer getOriginWorkId() {
+        return originWorkId;
+    }
+
+    public void setOriginWorkId(Integer originWorkId) {
+        this.originWorkId = originWorkId;
+    }
 
     public String getWorkFrom() {
         return workFrom;

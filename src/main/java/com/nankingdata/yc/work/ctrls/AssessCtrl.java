@@ -70,6 +70,20 @@ public class AssessCtrl extends BaseCtrl {
             return this.send(-1,"操作失败");
         }
     }
+
+    /**
+     * 领导查询考核记录
+     * @param workName
+     * @param employeeId
+     * @param beginTime
+     * @param endTime
+     * @param pageNumber
+     * @param pageSize
+     * @param finishStatus
+     * @param workFrom
+     * @param session
+     * @return
+     */
     @GetMapping("/queryAssessRecords")
     public Result leaderQueryAssessRecords(@RequestParam(value = "workName",required = false)String workName,
                                            @RequestParam(value = "employeeId",required = false)Integer employeeId,
@@ -96,7 +110,7 @@ public class AssessCtrl extends BaseCtrl {
         }
     }
     /**
-     * 员工查询工作审核情况
+     * 员工查询工作考核情况
      * @param workName
      * @param assessGrade
      * @param beginTime
@@ -116,7 +130,8 @@ public class AssessCtrl extends BaseCtrl {
                                       @RequestParam(value = "pageSize",required = false)Integer pageSize,
                                       @RequestParam(value = "finishStatus",required = false)String finishStatus,
                                       @RequestParam(value = "workFrom",required = false)String workFrom,
-                                      @RequestParam(value = "assessStatus",required = false)Integer assessStatus){
+                                      @RequestParam(value = "assessStatus",required = false)Integer assessStatus,
+                                      HttpSession session){
         Map<String,Object> params= ParamUtils.setPageInfo(pageNumber,pageSize);
         params.put("workName",workName);
         params.put("assessGrade",assessGrade);
@@ -125,8 +140,10 @@ public class AssessCtrl extends BaseCtrl {
         params.put("finishStatus",finishStatus);
         params.put("workFrom",workFrom);
         params.put("assessStatus",assessStatus);
+        Users users= (Users) session.getAttribute("user");
+        params.put("userId",users.getId());
         try{
-            return this.send(assessService.employeQueryAllAssess(params));
+            return this.send(assessService.employeeQueryAllAssess(params));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }

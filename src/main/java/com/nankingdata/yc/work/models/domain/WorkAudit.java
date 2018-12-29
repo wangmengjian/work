@@ -1,6 +1,5 @@
 package com.nankingdata.yc.work.models.domain;
 
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -25,7 +24,6 @@ public class WorkAudit {
     private String auditStatus;
     private Integer workUserId;
     private String auditSubmitTime;
-
     private Integer originWorkId;
     public String getAuditSubmitTime() {
         return auditSubmitTime;

@@ -8,7 +8,7 @@ import java.util.Date;
 public class WorkSchedule {
     private Integer id;
     private Integer userId;
-    private Date date;
+    private String date;
     private Date submitTime;
     private String submitStatus;
     private Integer assessId;
@@ -29,11 +29,11 @@ public class WorkSchedule {
         this.userId = userId;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

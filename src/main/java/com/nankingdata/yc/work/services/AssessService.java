@@ -94,7 +94,7 @@ public class AssessService {
      * @param params
      * @return
      */
-    public Map<String,Object> employeQueryAllAssess(Map<String,Object> params){
+    public Map<String,Object> employeeQueryAllAssess(Map<String,Object> params){
         List<ShowAssessDto> showAssessDtoList=assessDao.employeeQueryAllAssess(params);
         Map<String,Object> result=new HashMap<>();
         result.put("data",showAssessDtoList);
@@ -102,5 +102,4 @@ public class AssessService {
         result.put("all",assessDao.employeeQueryAllAssessCount(params));
         return result;
     }
-
 }

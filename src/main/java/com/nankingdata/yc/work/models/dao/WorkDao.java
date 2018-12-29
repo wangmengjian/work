@@ -30,4 +30,8 @@ public interface WorkDao {
     public List<WorkPool> queryWorkPool(List<WorkPool> workPoolList);
     /*领导删除工作项*/
     public int deleteWork(Integer workId);
+    /*员工根据id查询工作项*/
+    public WorkPool queryWorkById(Integer id);
+    /*更改工作的审核状态*/
+    public int updateWorkAuditStatus(List<WorkPool> workPoolList);
 }

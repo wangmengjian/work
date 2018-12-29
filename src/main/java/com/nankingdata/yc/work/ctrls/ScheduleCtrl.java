@@ -2,6 +2,7 @@ package com.nankingdata.yc.work.ctrls;
 
 import com.nankingdata.yc.common.Users;
 import com.nankingdata.yc.work.models.domain.WorkAudit;
+import com.nankingdata.yc.work.models.dto.UpdateWorkDto;
 import com.nankingdata.yc.work.models.dto.WorkScheduleDto;
 import com.nankingdata.yc.work.common.Constants;
 import com.nankingdata.yc.work.common.ParamUtils;
@@ -52,6 +53,15 @@ public class ScheduleCtrl extends BaseCtrl {
         }
     }
 
+    /**
+     * 员工查询单个工作项
+     * @param id
+     * @return
+     */
+    @GetMapping("employee/queryOneWork")
+    public Result employeeQueryWorkById(@RequestParam("id")Integer id){
+        return this.send(workService.queryWorkById(id));
+    }
 
     /**
      * 员工根据时间查询日工作计划
@@ -90,27 +100,21 @@ public class ScheduleCtrl extends BaseCtrl {
         try {
             return this.send(workScheduleService.submitSchedule(workScheduleDto));
         } catch (Exception e) {
-            return this.send(-1, "操作失败");
+            return this.send(-1, e.getMessage());
         }
     }
 
     /**
      * 员工更改工作项
      *
-     * @param workAudit
+     * @param updateWorkDto
      * @param session
      * @return
      */
     @PostMapping("/employee/updateWork")
-    public Result employeeUpdateWork(@Valid WorkAudit workAudit, HttpSession session) {
-        Users users = (Users) session.getAttribute(Constants.userSession);
-        List<WorkAudit> workAuditList = new ArrayList<>();
-        workAuditList.add(workAudit);
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId", users.getId());
-        params.put("workAuditList", workAuditList);
+    public Result employeeUpdateWork(@Valid UpdateWorkDto updateWorkDto, HttpSession session) {
         try {
-            return this.send(workAuditService.submitAudit(params));
+            return this.send(workAuditService.employeeUpdateWork(updateWorkDto));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
         }
@@ -138,9 +142,14 @@ public class ScheduleCtrl extends BaseCtrl {
         params.put("userId", users.getId());
         params.put("auditStatus", auditStatus);
         params.put("workFrom", workFrom);
-        return this.send(workService.queryWorkByWorkName(params));
+        return this.send(workService.queryWork(params));
     }
 
+    /**
+     * 员工删除审核
+     * @param id
+     * @return
+     */
     @DeleteMapping("/employee/deleteAudit")
     public Result employeeDeleteAuditRecord(@RequestParam(value = "id", required = true) Integer id) {
         try {
@@ -191,6 +200,19 @@ public class ScheduleCtrl extends BaseCtrl {
         }
     }
 
+    /**
+     * 员工从工作计划中移除工作
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/employee/removeWork")
+    public Result employeeRemoveWork(Integer id){
+        try{
+            return this.send(workScheduleService.employeeRemoveWork(id));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
     /**
      * 员工取消申请
      *

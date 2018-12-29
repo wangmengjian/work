@@ -138,6 +138,9 @@
         on sc1.`code`=wsd.finish_status
         <where>
             ws.submit_status like 'submitted'
+            <if test="userId!=null">
+                and ws.user_id=#{userId}
+            </if>
             <if test="assessGrade!=null">
                 and assess_grade like #{assessGrade}
             </if>
@@ -182,6 +185,9 @@
         on sc1.`code`=wsd.finish_status
         <where>
             ws.submit_status like 'submitted'
+            <if test="userId!=null">
+                and ws.user_id=#{userId}
+            </if>
             <if test="assessGrade!=null">
                 and assess_grade like #{assessGrade}
             </if>
@@ -199,6 +205,12 @@
             </if>
             <if test="endTime!=null">
                 and #{endTime}>finish_time
+            </if>
+            <if test="assessStatus==1">
+                and wa.id is not null
+            </if>
+            <if test="assessStatus==0">
+                and wa.id is null
             </if>
         </where>
     </select>

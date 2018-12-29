@@ -17,6 +17,7 @@ public class CommonCtrl extends BaseCtrl{
     }
     @PostMapping("/upload")
     public Result upload(MultipartFile file){
+        if(file==null)return this.send(null);
         try{
             return this.send(FileUtils.upload(file));
         }catch (Exception e){

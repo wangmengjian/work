@@ -15,7 +15,8 @@
         wa.origin_work_id,
         wad.audit_time as time,
         wad.audit_fail_reason,
-        sc2.`name` as workFrom
+        sc2.`name` as workFrom,
+        wa.origin_work_id
         from work_audit_detail as wad
         left join work_audit as wa
         on wad.audit_item_id=wa.id
@@ -35,7 +36,7 @@
                 and wa.work_from like #{workFrom}
             </if>
         </where>
-        order by time desc
+        order by wa.audit_submit_time desc
         limit #{pageStart},#{pageSize}
     </select>
     <select id="querySubmitRecordCount" parameterType="java.util.Map"
@@ -65,7 +66,9 @@
         wp.work_name,
         wp.work_content,
         wp.work_instructor,
-        wp.work_minutes
+        wp.work_minutes,
+        wp.create_time,
+        wp.update_time
         from work_pool as wp
         <where>
             <if test="scheduleId!=null">
@@ -80,8 +83,9 @@
                 and wp.work_name like "%"#{workName}"%"
             </if>
             and wp.delete_status='no'
+            and wp.audit_status='agree'
         </where>
-        order by update_time desc
+        order by update_time desc ,create_time desc
     </select>
     <select id="queryWorkPoolCount" parameterType="java.util.Map" resultType="Integer">
         select
@@ -99,10 +103,10 @@
     </select>
     <insert id="addAgreeWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true"
             keyProperty="id">
-        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,update_time)
+        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,create_time,update_time)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},NOW())
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},NOW(),NOW())
         </foreach>
     </insert>
     <update id="updateAgreeWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
@@ -132,7 +136,8 @@
                  separator=" " open="case id" close="end">
             when #{item.id} then #{item.workFrom}
         </foreach>,
-        update_time = NOW()
+        update_time = NOW(),
+        audit_status='agree'
         where id in
         (
         <foreach collection="list" item="item" separator=",">
@@ -153,11 +158,12 @@
                 and users.id=#{employeeId}
             </if>
             <if test="workName!=null">
-                and wp.work_name="%"#{workName}"%"
+                and wp.work_name like "%"#{workName}"%"
             </if>
             and wp.delete_status='no'
+            and wp.audit_status='agree'
         </where>
-        order by update_time desc
+        order by update_time desc,create_time desc
         limit #{pageStart},#{pageSize}
     </select>
     <select id="queryWorkCountByEmployeeId" resultType="Integer" parameterType="java.util.Map">
@@ -172,16 +178,17 @@
                 and users.id=#{employeeId}
             </if>
             <if test="workName!=null">
-                and wp.work_name="%"#{workName}"%"
+                and wp.work_name like "%"#{workName}"%"
             </if>
             and wp.delete_status='no'
+            and wp.audit_status='agree'
         </where>
     </select>
     <insert id="addWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true" keyProperty="id">
-        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,allot_user_id)
+        insert into work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,allot_user_id,create_time,update_time)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.allotUserId})
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.allotUserId},NOW(),NOW())
         </foreach>
     </insert>
     <update id="updateWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
@@ -197,10 +204,27 @@
             #{item.id}
         </foreach>
         and delete_status='no'
+        order by update_time desc,create_time desc
     </select>
     <delete id="deleteWork" parameterType="Integer">
         update work_pool
         set delete_status='yes'
         where id=#{workId}
     </delete>
+    <select id="queryWorkById" parameterType="Integer" resultType="com.nankingdata.yc.work.models.domain.WorkPool">
+        select *
+        from work_pool
+        where id=#{id}
+    </select>
+    <update id="updateWorkAuditStatus" parameterType="java.util.Map">
+        update work_pool
+        set audit_status=
+        <foreach collection="list" item="item" open="case id" close="end" separator=" ">
+            when #{item.id} then #{item.auditStatus}
+        </foreach>
+        where id in
+        <foreach collection="list" separator="," open="(" close=")" item="item">
+            #{item.id}
+        </foreach>
+    </update>
 </mapper>

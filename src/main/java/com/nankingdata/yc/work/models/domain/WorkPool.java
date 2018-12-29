@@ -22,8 +22,45 @@ public class WorkPool {
     @Max(value=720,message = "标准时间有误")
     private Integer workMinutes;
     private String workFrom;
+    private String createTime;
+    private String updateTime;
     private Integer allotUserId;
+    private Integer auditRecordId;
     private Integer isDoing;
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
+    }
+
+    private String auditStatus;
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public Integer getAuditRecordId() {
+        return auditRecordId;
+    }
+
+    public void setAuditRecordId(Integer auditRecordId) {
+        this.auditRecordId = auditRecordId;
+    }
 
     public Integer getIsDoing() {
         return isDoing;

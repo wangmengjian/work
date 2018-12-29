@@ -33,7 +33,7 @@ public class WorkService {
      * @param params
      * @return
      */
-    public Map<String,Object> queryWorkByWorkName(Map<String,Object> params){
+    public Map<String,Object> queryWork(Map<String,Object> params){
         List<ShowWorkAuditConditionDto> showWorkAuditConditionDtoList=workDao.querySubmitRecordByPage(params);
         Map<String,Object> result=new HashMap<>();
         result.put("data",showWorkAuditConditionDtoList);
@@ -42,6 +42,16 @@ public class WorkService {
         return result;
     }
 
+    /**
+     * 员工根据工作项id查询工作
+     * @param id
+     * @return
+     */
+    public Map<String,Object> queryWorkById(Integer id){
+        Map<String,Object> result=new HashMap<>();
+        result.put("data",workDao.queryWorkById(id));
+        return result;
+    }
     /**
      * 员工查询未添加到日计划里的工作
      * @param params
