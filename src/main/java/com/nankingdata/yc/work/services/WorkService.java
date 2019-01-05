@@ -12,6 +12,7 @@ import com.nankingdata.yc.work.models.dto.ShowWorkAuditConditionDto;
 import com.nankingdata.yc.work.models.dto.WorkScheduleDetailDto;
 import com.nankingdata.yc.work.models.dto.WorkScheduleDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,6 +123,7 @@ public class WorkService {
      * @param workPoolList
      * @return
      */
+    @Transactional
     public int allotWork(List<WorkPool> workPoolList){
         if(workPoolList==null||workPoolList.size()<=0){
             return 0;
@@ -187,7 +189,36 @@ public class WorkService {
         }
         return workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
     }
-
+    /**
+     * 领导给多个员工新增工作项
+     * @param workPool
+     * @return
+     */
+    @Transactional
+    public int leaderAddWorkToEmployees(WorkPool workPool){
+        Integer[] employeeIds=workPool.getEmployeeIds();
+        if(workPool==null||employeeIds==null||employeeIds.length<=0)return 0;
+        List<WorkPool> workPoolList=new ArrayList<>();
+        for(Integer employeeId:employeeIds){
+            WorkPool workPool1=new WorkPool();
+            workPool1.setWorkName(workPool.getWorkName());
+            workPool1.setWorkContent(workPool.getWorkContent());
+            workPool1.setWorkInstructor(workPool.getWorkInstructor());
+            workPool1.setWorkMinutes(workPool.getWorkMinutes());
+            workPool1.setWorkFrom(workPool.getWorkFrom());
+            workPool1.setUserId(employeeId);
+            workPoolList.add(workPool1);
+        }
+        workDao.addWork(workPoolList);
+        WorkSchedule workSchedule=new WorkSchedule();
+        workSchedule.setUserId(workPool.getUserId());
+        Integer scheduleId=workScheduleDao.queryTodayScheduleId(workPool.getUserId());
+        if(scheduleId==null) {
+            workScheduleDao.addSchedule(workSchedule);
+            scheduleId = workSchedule.getId();
+        }
+        return workScheduleDao.addScheduleDetail(workPoolList,scheduleId);
+    }
     /**
      * 删除员工常规工作项
      * @param workId
@@ -196,5 +227,49 @@ public class WorkService {
     @Transactional
     public int deleteWork(Integer workId){
         return workDao.deleteWork(workId);
+    }
+
+    /**
+     * 领导查询员工未添加到工作计划中的工作
+     * @param params
+     * @return
+     */
+    public Map<String,Object> leaderQueryUnAddWork(Map<String,Object> params){
+        Integer userId= (Integer) params.get("employeeId");
+        params.put("userId",userId);
+        Integer scheduleId=workScheduleDao.queryTodayScheduleId(userId);
+        params.put("scheduleId",scheduleId);
+        List<WorkPool> workPoolList=workDao.queryUnAddWork(params);
+        Map<String,Object> result=new HashMap<>();
+        result.put("total",workPoolList.size());
+        result.put("data",workPoolList);
+        return result;
+    }
+
+    /**
+     * 领导批量给员工分配工作
+     * @param params
+     * @return
+     */
+    @Transactional
+    public int leaderAllotWorks(Map<String,Object> params){
+        Integer employeeId= (Integer) params.get("employeeId");
+        Integer[] workIds= (Integer[]) params.get("workIds");
+        if(workIds==null||workIds.length<=0)return 0;
+        Integer scheduleId=workScheduleDao.queryTodayScheduleId(employeeId);
+        WorkSchedule workSchedule=new WorkSchedule();
+        workSchedule.setUserId(employeeId);
+        if(scheduleId==null) {
+            workScheduleDao.addSchedule(workSchedule);
+            scheduleId = workSchedule.getId();
+        }
+        List<WorkPool> workPoolList=new ArrayList<>();
+        for(Integer workId:workIds){
+            WorkPool workPool=new WorkPool();
+            workPool.setId(workId);
+            workPoolList.add(workPool);
+        }
+        List<WorkPool> addWorkPoolList=workDao.queryWorkPool(workPoolList);
+        return workScheduleDao.addScheduleDetail(addWorkPoolList,scheduleId);
     }
 }

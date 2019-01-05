@@ -1,6 +1,7 @@
 package com.nankingdata.yc.work.models.dao;
 
 
+import com.nankingdata.yc.work.models.bo.FinishConditionBo;
 import com.nankingdata.yc.work.models.domain.WorkPool;
 import com.nankingdata.yc.work.models.dto.ShowWorkAuditConditionDto;
 
@@ -34,4 +35,6 @@ public interface WorkDao {
     public WorkPool queryWorkById(Integer id);
     /*更改工作的审核状态*/
     public int updateWorkAuditStatus(List<WorkPool> workPoolList);
+    /*查询工作完成情况*/
+    public List<FinishConditionBo> queryWorkFinishStatus(Map<String,Object> params);
 }

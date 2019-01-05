@@ -5,7 +5,9 @@ import com.nankingdata.yc.work.models.dao.AssessDao;
 import com.nankingdata.yc.work.models.dto.AssessRecordDto;
 import com.nankingdata.yc.work.models.dto.ShowAssessDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,7 +21,6 @@ import java.util.Map;
 public class AssessService {
     @Autowired
     private AssessDao assessDao;
-
     /**
      * 考核时查询所有工作
      * @param params
@@ -59,6 +60,7 @@ public class AssessService {
      * @param assessUserId
      * @return
      */
+    @Transactional
     public int assessWork(List<WorkAssess> workAssessList, Integer assessUserId){
         for(WorkAssess workAssess:workAssessList){
             workAssess.setAssessUserId(assessUserId);

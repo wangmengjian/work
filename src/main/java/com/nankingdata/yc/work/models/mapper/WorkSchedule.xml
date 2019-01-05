@@ -53,7 +53,7 @@
                 and users.department_id=#{departmentId}
             </if>
         </where>
-        order by wsd.finish_time asc
+        order by wsd.begin_time desc
         <if test="pageStart!=null and pageSize!=null">
             limit #{pageStart},#{pageSize}
         </if>

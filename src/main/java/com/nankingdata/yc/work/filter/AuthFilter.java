@@ -40,10 +40,10 @@ public class AuthFilter implements Filter {
         HttpSession session = req.getSession();
         String url = req.getRequestURI();
 
-        /*Users user=new Users();
+        Users user=new Users();
         user.setId(1);
         user.setDepartmentId(1);
-        session.setAttribute("user",user);*/
+        session.setAttribute("user",user);
 
         Users users= (Users) session.getAttribute("user");
         if(url.startsWith("/work")&&users==null){
@@ -58,7 +58,6 @@ public class AuthFilter implements Filter {
     public void destroy() {
 
     }
-
 
     public String[] getOpenUrl() {
         if(this.openUrl == null || this.openUrl.isEmpty()) {

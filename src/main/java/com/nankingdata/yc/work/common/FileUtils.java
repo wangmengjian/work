@@ -7,20 +7,40 @@ import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URLDecoder;
 
-
+@Component
 public class FileUtils {
-    private final static String accessKey = "bCNHpv29KW0PFzVtS4_TK5KKJYdWKawxiOO9_6xA";
-    private final static String secretKey = "RBbeHJg04nNNF-Ah5kPSugpuIuj3-qXh00V3j__n";
-    private final static String domain = "http://pjuzxdszq.bkt.clouddn.com/";
+    private static String accessKey;
+    private static String secretKey;
+    private static String domain;
+    private static String bucket;
+
+    @Value("${upload.accessKey}")
+    public void setAccessKey(String accessKey) {
+        FileUtils.accessKey = accessKey;
+    }
+    @Value("${upload.secretKey}")
+    public void setSecretKey(String secretKey) {
+        FileUtils.secretKey = secretKey;
+    }
+    @Value("${upload.domain}")
+    public void setDomain(String domain) {
+        FileUtils.domain = domain;
+    }
+    @Value("${upload.bucket}")
+    public void setBucket(String bucket) {
+        FileUtils.bucket = bucket;
+    }
 
     public static String upload(MultipartFile file) throws Exception {
         Configuration cfg = new Configuration(Zone.autoZone());
         UploadManager uploadManager = new UploadManager(cfg);
-        String bucket = "workspace";
+        System.out.println(accessKey+secretKey);
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
         String key = Util.getVerifyRandom(12) + "/" + file.getOriginalFilename();
@@ -29,8 +49,9 @@ public class FileUtils {
         } catch (QiniuException e) {
             e.printStackTrace();
         }
-        return domain+key;
+        return key;
     }
+
     public static void delete(String url)throws Exception{
         String[] strings=url.split("/");
         strings[4]=URLDecoder.decode(strings[4],"utf-8");
@@ -41,12 +62,4 @@ public class FileUtils {
         String bucket = "workspace";
         bucketManager.delete(bucket,key);
     }
-    /*@Test
-    public void test(){
-        try {
-            delete("http://pjuzxdszq.bkt.clouddn.com/2VjZ5203bKfr/123.pdf");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 }

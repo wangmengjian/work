@@ -1,5 +1,6 @@
 package com.nankingdata.yc.work.models.dao;
 
+import com.nankingdata.yc.work.models.bo.AssessConditionBo;
 import com.nankingdata.yc.work.models.domain.WorkAssess;
 import com.nankingdata.yc.work.models.dto.AssessRecordDto;
 import com.nankingdata.yc.work.models.dto.ShowAssessDto;
@@ -24,4 +25,6 @@ public interface AssessDao {
     public List<AssessRecordDto> leaderQueryAssessRecords(Map<String,Object> params);
     /*领导查询考核记录总数*/
     public Integer leaderQueryAssessRecordsCount(Map<String,Object> params);
+    /*查询员工在时间范围内考核的情况*/
+    public List<AssessConditionBo> queryAssessCondition(Map<String,Object> params);
 }

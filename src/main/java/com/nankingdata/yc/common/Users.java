@@ -27,10 +27,10 @@ public class Users implements Serializable {
      * 真实名字
      */
     private String realName;
-    /**
-     * 年龄
-     */
-    private Integer age;
+//    /**
+//     * 年龄
+//     */
+//    private Integer age;
     /**
      * 身份证号码
      */
@@ -117,13 +117,13 @@ public class Users implements Serializable {
         this.nickname = nickname;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+//    public Integer getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(Integer age) {
+//        this.age = age;
+//    }
 
     public String getRealName() {
         return realName;

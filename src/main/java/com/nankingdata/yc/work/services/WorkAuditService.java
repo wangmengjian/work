@@ -12,6 +12,7 @@ import com.nankingdata.yc.work.models.domain.WorkPool;
 import com.nankingdata.yc.work.models.dto.ShowDeptAllAuditInf;
 import com.nankingdata.yc.work.models.dto.UpdateWorkDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class WorkAuditService {
     private WorkDao workDao;
     @Autowired
     private WorkScheduleDao workScheduleDao;
+
     /**
      * 提交审核
      * @param params

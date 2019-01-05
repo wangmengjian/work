@@ -154,10 +154,10 @@
                 and wp.work_from like #{workFrom}
             </if>
             <if test="beginTime!=null">
-                and ws.date>#{beginTime}
+                and date_format(#{beginTime},'%e %b %y') &lt;=date_format(ws.date,'%e %b %y')
             </if>
-            <if test="endTime!=null">
-                and #{endTime}>finish_time
+            <if test="finishTime!=null">
+                and date_format(ws.date,'%e %b %y')&lt;=date_format(#{finishTime},'%e %b %y')
             </if>
             <if test="assessStatus==1">
                 and wa.id is not null
@@ -201,10 +201,10 @@
                 and wp.work_from like #{workFrom}
             </if>
             <if test="beginTime!=null">
-                and ws.date>#{beginTime}
+                and date_format(#{beginTime},'%e %b %y') &lt;=date_format(ws.date,'%e %b %y')
             </if>
-            <if test="endTime!=null">
-                and #{endTime}>finish_time
+            <if test="finishTime!=null">
+                and date_format(ws.date,'%e %b %y')&lt;=date_format(#{finishTime},'%e %b %y')
             </if>
             <if test="assessStatus==1">
                 and wa.id is not null
@@ -392,5 +392,30 @@
                 and #{endTime}>wa.assess_time
             </if>
         </where>
+    </select>
+    <select id="queryAssessCondition" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.bo.AssessConditionBo">
+        select users.id as empId,users.real_name as empName,wa.assess_grade,COUNT(*)as `count`
+        from work_assess as wa
+        left join work_schedule_detail as wsd
+        on wa.schedule_detail_id=wsd.id
+        left join work_schedule as ws
+        on wsd.schedule_id=ws.id
+        left join usermanagement.users
+        on users.id=ws.user_id
+        <where>
+            ws.submit_status = 'submitted'
+            <if test="beginTime!=null">
+                and DATE_FORMAT(ws.`date`,'%e %b %y') &gt;= DATE_FORMAT(#{beginTime},'%e %b %y')
+            </if>
+            <if test="endTime!=null">
+                and DATE_FORMAT(ws.`date`,'%e %b %y') &lt;= DATE_FORMAT(#{endTime},'%e %b %y')
+            </if>
+            <if test="empId!=null">
+                and user_id=#{empId}
+            </if>
+        </where>
+        GROUP BY wa.assess_grade,ws.user_id
+        order by user_id asc,assess_grade asc
     </select>
 </mapper>

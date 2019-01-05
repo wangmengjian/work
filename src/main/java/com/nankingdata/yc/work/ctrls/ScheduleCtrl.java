@@ -1,15 +1,13 @@
 package com.nankingdata.yc.work.ctrls;
 
 import com.nankingdata.yc.common.Users;
+import com.nankingdata.yc.work.common.MyException;
 import com.nankingdata.yc.work.models.domain.WorkAudit;
-import com.nankingdata.yc.work.models.dto.UpdateWorkDto;
-import com.nankingdata.yc.work.models.dto.WorkScheduleDto;
+import com.nankingdata.yc.work.models.dto.*;
 import com.nankingdata.yc.work.common.Constants;
 import com.nankingdata.yc.work.common.ParamUtils;
 import com.nankingdata.yc.work.common.Result;
 import com.nankingdata.yc.work.models.domain.WorkPool;
-import com.nankingdata.yc.work.models.dto.WorkAuditDto;
-import com.nankingdata.yc.work.models.dto.WorkPoolDto;
 import com.nankingdata.yc.work.services.WorkAuditService;
 import com.nankingdata.yc.work.services.WorkScheduleService;
 import com.nankingdata.yc.work.services.WorkService;
@@ -18,9 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -89,20 +86,7 @@ public class ScheduleCtrl extends BaseCtrl {
         return this.send(result);
     }
 
-    /**
-     * 员工提交日计划
-     *
-     * @param workScheduleDto
-     * @return
-     */
-    @PostMapping("/employee/submitSchedule")
-    public Result submitSchedule(@Valid WorkScheduleDto workScheduleDto) {
-        try {
-            return this.send(workScheduleService.submitSchedule(workScheduleDto));
-        } catch (Exception e) {
-            return this.send(-1, e.getMessage());
-        }
-    }
+
 
     /**
      * 员工更改工作项
@@ -199,7 +183,36 @@ public class ScheduleCtrl extends BaseCtrl {
             return this.send(-1, "操作失败");
         }
     }
+    /**
+     * 员工提交日计划
+     *
+     * @param workScheduleDto
+     * @return
+     */
+    @PostMapping("/employee/submitSchedule")
+    public Result submitSchedule(@Valid WorkScheduleDto workScheduleDto) {
+        try {
+            return this.send(workScheduleService.submitSchedule(workScheduleDto));
+        }catch (MyException e){
+            return this.send(-1,"有未填写完成情况的工作");
+        }catch (Exception e1) {
+            return this.send(-1, "操作失败");
+        }
+    }
 
+    /**
+     * 员工保存工作计划中工作项的完成状态
+     * @param workScheduleDetailDto
+     * @return
+     */
+    @PostMapping("/employee/saveFinishStatus")
+    public Result employeeSaveStatus(@Valid WorkScheduleDetailDto workScheduleDetailDto){
+        try{
+            return this.send(workScheduleService.saveWorkFinishStatus(workScheduleDetailDto));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
     /**
      * 员工从工作计划中移除工作
      * @param id
@@ -371,6 +384,56 @@ public class ScheduleCtrl extends BaseCtrl {
             return this.send(workService.updateWork(workPool));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
+        }
+    }
+
+    /**
+     * 领导给多个员工添加工作
+     * @param workPool
+     * @return
+     */
+    @PostMapping("/leader/addWorkToEmployees")
+    public Result leaderAddWorkToEmployees(@Valid WorkPool workPool){
+        try{
+            return this.send(workService.leaderAddWorkToEmployees(workPool));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
+        }
+    }
+
+    /**
+     * 领导根据员工id查询未添加到工作计划的工作项
+     * @param employeeId
+     * @param session
+     * @return
+     */
+    @GetMapping("/leader/queryUnAddWork")
+    public Result leaderQueryUnAddWork(@RequestParam(value = "employeeId")Integer employeeId,
+                                       HttpSession session){
+        Users users= (Users) session.getAttribute("user");
+        Integer deptId=users.getDepartmentId();
+        Map<String,Object> params=new HashMap<>();
+        params.put("deptId",deptId);
+        params.put("employeeId",employeeId);
+        return this.send(workService.leaderQueryUnAddWork(params));
+    }
+
+    /**
+     * 领导批量安排工作
+     * @param workIds
+     * @param employeeId
+     * @return
+     */
+    @PostMapping("/leader/allotWorks")
+    public Result leaderAllotWorks(@RequestParam(value = "workIds",required = false)Integer[] workIds,
+                                   @RequestParam(value = "employeeId",required = false)Integer employeeId){
+        Map<String,Object> params=new HashMap<>();
+        params.put("workIds",workIds);
+        params.put("employeeId",employeeId);
+        try {
+            return this.send(workService.leaderAllotWorks(params));
+        }catch (Exception e){
+            return this.send(-1,"操作失败");
         }
     }
 }

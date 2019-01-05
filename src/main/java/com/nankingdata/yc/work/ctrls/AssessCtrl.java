@@ -114,7 +114,7 @@ public class AssessCtrl extends BaseCtrl {
      * @param workName
      * @param assessGrade
      * @param beginTime
-     * @param endTime
+     * @param finishTime
      * @param pageNumber
      * @param pageSize
      * @param finishStatus
@@ -125,7 +125,7 @@ public class AssessCtrl extends BaseCtrl {
     public Result employeeQueryAssess(@RequestParam(value = "workName",required = false)String workName,
                                       @RequestParam(value = "assessGrade",required = false)String assessGrade,
                                       @RequestParam(value = "beginTime",required = false)String beginTime,
-                                      @RequestParam(value = "endTime",required = false)String endTime,
+                                      @RequestParam(value = "finishTime",required = false)String finishTime,
                                       @RequestParam(value = "pageNumber",required = false)Integer pageNumber,
                                       @RequestParam(value = "pageSize",required = false)Integer pageSize,
                                       @RequestParam(value = "finishStatus",required = false)String finishStatus,
@@ -136,7 +136,7 @@ public class AssessCtrl extends BaseCtrl {
         params.put("workName",workName);
         params.put("assessGrade",assessGrade);
         params.put("beginTime",beginTime);
-        params.put("endTime",endTime);
+        params.put("finishTime",finishTime);
         params.put("finishStatus",finishStatus);
         params.put("workFrom",workFrom);
         params.put("assessStatus",assessStatus);

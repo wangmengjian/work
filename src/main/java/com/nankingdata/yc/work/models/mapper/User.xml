@@ -3,4 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nankingdata.yc.work.models.dao.UserDao">
+    <select id="queryUsersById" parameterType="Integer" resultType="com.nankingdata.yc.common.Users">
+        select *
+        from usermanagement.users
+        where id=#{id}
+    </select>
 </mapper>

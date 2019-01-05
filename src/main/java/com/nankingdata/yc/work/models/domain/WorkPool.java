@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
  */
 public class WorkPool {
     private Integer id;
-    @NotNull(message="请选择员工")
     private Integer userId;
     private String employeeName;
     @NotNull(message = "请填写工作名称")
@@ -27,6 +26,15 @@ public class WorkPool {
     private Integer allotUserId;
     private Integer auditRecordId;
     private Integer isDoing;
+    private Integer[] employeeIds;
+
+    public Integer[] getEmployeeIds() {
+        return employeeIds;
+    }
+
+    public void setEmployeeIds(Integer[] employeeIds) {
+        this.employeeIds = employeeIds;
+    }
 
     public String getAuditStatus() {
         return auditStatus;
