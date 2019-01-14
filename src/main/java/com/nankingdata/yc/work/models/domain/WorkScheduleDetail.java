@@ -1,6 +1,5 @@
 package com.nankingdata.yc.work.models.domain;
 
-import java.util.Date;
 
 /**
  * 日工作计划明细
@@ -17,6 +16,22 @@ public class WorkScheduleDetail {
     private String finishTime;
     private String beginTime;
     private Integer allotUserId;
+
+    public Integer getAllotUserId() {
+        return allotUserId;
+    }
+
+    public void setAllotUserId(Integer allotUserId) {
+        this.allotUserId = allotUserId;
+    }
+
+    public String getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
 
     public String getFinishFeedback() {
         return finishFeedback;

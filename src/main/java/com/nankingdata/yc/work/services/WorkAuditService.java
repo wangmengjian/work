@@ -1,14 +1,11 @@
 package com.nankingdata.yc.work.services;
 
 import com.nankingdata.yc.work.common.FileUtils;
-import com.nankingdata.yc.work.models.domain.WorkAudit;
-import com.nankingdata.yc.work.models.domain.WorkSchedule;
+import com.nankingdata.yc.work.models.domain.*;
 import com.nankingdata.yc.work.models.dao.UserDao;
 import com.nankingdata.yc.work.models.dao.WorkAuditDao;
 import com.nankingdata.yc.work.models.dao.WorkDao;
 import com.nankingdata.yc.work.models.dao.WorkScheduleDao;
-import com.nankingdata.yc.work.models.domain.WorkAuditDetail;
-import com.nankingdata.yc.work.models.domain.WorkPool;
 import com.nankingdata.yc.work.models.dto.ShowDeptAllAuditInf;
 import com.nankingdata.yc.work.models.dto.UpdateWorkDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -127,7 +125,6 @@ public class WorkAuditService {
             workAuditDao.addOriginWorkId(workAuditList);
         }
         if(updateWorkPool.size()>0) {
-
             workDao.updateAgreeWork(updateWorkPool);
         }
         /*更改记录的审核状态*/
@@ -159,14 +156,27 @@ public class WorkAuditService {
         /*临时工作项添加时，需要判断是否存在日计划*/
         if(temporary.size()>0) {
             for (Integer id : temporary.keySet()) {
-                Integer scheduleId = workScheduleDao.queryTodayScheduleId(id);
+                Map<String,Object> params=new HashMap<>();
+                params.put("userId",id);
+                params.put("date",new Date());
+                Integer scheduleId = workScheduleDao.queryScheduleId(params);
                 WorkSchedule workSchedule = new WorkSchedule();
                 workSchedule.setUserId(id);
                 if (scheduleId == null) {
                     workScheduleDao.addSchedule(workSchedule);
                     scheduleId = workSchedule.getId();
                 }
-                workScheduleDao.addScheduleDetail(temporary.get(id), scheduleId);
+                List<WorkScheduleDetail> workScheduleDetailList=new ArrayList<>();
+                for(WorkPool workPool:temporary.get(id)){
+                    WorkScheduleDetail workScheduleDetail=new WorkScheduleDetail();
+                    workScheduleDetail.setScheduleId(scheduleId);
+                    workScheduleDetail.setWorkId(workPool.getId());
+                    workScheduleDetail.setWorkFrom(workPool.getWorkFrom());
+                    workScheduleDetail.setAllotUserId(workPool.getAllotUserId());
+                    workScheduleDetail.setFinishStatus("underway");
+                    workScheduleDetailList.add(workScheduleDetail);
+                }
+                workScheduleDao.addScheduleDetail(workScheduleDetailList);
             }
         }
         return workAuditList.size();
@@ -189,15 +199,19 @@ public class WorkAuditService {
         workAuditDao.updateAuditStatus(workAuditDetailList);
         List<WorkAudit> workAuditList=workAuditDao.queryAllAuditByDetail(workAuditDetailList);
         List<WorkPool> workPoolList=new ArrayList<>();
-        for(WorkAudit workAudit:workAuditList){
-            if(workAudit.getOriginWorkId()!=null){
-                WorkPool workPool=new WorkPool();
-                workPool.setAuditStatus("agree");
-                workPool.setId(workAudit.getOriginWorkId());
-                workPoolList.add(workPool);
+        if(workAuditList!=null&&workAuditList.size()>0) {
+            for (WorkAudit workAudit : workAuditList) {
+                if (workAudit.getOriginWorkId() != null) {
+                    WorkPool workPool = new WorkPool();
+                    workPool.setAuditStatus("agree");
+                    workPool.setId(workAudit.getOriginWorkId());
+                    workPoolList.add(workPool);
+                }
             }
         }
-        workDao.updateWorkAuditStatus(workPoolList);
+        if(workPoolList.size()>0) {
+            workDao.updateWorkAuditStatus(workPoolList);
+        }
         return workAuditDetailList.size();
     }
 
@@ -228,6 +242,7 @@ public class WorkAuditService {
         workAudit.setWorkMinutes(updateWorkDto.getWorkMinutes());
         workAudit.setWorkFrom(updateWorkDto.getWorkFrom());
         workAudit.setId(workAuditDetail.getAuditItemId());
+        workAudit.setWorkPriority(updateWorkDto.getWorkPriority());
         WorkPool workPool=new WorkPool();
         workPool.setId(updateWorkDto.getOriginWorkId());
         workPool.setAuditStatus("unaudited");

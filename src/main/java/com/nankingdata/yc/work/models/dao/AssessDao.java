@@ -27,4 +27,6 @@ public interface AssessDao {
     public Integer leaderQueryAssessRecordsCount(Map<String,Object> params);
     /*查询员工在时间范围内考核的情况*/
     public List<AssessConditionBo> queryAssessCondition(Map<String,Object> params);
+    /*通过明细的id查询一条考核记录*/
+    public WorkAssess queryOneAssessRecordByDetailId(Integer id);
 }

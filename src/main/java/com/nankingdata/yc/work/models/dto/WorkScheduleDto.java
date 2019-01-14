@@ -11,8 +11,26 @@ public class WorkScheduleDto {
     private String submitTime;
     private String submitStatus;
     private String empName;
+    private Integer userId;
+    private Integer departmentId;
     @Valid
     private List<WorkScheduleDetailDto> workScheduleDetailDtoList;
+
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getEmpName() {
         return empName;

@@ -25,6 +25,17 @@ public class WorkAudit {
     private Integer workUserId;
     private String auditSubmitTime;
     private Integer originWorkId;
+    @NotNull(message = "请选择工作优先级")
+    private String workPriority;
+
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
+
     public String getAuditSubmitTime() {
         return auditSubmitTime;
     }

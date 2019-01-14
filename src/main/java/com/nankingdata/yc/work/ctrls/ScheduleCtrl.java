@@ -2,7 +2,6 @@ package com.nankingdata.yc.work.ctrls;
 
 import com.nankingdata.yc.common.Users;
 import com.nankingdata.yc.work.common.MyException;
-import com.nankingdata.yc.work.models.domain.WorkAudit;
 import com.nankingdata.yc.work.models.dto.*;
 import com.nankingdata.yc.work.common.Constants;
 import com.nankingdata.yc.work.common.ParamUtils;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,11 +50,12 @@ public class ScheduleCtrl extends BaseCtrl {
 
     /**
      * 员工查询单个工作项
+     *
      * @param id
      * @return
      */
     @GetMapping("employee/queryOneWork")
-    public Result employeeQueryWorkById(@RequestParam("id")Integer id){
+    public Result employeeQueryWorkById(@RequestParam("id") Integer id) {
         return this.send(workService.queryWorkById(id));
     }
 
@@ -86,6 +85,30 @@ public class ScheduleCtrl extends BaseCtrl {
         return this.send(result);
     }
 
+    /**
+     * 员工按分页查询所有的历史计划
+     *
+     * @param pageNumber
+     * @param pageSize
+     * @param date
+     * @param session
+     * @return
+     */
+    @GetMapping("/employee/querySchedules")
+    public Result employeeQuerySchedules(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                         @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                         @RequestParam(value = "date", required = false) String date,
+                                         HttpSession session) {
+        Users users = (Users) session.getAttribute("user");
+        Map<String, Object> params = ParamUtils.setPageInfo(pageNumber, pageSize);
+        params.put("date", date);
+        params.put("employeeId", users.getId());
+        try {
+            return this.send(workScheduleService.employeeQuerySchedules(params));
+        } catch (Exception e) {
+            return this.send(-1, "操作失败");
+        }
+    }
 
 
     /**
@@ -131,6 +154,7 @@ public class ScheduleCtrl extends BaseCtrl {
 
     /**
      * 员工删除审核
+     *
      * @param id
      * @return
      */
@@ -154,12 +178,14 @@ public class ScheduleCtrl extends BaseCtrl {
      */
     @GetMapping("/employee/queryWorkPool")
     public Result employeeQueryWorkPool(@RequestParam(value = "workName", required = false) String workName,
+                                        @RequestParam(value = "scheduleId", required = false) Integer scheduleId,
                                         @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                         @RequestParam(value = "pageSize", required = false) Integer pageSize, HttpSession session) {
         Map<String, Object> params = ParamUtils.setPageInfo(pageNumber, pageSize);
         params.put("workName", workName);
         Users users = (Users) session.getAttribute(Constants.userSession);
         params.put("userId", users.getId());
+        params.put("scheduleId", scheduleId);
         return this.send(workService.queryUnAddWork(params));
     }
 
@@ -177,12 +203,14 @@ public class ScheduleCtrl extends BaseCtrl {
         Map<String, Object> params = new HashMap<>();
         params.put("workPoolList", workPoolDto.getWorkPoolList());
         params.put("userId", users.getId());
+        params.put("date", workPoolDto.getDate());
         try {
             return this.send(workScheduleService.newSchedule(params));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
         }
     }
+
     /**
      * 员工提交日计划
      *
@@ -193,39 +221,45 @@ public class ScheduleCtrl extends BaseCtrl {
     public Result submitSchedule(@Valid WorkScheduleDto workScheduleDto) {
         try {
             return this.send(workScheduleService.submitSchedule(workScheduleDto));
-        }catch (MyException e){
-            return this.send(-1,"有未填写完成情况的工作");
-        }catch (Exception e1) {
+        } catch (MyException e) {
+            return this.send(-1, "有未填写完成情况的工作");
+        } catch (Exception e1) {
             return this.send(-1, "操作失败");
         }
     }
 
     /**
      * 员工保存工作计划中工作项的完成状态
+     *
      * @param workScheduleDetailDto
      * @return
      */
     @PostMapping("/employee/saveFinishStatus")
-    public Result employeeSaveStatus(@Valid WorkScheduleDetailDto workScheduleDetailDto){
-        try{
+    public Result employeeSaveStatus(@Valid WorkScheduleDetailDto workScheduleDetailDto) {
+        try {
             return this.send(workScheduleService.saveWorkFinishStatus(workScheduleDetailDto));
-        }catch (Exception e){
-            return this.send(-1,"操作失败");
+        } catch (Exception e) {
+            return this.send(-1, "操作失败");
         }
     }
+
     /**
      * 员工从工作计划中移除工作
+     *
      * @param id
      * @return
      */
     @DeleteMapping("/employee/removeWork")
-    public Result employeeRemoveWork(Integer id){
-        try{
+    public Result employeeRemoveWork(Integer id) {
+        try {
             return this.send(workScheduleService.employeeRemoveWork(id));
-        }catch (Exception e){
-            return this.send(-1,"操作失败");
+        } catch (MyException e) {
+            return this.send(-1, e.getMessage());
+        } catch (Exception e) {
+            return this.send(-1, "操作失败");
         }
     }
+
     /**
      * 员工取消申请
      *
@@ -242,7 +276,7 @@ public class ScheduleCtrl extends BaseCtrl {
     }
 
     /**
-     * 领导查询部门员工的常规工作项
+     * 领导查询部门员工的工作项
      *
      * @param workName
      * @param employeeId
@@ -280,13 +314,43 @@ public class ScheduleCtrl extends BaseCtrl {
                                       @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                       @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                       HttpSession session) {
-        Users users= (Users) session.getAttribute("user");
+        Users users = (Users) session.getAttribute("user");
         Map<String, Object> params = ParamUtils.setPageInfo(pageNumber, pageSize);
         params.put("date", date);
         params.put("employeeId", employeeId);
-        params.put("departmentId",users.getDepartmentId());
+        params.put("departmentId", users.getDepartmentId());
         try {
             return this.send(workScheduleService.leaderQuerySchedule(params));
+        } catch (Exception e) {
+            return this.send(-1, "操作失败");
+        }
+    }
+    /**
+     * 查询公司工作项
+     *
+     * @param pageNumber
+     * @param pageSize
+     * @param departmentId
+     * @param workName
+     * @param employeeId
+     * @param session
+     * @return
+     */
+    @GetMapping("/queryCompanyWorks")
+    public Result queryCompanyWorks(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                    @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                    @RequestParam(value = "departmentId", required = false) Integer departmentId,
+                                    @RequestParam(value = "workName", required = false) String workName,
+                                    @RequestParam(value = "employeeId", required = false) Integer employeeId,
+                                    HttpSession session) {
+        Users users = (Users) session.getAttribute("user");
+        Map<String, Object> params = ParamUtils.setPageInfo(pageNumber, pageSize);
+        params.put("departmentId", departmentId);
+        params.put("workName", workName);
+        params.put("employeeId", employeeId);
+        params.put("companyId", users.getCompanyId());
+        try {
+            return this.send(workService.queryCompanyWorks(params));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
         }
@@ -299,11 +363,11 @@ public class ScheduleCtrl extends BaseCtrl {
      * @return
      */
     @PostMapping("/leader/addWork")
-    public Result leaderAddWork(@Valid WorkPool workPool,HttpSession session) {
-        Users users= (Users) session.getAttribute("user");
-        Integer leaderId=users.getId();
+    public Result leaderAddWork(@Valid WorkPool workPool, HttpSession session) {
+        Users users = (Users) session.getAttribute("user");
+        Integer leaderId = users.getId();
         try {
-            return this.send(workService.leaderAddWork(workPool,leaderId));
+            return this.send(workService.leaderAddWork(workPool, leaderId));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
         }
@@ -316,9 +380,9 @@ public class ScheduleCtrl extends BaseCtrl {
      * @return
      */
     @PostMapping("/leader/allotWork")
-    public Result leaderAllotWork(WorkPoolDto workPoolDto) {
+    public Result leaderAllotWork(WorkPoolDto workPoolDto, HttpSession session) {
         try {
-            return this.send(workService.allotWork(workPoolDto.getWorkPoolList()));
+            return this.send(workService.allotWork(workPoolDto.getWorkPoolList(), (Users) session.getAttribute("user")));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
         }
@@ -326,13 +390,15 @@ public class ScheduleCtrl extends BaseCtrl {
 
     /**
      * 删除常规工作项
+     *
      * @param workPool
      * @return
      */
     @DeleteMapping("/leader/deleteWork")
-    public Result leaderDeleteWork(WorkPool workPool){
+    public Result leaderDeleteWork(WorkPool workPool) {
         return this.send(workService.deleteWork(workPool.getId()));
     }
+
     /**
      * 人事查询部门员工的工作
      *
@@ -366,7 +432,7 @@ public class ScheduleCtrl extends BaseCtrl {
     @RequestMapping("/personnel/addWork")
     public Result personnelAddWork(@Valid WorkPoolDto workPoolDto) {
         try {
-            return this.send(workService.personnelAddWork(workPoolDto.getWorkPoolList()));
+            return this.send(workService.addWork(workPoolDto.getWorkPoolList()));
         } catch (Exception e) {
             return this.send(-1, "操作失败");
         }
@@ -389,49 +455,107 @@ public class ScheduleCtrl extends BaseCtrl {
 
     /**
      * 领导给多个员工添加工作
+     *
      * @param workPool
      * @return
      */
     @PostMapping("/leader/addWorkToEmployees")
-    public Result leaderAddWorkToEmployees(@Valid WorkPool workPool){
+    public Result leaderAddWorkToEmployees(@Valid WorkPool workPool, HttpSession session) {
+        Users user = (Users) session.getAttribute("user");
+        try {
+            return this.send(workService.addWorkToEmployees(workPool, user.getId()));
+        } catch (Exception e) {
+            return this.send(-1, "操作失败");
+        }
+    }
+
+    /**
+     * 领导根据员工id查询未添加到工作计划的工作项
+     *
+     * @param employeeId
+     * @param session
+     * @return
+     */
+    @GetMapping("/leader/queryUnAddWork")
+    public Result leaderQueryUnAddWork(@RequestParam(value = "employeeId") Integer employeeId,
+                                       HttpSession session) {
+        Users users = (Users) session.getAttribute("user");
+        Integer deptId = users.getDepartmentId();
+        Map<String, Object> params = new HashMap<>();
+        params.put("deptId", deptId);
+        params.put("userId", employeeId);
+        return this.send(workService.queryUnAddWork(params));
+    }
+
+    /**
+     * 领导批量安排工作
+     *
+     * @param workIds
+     * @param employeeId
+     * @return
+     */
+    @PostMapping("/leader/allotWorks")
+    public Result leaderAllotWorks(@RequestParam(value = "workIds", required = false) Integer[] workIds,
+                                   @RequestParam(value = "employeeId", required = false) Integer employeeId,
+                                   HttpSession session) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("workIds", workIds);
+        params.put("employeeId", employeeId);
+        params.put("user", session.getAttribute("user"));
+        try {
+            return this.send(workService.leaderAllotWorks(params));
+        } catch (Exception e) {
+            return this.send(-1, "操作失败");
+        }
+    }
+
+    /**
+     * 追加历史工作
+     *
+     * @param historyWorkDto
+     * @return
+     */
+    @PostMapping("/employee/addHistoryWork")
+    public Result addHistoryWork(@Valid HistoryWorkDto historyWorkDto, HttpSession session) {
+        try {
+            return this.send(workScheduleService.addHistoryWork(historyWorkDto, (Users) session.getAttribute("user")));
+        } catch (Exception e) {
+            return this.send(-1, "操作失败");
+        }
+    }
+
+    /**
+     * 查询员工工作计划
+     * @param employeeId
+     * @param pageNumber
+     * @param pageSize
+     * @param date
+     * @return
+     */
+    @GetMapping("/queryEmployeeSchedules")
+    public Result queryEmployeeSchedules(@RequestParam(value = "employeeId",required = false)Integer employeeId,
+                                         @RequestParam(value = "pageNumber",required = false)Integer pageNumber,
+                                         @RequestParam(value = "pageSize",required = false)Integer pageSize,
+                                         @RequestParam(value = "date",required = false)String date){
+        Map<String,Object> params= ParamUtils.setPageInfo(pageNumber,pageSize);
+        params.put("employeeId",employeeId);
+        params.put("date",date);
         try{
-            return this.send(workService.leaderAddWorkToEmployees(workPool));
+            return this.send(workScheduleService.queryEmployeeSchedules(params));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }
     }
 
     /**
-     * 领导根据员工id查询未添加到工作计划的工作项
-     * @param employeeId
-     * @param session
+     * 员工开始工作
+     * @param id
      * @return
      */
-    @GetMapping("/leader/queryUnAddWork")
-    public Result leaderQueryUnAddWork(@RequestParam(value = "employeeId")Integer employeeId,
-                                       HttpSession session){
-        Users users= (Users) session.getAttribute("user");
-        Integer deptId=users.getDepartmentId();
-        Map<String,Object> params=new HashMap<>();
-        params.put("deptId",deptId);
-        params.put("employeeId",employeeId);
-        return this.send(workService.leaderQueryUnAddWork(params));
-    }
-
-    /**
-     * 领导批量安排工作
-     * @param workIds
-     * @param employeeId
-     * @return
-     */
-    @PostMapping("/leader/allotWorks")
-    public Result leaderAllotWorks(@RequestParam(value = "workIds",required = false)Integer[] workIds,
-                                   @RequestParam(value = "employeeId",required = false)Integer employeeId){
-        Map<String,Object> params=new HashMap<>();
-        params.put("workIds",workIds);
-        params.put("employeeId",employeeId);
-        try {
-            return this.send(workService.leaderAllotWorks(params));
+    @PutMapping("/beginWork")
+    public Result beginWork(@RequestParam(value = "id",required = true)Integer id){
+        try{
+            return this.send(workService.beginWork(id));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }

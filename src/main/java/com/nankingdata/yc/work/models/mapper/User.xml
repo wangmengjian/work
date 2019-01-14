@@ -3,9 +3,56 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nankingdata.yc.work.models.dao.UserDao">
-    <select id="queryUsersById" parameterType="Integer" resultType="com.nankingdata.yc.common.Users">
+    <select id="queryUsersById" parameterType="Integer" resultType="com.nankingdata.yc.work.models.dto.UserDto">
         select *
         from usermanagement.users
         where id=#{id}
+    </select>
+    <select id="queryDepartmentsInCompany" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.DepartmentDto">
+        select *
+        from usermanagement.department
+        where company_id =#{companyId}
+        order by department_name
+    </select>
+    <select id="queryDepartmentsCount" parameterType="java.util.Map" resultType="Integer">
+        select count(*)
+        from usermanagement.department
+        where company_id =#{companyId}
+    </select>
+    <select id="queryUsersInDepartment" parameterType="Integer" resultType="com.nankingdata.yc.work.models.dto.UserDto">
+        select *
+        from usermanagement.users
+        <where>
+            <if test="idList!=null">
+                department_id in
+                <foreach collection="idList" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="employeeId!=null">
+                and users.id=#{employeeId}
+            </if>
+        </where>
+        order by department_id,real_name
+    </select>
+    <select id="queryDepartmentsByIds" resultType="com.nankingdata.yc.work.models.dto.DepartmentDto">
+        select *
+        from usermanagement.department
+        where id in
+        <foreach collection="idList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+    <select id="queryLeadDepartment" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.DepartmentDto">
+        select *
+        from usermanagement.department
+        <where>
+            <if test="principalId!=null">
+                principal_id=#{principalId}
+            </if>
+            <if test="departmentId!=null">
+                and id=#{departmentId}
+            </if>
+        </where>
     </select>
 </mapper>

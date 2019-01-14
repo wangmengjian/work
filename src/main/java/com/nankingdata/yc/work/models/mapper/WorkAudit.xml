@@ -6,10 +6,10 @@
     <insert id="addWorkAudit" parameterType="com.nankingdata.yc.work.models.domain.WorkAudit" useGeneratedKeys="true"
             keyProperty="id">
         insert into
-        work_audit(work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id,audit_submit_time)
+        work_audit(work_priority,work_name,work_content,work_instructor,work_minutes,work_from,work_user_id,origin_work_id,audit_submit_time)
         values
         <foreach collection="list" separator="," item="item">
-            (#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.workUserId},#{item.originWorkId},NOW())
+            (#{item.workPriority},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.workUserId},#{item.originWorkId},NOW())
         </foreach>
     </insert>
     <insert id="addWorkAuditDetail" parameterType="com.nankingdata.yc.work.models.domain.WorkAuditDetail" useGeneratedKeys="true" keyProperty="id">
@@ -30,16 +30,18 @@
         wa.work_minutes,
         sc.`name` AS workFrom,
         wa.audit_submit_time,
-        wad.audit_status
+        wad.audit_status,
+        sc1.name as workPriority
         FROM
         work_audit_detail AS wad
         LEFT JOIN work_audit AS wa ON wad.audit_item_id = wa.id
         LEFT JOIN usermanagement.`users` ON wa.work_user_id = `users`.id
         LEFT JOIN sys_config AS sc ON wa.work_from = sc. CODE
+        left join sys_config as sc1 on wa.work_priority=sc1.code
         <where>
-            wad.audit_status like 'unaudited'
+            wad.audit_status = 'unaudited'
             <if test="workName!=null">
-                and wa.work_name like "%"#{workName}"%"
+                and locate(#{workName},wa.work_name)
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
@@ -63,9 +65,9 @@
         LEFT JOIN usermanagement.`users` ON wa.work_user_id = `users`.id
         LEFT JOIN sys_config AS sc ON wa.work_from = sc. CODE
         <where>
-            wad.audit_status like 'unaudited'
+            wad.audit_status = 'unaudited'
             <if test="workName!=null">
-                and wa.work_name like "%"#{workName}"%"
+                and locate(#{workName},wa.work_name)
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
@@ -86,16 +88,18 @@
         wa.work_minutes,
         sc.`name` AS workFrom,
         wa.audit_submit_time,
-        wad.audit_status
+        wad.audit_status,
+        sc1.name as workPriority
         FROM
         work_audit_detail AS wad
         LEFT JOIN work_audit AS wa ON wad.audit_item_id = wa.id
         LEFT JOIN usermanagement.`users` ON wa.work_user_id = `users`.id
         LEFT JOIN sys_config AS sc ON wa.work_from = sc. CODE
+        left join sys_config as sc1 on sc1.code=wa.work_priority
         <where>
             wad.audit_status not like 'unaudited'
             <if test="workName!=null">
-                and wa.work_name like "%"#{workName}"%"
+                and locate(#{workName},wa.work_name)
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
@@ -121,7 +125,7 @@
         <where>
             wad.audit_status not like 'unaudited'
             <if test="workName!=null">
-                and wa.work_name like "%"#{workName}"%"
+                and locate(#{workName},wa.work_name)
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
@@ -219,7 +223,7 @@
     </update>
     <update id="updateAudit" parameterType="com.nankingdata.yc.work.models.domain.WorkAudit">
         update work_audit
-        set work_name=#{workName},work_content=#{workContent},work_instructor=#{workInstructor},work_minutes=#{workMinutes},work_from=#{workFrom},audit_submit_time=NOW()
+        set work_name=#{workName},work_content=#{workContent},work_instructor=#{workInstructor},work_minutes=#{workMinutes},work_from=#{workFrom},audit_submit_time=NOW(),work_priority=#{workPriority}
         where id=#{id}
     </update>
 </mapper>

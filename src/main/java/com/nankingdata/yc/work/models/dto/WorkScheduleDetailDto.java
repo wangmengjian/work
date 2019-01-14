@@ -14,6 +14,7 @@ public class WorkScheduleDetailDto {
     private String workInstructor;
     private Integer workMinutes;
     private String workFrom;
+    private String workPriority;
     private String finishStatus;
     private String finishPicture;
     private String finishFeedback;
@@ -23,6 +24,15 @@ public class WorkScheduleDetailDto {
     private String beginTime;
     private String empName;
     private Integer scheduleId;
+
+
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
 
     public Integer getScheduleId() {
         return scheduleId;

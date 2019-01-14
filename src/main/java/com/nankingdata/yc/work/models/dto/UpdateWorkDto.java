@@ -15,8 +15,18 @@ public class UpdateWorkDto {
     private String workFrom;
     @NotNull(message = "请输入标准工时")
     private Integer workMinutes;
+    @NotNull(message="请选择工作优先级")
+    private String workPriority;
     private String workInstructor;
     private Integer originWorkId;
+
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
 
     public int getId() {
         return id;

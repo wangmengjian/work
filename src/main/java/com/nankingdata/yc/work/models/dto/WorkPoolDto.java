@@ -11,6 +11,15 @@ import java.util.List;
 public class WorkPoolDto {
     @Valid
     private List<WorkPool> workPoolList;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public List<WorkPool> getWorkPoolList() {
         return workPoolList;

@@ -19,10 +19,10 @@ public interface WorkDao {
     public int addAgreeWork(List<WorkPool> workPoolList);
     /*更新通过的工作项*/
     public int updateAgreeWork(List<WorkPool> workPoolList);
-    /*查询部门下员工的常规工作项*/
-    public List<WorkPool> queryWorkByEmployeeId(Map<String,Object> params);
-    /*查询部门下员工的常规工作项*/
-    public int queryWorkCountByEmployeeId(Map<String,Object> params);
+    /*查询部门下员工的工作项*/
+    public List<WorkPool> queryWorks(Map<String,Object> params);
+    /*查询部门下员工的工作项*/
+    public int queryWorksCount(Map<String,Object> params);
     /*添加工作项*/
     public int addWork(List<WorkPool> workPoolList);
     /*更改常规工作项*/
@@ -37,4 +37,6 @@ public interface WorkDao {
     public int updateWorkAuditStatus(List<WorkPool> workPoolList);
     /*查询工作完成情况*/
     public List<FinishConditionBo> queryWorkFinishStatus(Map<String,Object> params);
+    /*开始工作*/
+    public int beginWork(Integer id);
 }

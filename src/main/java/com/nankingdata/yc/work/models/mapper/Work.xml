@@ -13,6 +13,7 @@
         wa.work_instructor,
         wa.work_minutes,
         wa.origin_work_id,
+        sc3.name as work_priority,
         wad.audit_time as time,
         wad.audit_fail_reason,
         sc2.`name` as workFrom,
@@ -24,13 +25,15 @@
         on wad.audit_status=sc1.code
         left join sys_config as sc2
         on wa.work_from=sc2.code
+        left join sys_config as sc3
+        on wa.work_priority=sc3.code
         <where>
             wa.work_user_id=#{userId}
             <if test="workName!=null">
-                and work_name like "%"#{workName}"%"
+                and locate(#{workName},work_name)
             </if>
             <if test="auditStatus!=null">
-                and wad.audit_status like #{auditStatus}
+                and wad.audit_status = #{auditStatus}
             </if>
             <if test="workFrom!=null">
                 and wa.work_from like #{workFrom}
@@ -50,13 +53,13 @@
         <where>
             wa.work_user_id=#{userId}
             <if test="workName!=null">
-                and work_name like "%"#{workName}"%"
+                and locate(#{workName},work_name)
             </if>
             <if test="auditStatus!=null">
-                and wad.audit_status like #{auditStatus}
+                and wad.audit_status = #{auditStatus}
             </if>
             <if test="workFrom!=null">
-                and wa.work_from like #{workFrom}
+                and wa.work_from = #{workFrom}
             </if>
         </where>
     </select>
@@ -68,6 +71,7 @@
         wp.work_content,
         wp.work_instructor,
         wp.work_minutes,
+        sc.name as work_priority,
         wp.create_time,
         wp.update_time,
         wp.user_id,
@@ -75,17 +79,19 @@
         from work_pool as wp
         left join usermanagement.users
         on users.id=wp.user_id
+        left join sys_config as sc
+        on sc.code=wp.work_priority
         <where>
+            wp.work_from='w3'
             <if test="scheduleId!=null">
-                wp.id not in (
+                and wp.id not in (
                 select work_id
                 from work_schedule_detail as wsd
                 where schedule_id=#{scheduleId})
             </if>
-            and wp.work_from='w3'
             and wp.user_id=#{userId}
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},work_name)
             </if>
             and wp.delete_status='no'
             and wp.audit_status='agree'
@@ -101,7 +107,7 @@
                 wp.user_id=#{employeeId}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             and wp.delete_status='no'
         </where>
@@ -151,41 +157,77 @@
         </foreach>
         )
     </update>
-    <select id="queryWorkByEmployeeId" resultType="com.nankingdata.yc.work.models.domain.WorkPool"
+    <select id="queryWorks" resultType="com.nankingdata.yc.work.models.domain.WorkPool"
             parameterType="java.util.Map">
         select
-        wp.*,
-        users.real_name as employeeName
+        wp.id,
+        wp.work_name,
+        wp.work_content,
+        wp.work_instructor,
+        wp.work_minutes,
+        sc.name as work_priority,
+        wp.create_time,
+        wp.update_time,
+        wp.user_id,
+        sc1.name as workFrom,
+        users.real_name as employeeName,
+        users.department_id as departmentId
         from work_pool wp
         left join usermanagement.`users`
         on wp.user_id=`users`.id
+        left join sys_config sc
+        on sc.code=wp.work_priority
+        left join sys_config sc1
+        on sc1.code=wp.work_from
         <where>
-            work_from='w3'
+            (
+            wp.work_from='w3' or (
+            wp.work_from='w2' and DATE_FORMAT(wp.create_time,'%y-%c-%d')= DATE_FORMAT(NOW(),'%y-%c-%d')
+            )
+            )
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
+            </if>
+            <if test="companyId!=null">
+                and users.company_id=#{companyId}
             </if>
             and wp.delete_status='no'
             and wp.audit_status='agree'
         </where>
         order by update_time desc,create_time desc
+        <if test="pageStart!=null">
         limit #{pageStart},#{pageSize}
+        </if>
     </select>
-    <select id="queryWorkCountByEmployeeId" resultType="Integer" parameterType="java.util.Map">
+    <select id="queryWorksCount" resultType="Integer" parameterType="java.util.Map">
         select
         count(*)
         from work_pool wp
         left join usermanagement.`users`
         on wp.user_id=`users`.id
         <where>
-            work_from='w3'
+            (
+            wp.work_from='w3' or (
+            wp.work_from='w2' and DATE_FORMAT(wp.create_time,'%y-%c-%d')= DATE_FORMAT(NOW(),'%y-%c-%d')
+            )
+            )
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
+            </if>
+            <if test="companyId!=null">
+                and users.company_id=#{companyId}
             </if>
             and wp.delete_status='no'
             and wp.audit_status='agree'
@@ -194,15 +236,15 @@
     <insert id="addWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool" useGeneratedKeys="true"
             keyProperty="id">
         insert into
-        work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,allot_user_id,create_time,update_time)
+        work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,allot_user_id,create_time,update_time,work_priority)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.allotUserId},NOW(),NOW())
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.allotUserId},NOW(),NOW(),#{item.workPriority})
         </foreach>
     </insert>
     <update id="updateWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">
         update work_pool
-        set work_name=#{workName},work_content=#{workContent},work_minutes=#{workMinutes},work_instructor=#{workInstructor}
+        set work_name=#{workName},work_content=#{workContent},work_minutes=#{workMinutes},work_instructor=#{workInstructor},work_priority=#{workPriority},work_from=#{workFrom}
         where id=#{id}
     </update>
     <select id="queryWorkPool" resultType="com.nankingdata.yc.work.models.domain.WorkPool"
@@ -248,10 +290,10 @@
         <where>
             ws.submit_status = 'submitted'
             <if test="beginTime!=null">
-                and DATE_FORMAT(ws.`date`,'%e %b %y') &gt;= DATE_FORMAT(#{beginTime},'%e %b %y')
+                and DATE_FORMAT(ws.`date`,'%y-%c-%d') &gt;= DATE_FORMAT(#{beginTime},'%y-%c-%d')
             </if>
             <if test="endTime!=null">
-                and DATE_FORMAT(ws.`date`,'%e %b %y') &lt;= DATE_FORMAT(#{endTime},'%e %b %y')
+                and DATE_FORMAT(ws.`date`,'%y-%c-%d') &lt;= DATE_FORMAT(#{endTime},'%y-%c-%d')
             </if>
             <if test="empId!=null">
                 and user_id=#{empId}
@@ -260,4 +302,9 @@
         GROUP by user_id,wsd.finish_status
         order by user_id asc,finish_status
     </select>
+    <update id="beginWork" parameterType="Integer">
+        update work_schedule_detail
+        set begin_time=NOW(),finish_status='underway'
+        where id=#{id}
+    </update>
 </mapper>

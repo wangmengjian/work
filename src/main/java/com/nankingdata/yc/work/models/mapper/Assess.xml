@@ -14,8 +14,12 @@
         wp.work_minutes,
         wsd.begin_time,
         wsd.finish_time,
+        wsd.finish_condition,
+        wsd.finish_feedback,
         wa.assess_grade,
-        users.real_name as empName
+        users.real_name as empName,
+        case when wa.id is null then 0 else 1 end as assessStatus,
+        sc2.name as workPriority
         from work_schedule_detail as wsd
         left join work_pool as wp
         on wp.id=wsd.work_id
@@ -29,36 +33,47 @@
         on sc.`code`=wp.work_from
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
+        left join sys_config as sc2
+        on sc2.code=wp.work_priority
         <where>
             assess_time is null
-            and ws.submit_status like 'submitted'
+            and ws.submit_status = 'submitted'
+            and (wsd.finish_status ='completed' or wsd.finish_status='uncompleted')
             <if test="assessGrade!=null">
-                and assess_grade like #{assessGrade}
+                and assess_grade = #{assessGrade}
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
+            </if>
+            <if test="employeeIds!=null">
+                and users.id in
+                <foreach collection="employeeIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
             </if>
             <if test="finishStatus!=null">
                 and finish_status=#{finishStatus}
             </if>
             <if test="workFrom!=null">
-                and wp.work_From like #{workFrom}
+                and wp.work_From = #{workFrom}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="beginTime!=null">
-                and wsd.begin_time>#{beginTime}
+                and date_format(#{beginTime},'%y-%c-%d') &lt;=date_format(wsd.begin_time,'%y-%c-%d')
             </if>
             <if test="endTime!=null">
-                and #{endTime}>wsd.begin_time
+                and date_format(#{endTime},'%y-%c-%d') &gt;=date_format(wsd.begin_time,'%y-%c-%d')
             </if>
             <if test="departmentId!=null">
                 and users.department_id=#{departmentId}
             </if>
         </where>
         order by begin_time desc, finish_time desc
-        limit #{pageStart},#{pageSize}
+        <if test="pageStart!=null and pageSize!=null">
+            limit #{pageStart},#{pageSize}
+        </if>
     </select>
     <select id="queryAllAssessCount" resultType="Integer" parameterType="java.util.Map">
         select count(*)
@@ -77,27 +92,34 @@
         on sc1.`code`=wsd.finish_status
         <where>
             assess_time is null
-            and ws.submit_status like 'submitted'
+            and ws.submit_status = 'submitted'
+            and (wsd.finish_status ='completed' or wsd.finish_status='uncompleted')
             <if test="assessGrade!=null">
-                and assess_grade like #{assessGrade}
+                and assess_grade = #{assessGrade}
             </if>
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
+            </if>
+            <if test="employeeIds!=null">
+                and users.id in
+                <foreach collection="employeeIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
             </if>
             <if test="finishStatus!=null">
                 and finish_status=#{finishStatus}
             </if>
             <if test="workFrom!=null">
-                and wp.work_From like #{workFrom}
+                and wp.work_From = #{workFrom}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="beginTime!=null">
-                and wsd.begin_time>#{beginTime}
+                and date_format(#{beginTime},'%y-%c-%d') &lt;=date_format(wsd.begin_time,'%y-%c-%d')
             </if>
             <if test="endTime!=null">
-                and #{endTime}>finish_time
+                and date_format(#{endTime},'%y-%c-%d') &gt;=date_format(wsd.begin_time,'%y-%c-%d')
             </if>
             <if test="departmentId!=null">
                 and users.department_id=#{departmentId}
@@ -122,9 +144,13 @@
         wp.work_minutes,
         ws.date as beginTime,
         wsd.finish_time,
+        wsd.finish_condition,
+        wsd.finish_feedback,
+        sc2.name as workPriority,
         wa.assess_grade,
         wa.assess_desc,
-        case when wa.id is null then 0 else 1 end as assessStatus
+        case when wa.id is null then 0 else 1 end as assessStatus,
+        users.real_name as empName
         from work_schedule_detail as wsd
         left join work_pool as wp
         on wp.id=wsd.work_id
@@ -136,28 +162,32 @@
         on sc.`code`=wp.work_from
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
+        left join usermanagement.`users`
+        on ws.user_id=`users`.id
+        left join sys_config as sc2
+        on sc2.code=wp.work_priority
         <where>
-            ws.submit_status like 'submitted'
+            ws.submit_status = 'submitted'
             <if test="userId!=null">
                 and ws.user_id=#{userId}
             </if>
             <if test="assessGrade!=null">
-                and assess_grade like #{assessGrade}
+                and assess_grade = #{assessGrade}
             </if>
             <if test="finishStatus!=null">
                 and finish_status=#{finishStatus}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="workFrom!=null">
-                and wp.work_from like #{workFrom}
+                and wp.work_from = #{workFrom}
             </if>
             <if test="beginTime!=null">
-                and date_format(#{beginTime},'%e %b %y') &lt;=date_format(ws.date,'%e %b %y')
+                and date_format(#{beginTime},'%y-%c-%d') &lt;=date_format(ws.date,'%y-%c-%d')
             </if>
             <if test="finishTime!=null">
-                and date_format(ws.date,'%e %b %y')&lt;=date_format(#{finishTime},'%e %b %y')
+                and date_format(ws.date,'%y-%c-%d')&lt;=date_format(#{finishTime},'%y-%c-%d')
             </if>
             <if test="assessStatus==1">
                 and wa.id is not null
@@ -184,27 +214,27 @@
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
         <where>
-            ws.submit_status like 'submitted'
+            ws.submit_status = 'submitted'
             <if test="userId!=null">
                 and ws.user_id=#{userId}
             </if>
             <if test="assessGrade!=null">
-                and assess_grade like #{assessGrade}
+                and assess_grade = #{assessGrade}
             </if>
             <if test="finishStatus!=null">
                 and finish_status=#{finishStatus}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="workFrom!=null">
-                and wp.work_from like #{workFrom}
+                and wp.work_from = #{workFrom}
             </if>
             <if test="beginTime!=null">
-                and date_format(#{beginTime},'%e %b %y') &lt;=date_format(ws.date,'%e %b %y')
+                and date_format(#{beginTime},'%y-%c-%d') &lt;=date_format(ws.date,'%y-%c-%d')
             </if>
             <if test="finishTime!=null">
-                and date_format(ws.date,'%e %b %y')&lt;=date_format(#{finishTime},'%e %b %y')
+                and date_format(ws.date,'%y-%c-%d')&lt;=date_format(#{finishTime},'%y-%c-%d')
             </if>
             <if test="assessStatus==1">
                 and wa.id is not null
@@ -226,7 +256,8 @@
         wsd.begin_time,
         wsd.finish_time,
         wa.assess_grade,
-        users.real_name as empName
+        users.real_name as empName,
+        sc2.name as workPriority
         from work_schedule_detail as wsd
         left join work_pool as wp
         on wp.id=wsd.work_id
@@ -240,9 +271,11 @@
         on sc.`code`=wp.work_from
         left join sys_config as sc1
         on sc1.`code`=wsd.finish_status
+        left join sys_config as sc2
+        on sc2.code=wp.work_priority
         <where>
             assess_time is null
-            and ws.submit_status like 'submitted'
+            and ws.submit_status = 'submitted'
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
             </if>
@@ -250,10 +283,10 @@
                 and finish_status=#{finishStatus}
             </if>
             <if test="workFrom!=null">
-                and wp.work_From like #{workFrom}
+                and wp.work_From = #{workFrom}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="beginTime!=null">
                 and wsd.begin_time>#{beginTime}
@@ -285,7 +318,7 @@
         on sc1.`code`=wsd.finish_status
         <where>
             assess_time is null
-            and ws.submit_status like 'submitted'
+            and ws.submit_status = 'submitted'
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
             </if>
@@ -293,10 +326,10 @@
                 and finish_status=#{finishStatus}
             </if>
             <if test="workFrom!=null">
-                and wp.work_From like #{workFrom}
+                and wp.work_From = #{workFrom}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="beginTime!=null">
                 and wsd.begin_time>#{beginTime}
@@ -324,7 +357,8 @@
         users.real_name as empName,
         wsd.begin_time,
         wsd.finish_time,
-        wsd.finish_status
+        wsd.finish_status,
+        sc1.name as workPriority
         from work_assess as wa
         left join work_schedule_detail as wsd
         on wsd.id=wa.schedule_detail_id
@@ -334,6 +368,8 @@
         on users.id=wp.user_id
         left join sys_config as sc
         on sc.`code`=wp.work_from
+        left join sys_config as sc1
+        on sc1.code=wp.work_priority
         <where>
             <if test="assessUserId!=null">
                 assess_user_id=#{assessUserId}
@@ -345,16 +381,19 @@
                 and finish_status=#{finishStatus}
             </if>
             <if test="workFrom!=null">
-                and wp.work_From like #{workFrom}
+                and wp.work_From = #{workFrom}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="beginTime!=null">
-                and wa.assess_time>#{beginTime}
+                and date_format(#{beginTime},'%y-%c-%d') &lt;=date_format(wa.assess_time,'%y-%c-%d')
             </if>
             <if test="endTime!=null">
-                and #{endTime}>wa.assess_time
+                and date_format(#{endTime},'%y-%c-%d') &gt;=date_format(wa.assess_time,'%y-%c-%d')
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
             </if>
         </where>
         order by assess_time desc
@@ -380,16 +419,19 @@
                 and finish_status=#{finishStatus}
             </if>
             <if test="workFrom!=null">
-                and wp.work_From like #{workFrom}
+                and wp.work_From = #{workFrom}
             </if>
             <if test="workName!=null">
-                and wp.work_name like "%"#{workName}"%"
+                and locate(#{workName},wp.work_name)
             </if>
             <if test="beginTime!=null">
-                and wa.assess_time>#{beginTime}
+                and date_format(#{beginTime},'%y-%c-%d') &lt;=date_format(wa.assess_time,'%y-%c-%d')
             </if>
             <if test="endTime!=null">
-                and #{endTime}>wa.assess_time
+                and date_format(#{endTime},'%y-%c-%d') &gt;=date_format(wa.assess_time,'%y-%c-%d')
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
             </if>
         </where>
     </select>
@@ -406,10 +448,10 @@
         <where>
             ws.submit_status = 'submitted'
             <if test="beginTime!=null">
-                and DATE_FORMAT(ws.`date`,'%e %b %y') &gt;= DATE_FORMAT(#{beginTime},'%e %b %y')
+                and DATE_FORMAT(ws.`date`,'%y-%c-%d') &gt;= DATE_FORMAT(#{beginTime},'%y-%c-%d')
             </if>
             <if test="endTime!=null">
-                and DATE_FORMAT(ws.`date`,'%e %b %y') &lt;= DATE_FORMAT(#{endTime},'%e %b %y')
+                and DATE_FORMAT(ws.`date`,'%y-%c-%d') &lt;= DATE_FORMAT(#{endTime},'%y-%c-%d')
             </if>
             <if test="empId!=null">
                 and user_id=#{empId}
@@ -417,5 +459,11 @@
         </where>
         GROUP BY wa.assess_grade,ws.user_id
         order by user_id asc,assess_grade asc
+    </select>
+    <select id="queryOneAssessRecordByDetailId" resultType="com.nankingdata.yc.work.models.domain.WorkAssess"
+            parameterType="Integer">
+        select *
+        from work_assess
+        where schedule_detail_id=#{id}
     </select>
 </mapper>

@@ -7,7 +7,7 @@
             resultType="com.nankingdata.yc.work.models.dto.WorkScheduleDto">
         select *
         from work_schedule
-        where user_id=#{userId} and date_format(`date`,'%e %b %y') = date_format(#{date}, '%e %b %y')
+        where user_id=#{userId} and date_format(`date`,'%y-%c-%d') = date_format(#{date}, '%y-%c-%d')
     </select>
     <select id="queryWorkScheduleDetail" parameterType="java.util.Map"
             resultType="com.nankingdata.yc.work.models.dto.WorkScheduleDetailDto">
@@ -17,6 +17,7 @@
         wp.work_content,
         wp.work_instructor,
         wp.work_minutes,
+        sc2.name as work_priority,
         sc1.name as work_from,
         sc.name as finish_status,
         wsd.finish_picture,
@@ -34,23 +35,39 @@
         on wsd.work_id=wp.id
         left join sys_config as sc
         on wsd.finish_status=sc.`code`
+        left join sys_config as sc2
+        on wp.work_priority=sc2.code
         left join usermanagement.`users`
         on users.id=wp.user_id
+        left join work_schedule as ws
+        on ws.id=wsd.schedule_id
         <where>
             <if test="scheduleId!=null">
                 schedule_id=#{scheduleId}
+            </if>
+            <if test="scheduleIds!=null">
+                and schedule_id in
+                <foreach collection="scheduleIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
             </if>
             <if test="workFrom!=null">
                 and wsd.work_from=#{workFrom}
             </if>
             <if test="workName!=null">
-                and work_name like "%"#{workName}"%"
+                and locate(#{workName},work_name)
             </if>
             <if test="finishStatus!=null">
                 and wsd.finish_status like #{finishStatus}
             </if>
             <if test="departmentId!=null">
                 and users.department_id=#{departmentId}
+            </if>
+            <if test="companyId!=null">
+                and users.company_id=#{companyId}
+            </if>
+            <if test="date!=null">
+                and date_format(ws.date,'%y-%c-%d') = date_format(#{date}, '%y-%c-%d')
             </if>
         </where>
         order by wsd.begin_time desc
@@ -73,7 +90,7 @@
                 and wsd.work_from=#{workFrom}
             </if>
             <if test="workName!=null">
-                and work_name like "%"#{workName}"%"
+                and locate(#{workName},work_name)
             </if>
             <if test="finishStatus!=null">
                 and wsd.finish_status like #{finishStatus}
@@ -116,59 +133,81 @@
     <update id="updateSchedule" parameterType="com.nankingdata.yc.work.models.dto.WorkScheduleDto">
         update work_schedule
         set submit_time=NOW(),submit_status='submitted'
-        where id=#{scheduleId} and date_format(`date`,'%e %b %y') = date_format(now(), '%e %b %y')
+        where id=#{scheduleId} and date_format(`date`,'%y-%c-%d') = date_format(now(), '%y-%c-%d')
     </update>
     <insert id="addSchedule" parameterType="com.nankingdata.yc.work.models.domain.WorkSchedule" useGeneratedKeys="true"
             keyProperty="id">
         insert into work_schedule(user_id,`date`)
         values(#{userId},NOW())
     </insert>
-    <insert id="addScheduleDetail">
-        insert into work_schedule_detail(schedule_id,work_id,work_from,begin_time,allot_user_id)
+    <!--批量添加工作计划明细-->
+    <insert id="addScheduleDetail" parameterType="com.nankingdata.yc.work.models.domain.WorkScheduleDetail">
+        insert into
+        work_schedule_detail(schedule_id,work_id,work_from,begin_time,finish_time,finish_picture,finish_condition,finish_feedback,finish_status,allot_user_id)
         values
-        <foreach collection="workPoolList" separator="," item="item">
-            (#{scheduleId},#{item.id},#{item.workFrom},NOW(),#{item.allotUserId})
+        <foreach collection="workScheduleDetailList" separator="," item="item">
+            (#{item.scheduleId},#{item.workId},#{item.workFrom},#{item.beginTime},#{item.finishTime},#{item.finishPicture},#{item.finishCondition},#{item.finishFeedback},#{item.finishStatus},#{item.allotUserId})
         </foreach>
     </insert>
+
     <select id="queryTodayScheduleId" parameterType="Integer" resultType="Integer">
         select id
         from work_schedule as ws
-        where date_format(ws.date,'%e %b %y') = date_format(now(), '%e %b %y') and ws.user_id=#{userId}
+        where date_format(ws.date,'%y-%c-%d') = date_format(now(), '%y-%c-%d') and ws.user_id=#{userId}
     </select>
-    <select id="leaderQuerySchedule" parameterType="java.util.Map"
+    <select id="querySchedules" parameterType="java.util.Map"
             resultType="com.nankingdata.yc.work.models.dto.WorkScheduleDto">
-        select ws.*,users.real_name as empName
+        select ws.*,users.real_name as empName,users.department_id
         from work_schedule as ws
         left join usermanagement.users
         on ws.user_id=users.id
         <where>
-            users.department_id=#{departmentId}
+            <if test="departmentId!=null">
+                users.department_id=#{departmentId}
+            </if>
+            <if test="companyId!=null">
+                and users.company_id=#{companyId}
+            </if>
             <if test="employeeId!=null">
                 and user_id=#{employeeId}
             </if>
+            <if test="employeeIds!=null">
+                and user_id in
+                <foreach collection="employeeIds" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
             <if test="date!=null">
-                and date_format(`date`,'%e %b %y') = date_format(#{date}, '%e %b %y')
+                and date_format(`date`,'%y-%c-%d') = date_format(#{date}, '%y-%c-%d')
             </if>
         </where>
-        order by ws.submit_time desc
-        limit #{pageStart},#{pageSize}
+        order by ws.date desc
+        <if test="pageStart!=null">
+            limit #{pageStart},#{pageSize}
+        </if>
     </select>
-    <select id="leaderQueryScheduleCount" parameterType="java.util.Map" resultType="Integer">
+    <select id="querySchedulesCount" parameterType="java.util.Map" resultType="Integer">
         select count(*)
         from work_schedule as ws
         left join usermanagement.users
         on ws.user_id=users.id
         <where>
-            users.department_id=#{departmentId}
+            <if test="departmentId!=null">
+                users.department_id=#{departmentId}
+            </if>
+            <if test="companyId!=null">
+                and users.company_id=#{companyId}
+            </if>
             <if test="employeeId!=null">
                 and user_id=#{employeeId}
             </if>
             <if test="date!=null">
-                and date_format(`date`,'%e %b %y') = date_format(#{date}, '%e %b %y')
+                and date_format(`date`,'%y-%c-%d') = date_format(#{date}, '%y-%c-%d')
             </if>
         </where>
     </select>
-    <select id="queryScheduleById" parameterType="Integer" resultType="com.nankingdata.yc.work.models.domain.WorkSchedule">
+    <select id="queryScheduleById" parameterType="Integer"
+            resultType="com.nankingdata.yc.work.models.domain.WorkSchedule">
         select *
         from work_schedule as ws
         where id=#{scheduleId}
@@ -177,4 +216,54 @@
         delete from work_schedule_detail
         where id=#{id}
     </delete>
+    <select id="queryMoreWorkScheduleByEmployeeIds" parameterType="Integer"
+            resultType="com.nankingdata.yc.work.models.domain.WorkSchedule">
+        select ws.id,ws.user_id
+        from work_schedule as ws
+        <where>
+            <if test="list!=null">
+                ws.user_id in
+                <foreach collection="list" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+            and date_format(ws.date,'%y-%c-%d') = date_format(now(), '%y-%c-%d')
+        </where>
+    </select>
+    <insert id="addMoreWorkSchedule" parameterType="com.nankingdata.yc.work.models.domain.WorkSchedule" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into work_schedule(user_id,`date`)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId},NOW())
+        </foreach>
+    </insert>
+    <insert id="addWorkScheduleDetails" parameterType="com.nankingdata.yc.work.models.domain.WorkScheduleDetail"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into work_schedule_detail(schedule_id,work_id,work_from,begin_time,allot_user_id)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.scheduleId},#{item.workId},#{item.workFrom},#{item.beginTime},#{item.allotUserId})
+        </foreach>
+    </insert>
+    <select id="queryScheduleId" parameterType="java.util.Map" resultType="Integer">
+        select id
+        from work_schedule as ws
+        where date_format(ws.date,'%y-%c-%d') = date_format(#{date}, '%y-%c-%d')
+        and ws.user_id=#{userId}
+    </select>
+    <select id="queryMoreWorkScheduleDetails" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.WorkScheduleDetailDto">
+        select *
+        from work_schedule_detail
+    </select>
+    <select id="queryMoreEmployeesSchedules" resultType="com.nankingdata.yc.work.models.dto.WorkScheduleDto" parameterType="java.util.Map">
+        select *
+        from work_schedule as ws
+        where date_format(ws.date,'%y-%c-%d') = date_format(#{date}, '%y-%c-%d')
+        and ws.user_id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

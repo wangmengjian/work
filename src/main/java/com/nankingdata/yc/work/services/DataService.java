@@ -7,6 +7,7 @@ import com.nankingdata.yc.work.models.bo.FinishConditionBo;
 import com.nankingdata.yc.work.models.dao.AssessDao;
 import com.nankingdata.yc.work.models.dao.UserDao;
 import com.nankingdata.yc.work.models.dao.WorkDao;
+import com.nankingdata.yc.work.models.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class DataService {
      */
     public Map<String,Object> countData(Map<String,Object> params){
         DataBo dataBo=new DataBo();
-        Users users=userDao.queryUsersById((Integer) params.get("empId"));
+        UserDto users=userDao.queryUsersById((Integer) params.get("empId"));
         dataBo.setEmpName(users.getRealName());
         dataBo.setEmpId((Integer) params.get("empId"));
         List<FinishConditionBo> finishConditionBoList=workDao.queryWorkFinishStatus(params);

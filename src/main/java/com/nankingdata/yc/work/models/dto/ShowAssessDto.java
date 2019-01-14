@@ -16,13 +16,40 @@ public class ShowAssessDto {
     private String empName;
     private String assessDesc;
     private Integer assessStatus;
-    private float workEfficiency;
+    private Float workEfficiency;
+    private String workPriority;
+    private String finishCondition;
+    private String finishFeedback;
 
-    public float getWorkEfficiency() {
+    public String getFinishFeedback() {
+        return finishFeedback;
+    }
+
+    public void setFinishFeedback(String finishFeedback) {
+        this.finishFeedback = finishFeedback;
+    }
+
+    public String getFinishCondition() {
+        return finishCondition;
+    }
+
+    public void setFinishCondition(String finishCondition) {
+        this.finishCondition = finishCondition;
+    }
+
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
+
+    public Float getWorkEfficiency() {
         return workEfficiency;
     }
 
-    public void setWorkEfficiency(float workEfficiency) {
+    public void setWorkEfficiency(Float workEfficiency) {
         this.workEfficiency = workEfficiency;
     }
 

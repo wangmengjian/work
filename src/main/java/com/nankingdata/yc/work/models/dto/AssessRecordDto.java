@@ -13,17 +13,26 @@ public class AssessRecordDto {
     private String workInstructor;
     private Integer workMinutes;
     private String workFrom;
+    private String workPriority;
     private String empName;
     private String beginTime;
     private String finishTime;
     private String finishStatus;
-    private float workEfficiency;
+    private Float workEfficiency;
 
-    public float getWorkEfficiency() {
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
+
+    public Float getWorkEfficiency() {
         return workEfficiency;
     }
 
-    public void setWorkEfficiency(float workEfficiency) {
+    public void setWorkEfficiency(Float workEfficiency) {
         this.workEfficiency = workEfficiency;
     }
 

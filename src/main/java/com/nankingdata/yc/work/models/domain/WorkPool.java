@@ -20,6 +20,8 @@ public class WorkPool {
     @Min(value=1,message = "标准时间有误")
     @Max(value=720,message = "标准时间有误")
     private Integer workMinutes;
+    @NotNull(message = "请选择工作优先级")
+    private String workPriority;
     private String workFrom;
     private String createTime;
     private String updateTime;
@@ -27,6 +29,23 @@ public class WorkPool {
     private Integer auditRecordId;
     private Integer isDoing;
     private Integer[] employeeIds;
+    private Integer departmentId;
+
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
 
     public Integer[] getEmployeeIds() {
         return employeeIds;

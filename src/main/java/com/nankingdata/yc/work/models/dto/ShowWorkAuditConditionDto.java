@@ -10,10 +10,19 @@ public class ShowWorkAuditConditionDto {
     private String workContent;
     private String workInstructor;
     private Integer workMinutes;
+    private String workPriority;
     private String time;
     private String auditFailReason;
     private String workFrom;
     private Integer originWorkId;
+
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
 
     public Integer getOriginWorkId() {
         return originWorkId;

@@ -13,6 +13,15 @@ public class ShowDeptAllAuditInf {
     private String workFrom;
     private String auditSubmitTime;
     private String auditStatus;
+    private String workPriority;
+
+    public String getWorkPriority() {
+        return workPriority;
+    }
+
+    public void setWorkPriority(String workPriority) {
+        this.workPriority = workPriority;
+    }
 
     public String getAuditStatus() {
         return auditStatus;

@@ -42,8 +42,10 @@ public class AuthFilter implements Filter {
 
         Users user=new Users();
         user.setId(1);
-        user.setDepartmentId(1);
+        user.setDepartmentId(6);
+        user.setCompanyId(6);
         session.setAttribute("user",user);
+
 
         Users users= (Users) session.getAttribute("user");
         if(url.startsWith("/work")&&users==null){
@@ -66,5 +68,6 @@ public class AuthFilter implements Filter {
             return this.openUrl.split(";");
         }
     }
+
 }
 

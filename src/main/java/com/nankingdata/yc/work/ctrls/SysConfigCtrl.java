@@ -21,5 +21,16 @@ public class SysConfigCtrl extends BaseCtrl{
     public Result queryFailReason(){
         return this.send(sysConfigService.querySysCofnig(Constants.failReason));
     }
-
+    @GetMapping("/finishStatus")
+    public Result queryFinishStatus(){
+        return this.send(sysConfigService.querySysCofnig(Constants.finishStatus));
+    }
+    @GetMapping("/auditStatus")
+    public Result queryAuditStatus(){
+        return this.send(sysConfigService.querySysCofnig(Constants.auditStatus));
+    }
+    @GetMapping("/workPriority")
+    public Result queryWorkPriority(){
+        return this.send(sysConfigService.querySysCofnig(Constants.workPriority));
+    }
 }
