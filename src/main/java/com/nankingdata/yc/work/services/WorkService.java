@@ -86,6 +86,17 @@ public class WorkService {
     public Map<String, Object> queryWorkByEmployeeId(Map<String, Object> params) {
         Map<String, Object> result = new HashMap<>();
         List<WorkPool> workPoolList = workDao.queryWorks(params);
+        params.put("date",new Date());
+        List<WorkScheduleDetailDto> workScheduleDetailDtoList=workScheduleDao.queryWorkScheduleDetail(params);
+        if(workPoolList!=null&&workPoolList.size()>0&&workScheduleDetailDtoList!=null&&workPoolList.size()>0){
+            for(WorkPool workPool:workPoolList){
+                for(WorkScheduleDetailDto workScheduleDetailDto:workScheduleDetailDtoList){
+                    if(workPool.getId().equals(workScheduleDetailDto.getWorkId())){
+                        workPool.setIsDoing(1);
+                    }
+                }
+            }
+        }
         result.put("data", workPoolList);
         result.put("total", workPoolList.size());
         result.put("all", workDao.queryWorksCount(params));
@@ -204,7 +215,10 @@ public class WorkService {
         else workPool.setAllotUserId(allotUserId);
         List<WorkPool> workPoolList = new ArrayList<>();
         workPoolList.add(workPool);
-        workDao.addWork(workPoolList);
+        int result=workDao.addWork(workPoolList);
+        if(workPool.getWorkFrom().equals("w3")){
+            return result;
+        }
         WorkSchedule workSchedule = new WorkSchedule();
         workSchedule.setUserId(workPool.getUserId());
         Map<String, Object> scheduleParams = new HashMap<>();
@@ -281,18 +295,20 @@ public class WorkService {
         }
         List<WorkScheduleDetail> workScheduleDetailList = new ArrayList<>();
         for (WorkPool workPool1 : workPoolList) {
-            WorkScheduleDetail workScheduleDetail = new WorkScheduleDetail();
-            workScheduleDetail.setAllotUserId(allotUserId);
-            workScheduleDetail.setWorkId(workPool1.getId());
-            workScheduleDetail.setWorkFrom(workPool1.getWorkFrom());
-            //设置计划id
-            for (WorkSchedule workSchedule : workScheduleList) {
-                if (workSchedule.getUserId().equals(workPool1.getUserId())) {
-                    workScheduleDetail.setScheduleId(workSchedule.getId());
-                    break;
+            if(workPool1.getWorkFrom().equals("w2")) {
+                WorkScheduleDetail workScheduleDetail = new WorkScheduleDetail();
+                workScheduleDetail.setAllotUserId(allotUserId);
+                workScheduleDetail.setWorkId(workPool1.getId());
+                workScheduleDetail.setWorkFrom(workPool1.getWorkFrom());
+                //设置计划id
+                for (WorkSchedule workSchedule : workScheduleList) {
+                    if (workSchedule.getUserId().equals(workPool1.getUserId())) {
+                        workScheduleDetail.setScheduleId(workSchedule.getId());
+                        break;
+                    }
                 }
+                workScheduleDetailList.add(workScheduleDetail);
             }
-            workScheduleDetailList.add(workScheduleDetail);
         }
         return workScheduleDao.addWorkScheduleDetails(workScheduleDetailList);
     }

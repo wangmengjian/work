@@ -1,5 +1,7 @@
 package com.nankingdata.yc.work.models.dto;
 
+import com.nankingdata.yc.work.common.FileUtils;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -69,7 +71,7 @@ public class UpdateWorkDto {
     }
 
     public String getWorkInstructor() {
-        return workInstructor;
+        return FileUtils.getFullPath(workInstructor);
     }
 
     public void setWorkInstructor(String workInstructor) {

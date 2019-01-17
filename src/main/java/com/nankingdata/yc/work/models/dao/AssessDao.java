@@ -3,6 +3,7 @@ package com.nankingdata.yc.work.models.dao;
 import com.nankingdata.yc.work.models.bo.AssessConditionBo;
 import com.nankingdata.yc.work.models.domain.WorkAssess;
 import com.nankingdata.yc.work.models.dto.AssessRecordDto;
+import com.nankingdata.yc.work.models.dto.DailyAssessRecordDto;
 import com.nankingdata.yc.work.models.dto.ShowAssessDto;
 
 import java.util.List;
@@ -29,4 +30,8 @@ public interface AssessDao {
     public List<AssessConditionBo> queryAssessCondition(Map<String,Object> params);
     /*通过明细的id查询一条考核记录*/
     public WorkAssess queryOneAssessRecordByDetailId(Integer id);
+    /*领导查询有考核的日期*/
+    public List<DailyAssessRecordDto> queryDateHasAssessRecords(Map<String,Object> params);
+    /*领导查询有考核的日期*/
+    public int queryDateHasAssessRecordsCount(Map<String,Object> params);
 }

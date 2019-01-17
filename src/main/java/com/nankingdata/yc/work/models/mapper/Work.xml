@@ -182,7 +182,7 @@
         <where>
             (
             wp.work_from='w3' or (
-            wp.work_from='w2' and DATE_FORMAT(wp.create_time,'%y-%c-%d')= DATE_FORMAT(NOW(),'%y-%c-%d')
+            wp.work_from='w2' and DATE_FORMAT(wp.create_time,'%Y-%m-%d')= DATE_FORMAT(NOW(),'%Y-%m-%d')
             )
             )
             <if test="employeeId!=null">
@@ -214,7 +214,7 @@
         <where>
             (
             wp.work_from='w3' or (
-            wp.work_from='w2' and DATE_FORMAT(wp.create_time,'%y-%c-%d')= DATE_FORMAT(NOW(),'%y-%c-%d')
+            wp.work_from='w2' and DATE_FORMAT(wp.create_time,'%Y-%m-%d')= DATE_FORMAT(NOW(),'%Y-%m-%d')
             )
             )
             <if test="employeeId!=null">
@@ -290,10 +290,10 @@
         <where>
             ws.submit_status = 'submitted'
             <if test="beginTime!=null">
-                and DATE_FORMAT(ws.`date`,'%y-%c-%d') &gt;= DATE_FORMAT(#{beginTime},'%y-%c-%d')
+                and DATE_FORMAT(ws.`date`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{beginTime},'%Y-%m-%d')
             </if>
             <if test="endTime!=null">
-                and DATE_FORMAT(ws.`date`,'%y-%c-%d') &lt;= DATE_FORMAT(#{endTime},'%y-%c-%d')
+                and DATE_FORMAT(ws.`date`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{endTime},'%Y-%m-%d')
             </if>
             <if test="empId!=null">
                 and user_id=#{empId}

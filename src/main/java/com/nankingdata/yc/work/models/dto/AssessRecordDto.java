@@ -1,5 +1,7 @@
 package com.nankingdata.yc.work.models.dto;
 
+import com.nankingdata.yc.work.common.FileUtils;
+
 /**
  * 考核记录
  */
@@ -19,6 +21,15 @@ public class AssessRecordDto {
     private String finishTime;
     private String finishStatus;
     private Float workEfficiency;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getWorkPriority() {
         return workPriority;
@@ -101,7 +112,7 @@ public class AssessRecordDto {
     }
 
     public String getWorkInstructor() {
-        return workInstructor;
+        return FileUtils.getFullPath(workInstructor);
     }
 
     public void setWorkInstructor(String workInstructor) {

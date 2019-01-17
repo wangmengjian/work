@@ -1,9 +1,11 @@
 package com.nankingdata.yc.work.services;
 
+import com.nankingdata.yc.work.models.dao.UserDao;
+import com.nankingdata.yc.work.models.dao.WorkScheduleDao;
+import com.nankingdata.yc.work.models.domain.Department;
 import com.nankingdata.yc.work.models.domain.WorkAssess;
 import com.nankingdata.yc.work.models.dao.AssessDao;
-import com.nankingdata.yc.work.models.dto.AssessRecordDto;
-import com.nankingdata.yc.work.models.dto.ShowAssessDto;
+import com.nankingdata.yc.work.models.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,21 +19,31 @@ import java.util.*;
 public class AssessService {
     @Autowired
     private AssessDao assessDao;
+    @Autowired
+    private WorkScheduleDao workScheduleDao;
+    @Autowired
+    private UserDao userDao;
     /**
      * 考核时查询所有工作
      * @param params
      * @return
      */
-    public Map<String,Object> queryWork(Map<String,Object> params) throws ParseException {
-        Integer deptStatus= (Integer) params.get("deptStatus");
-        List<ShowAssessDto> showAssessDtoList=null;
-        int all=0;
-        if(deptStatus==1){
-            showAssessDtoList=assessDao.queryAllAssess(params);
-            all=assessDao.queryAllAssessCount(params);
-        }else{
-            showAssessDtoList=assessDao.queryOtherDeptAssess(params);
-            all=assessDao.queryOtherDeptAssessCount(params);
+    public Map<String,Object> queryOtherDeptAssess(Map<String,Object> params) throws ParseException {
+        List<DepartmentDto> departmentDtoList=userDao.queryLeadDepartment(params);
+        List<Integer> departmentIds=new ArrayList<>();
+        if(departmentDtoList!=null&&departmentDtoList.size()>0){
+            for(DepartmentDto departmentDto:departmentDtoList){
+                departmentIds.add(departmentDto.getId());
+            }
+        }
+        if(departmentIds.size()>0)params.put("departmentIds",departmentIds);
+        List<ShowAssessDto> showAssessDtoList=assessDao.queryOtherDeptAssess(params);
+        Map<String,Object> result=new HashMap<>();
+        if(showAssessDtoList==null||showAssessDtoList.size()<=0){
+            result.put("data",null);
+            result.put("total",0);
+            result.put("all",0);
+            return result;
         }
         for(ShowAssessDto showAssessDto:showAssessDtoList){
             float workEfficiency=0;
@@ -43,10 +55,9 @@ public class AssessService {
             }
             showAssessDto.setWorkEfficiency(workEfficiency);
         }
-        Map<String,Object> result=new HashMap<>();
         result.put("data",showAssessDtoList);
         result.put("total",showAssessDtoList.size());
-        result.put("all",all);
+        result.put("all",assessDao.queryOtherDeptAssessCount(params));
         return result;
     }
 
@@ -56,11 +67,37 @@ public class AssessService {
      * @return
      */
     public Map<String,Object> queryCompanyAssessWork(Map<String,Object> params){
-        List<ShowAssessDto> showAssessDtoList=assessDao.queryAllAssess(params);
+        /*得到该员工存在未考核工作的所有工作计划*/
+        params.put("isAssess",0);
+        List<WorkScheduleDto> workScheduleDtoList=workScheduleDao.querySchedulesHasAssess(params);
         Map<String,Object> result=new HashMap<>();
-        result.put("data",showAssessDtoList);
-        result.put("total",showAssessDtoList.size());
-        result.put("all",assessDao.queryAllAssessCount(params));
+        if(workScheduleDtoList==null||workScheduleDtoList.size()<=0){
+            result.put("data",null);
+            result.put("total",0);
+            result.put("all",0);
+            return result;
+        }
+        /*得到所有的日计划id*/
+        List<Integer> scheduleIds=new ArrayList<>();
+        for(WorkScheduleDto workScheduleDto:workScheduleDtoList){
+            scheduleIds.add(workScheduleDto.getId());
+        }
+        params.put("scheduleIds",scheduleIds);
+        params.remove("pageStart");
+        params.remove("pageSize");
+        List<ShowAssessDto> showAssessDtoList=assessDao.queryAllAssess(params);
+        for(WorkScheduleDto workScheduleDto:workScheduleDtoList){
+            List<ShowAssessDto> showAssessDtoList1=new ArrayList<>();
+            for(ShowAssessDto showAssessDto:showAssessDtoList){
+                if(showAssessDto.getScheduleId().equals(workScheduleDto.getId())){
+                    showAssessDtoList1.add(showAssessDto);
+                }
+            }
+            workScheduleDto.setShowAssessDtoList(showAssessDtoList1);
+        }
+        result.put("data",workScheduleDtoList);
+        result.put("total",workScheduleDtoList.size());
+        result.put("all",workScheduleDao.querySchedulesHasAssessCount(params));
         return result;
     }
     /**
@@ -82,28 +119,35 @@ public class AssessService {
      * @param params
      * @return
      */
-    public Map<String,Object> leaderQueryAssessRecords(Map<String,Object> params) throws Exception {
+    public Map<String,Object> queryAssessRecords(Map<String,Object> params) throws Exception {
+        List<DailyAssessRecordDto> dailyAssessRecordDtoList=assessDao.queryDateHasAssessRecords(params);
         Map<String,Object> result=new HashMap<>();
-        List<AssessRecordDto> assessRecordDtoList=assessDao.leaderQueryAssessRecords(params);
-        for(AssessRecordDto assessRecordDto:assessRecordDtoList){
-            Float workEfficiency=null;
-            if(assessRecordDto.getFinishTime()!=null){
-                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date beginTime=simpleDateFormat.parse(assessRecordDto.getBeginTime());
-                Date finishTime=simpleDateFormat.parse(assessRecordDto.getFinishTime());
-                if((finishTime.getTime()-beginTime.getTime())==0){
-                    workEfficiency=1f;
-                }else {
-                    workEfficiency = (float) assessRecordDto.getWorkMinutes() / ((finishTime.getTime() - beginTime.getTime()) / 60000);
-                }
-                assessRecordDto.setWorkEfficiency(workEfficiency);
-            }else{
-                assessRecordDto.setWorkEfficiency(null);
-            }
+        if(dailyAssessRecordDtoList==null||dailyAssessRecordDtoList.size()<=0){
+            result.put("data",null);
+            result.put("total",0);
+            result.put("all",0);
+            return result;
         }
-        result.put("data",assessRecordDtoList);
-        result.put("total",assessRecordDtoList.size());
-        result.put("all",assessDao.leaderQueryAssessRecordsCount(params));
+        List<String> dateList=new ArrayList<>();
+        for(DailyAssessRecordDto dailyAssessRecordDto:dailyAssessRecordDtoList){
+            dateList.add(dailyAssessRecordDto.getDate());
+        }
+        params.put("dateList",dateList);
+        params.remove("pageStart");
+        params.remove("pageSize");
+        List<AssessRecordDto> assessRecordDtoList=assessDao.leaderQueryAssessRecords(params);
+        for(DailyAssessRecordDto dailyAssessRecordDto:dailyAssessRecordDtoList){
+            List<AssessRecordDto> assessRecordDtoList1=new ArrayList<>();
+            for(AssessRecordDto assessRecordDto:assessRecordDtoList){
+                if(assessRecordDto.getDate().equals(dailyAssessRecordDto.getDate())){
+                    assessRecordDtoList1.add(assessRecordDto);
+                }
+            }
+            dailyAssessRecordDto.setAssessRecordDtoList(assessRecordDtoList1);
+        }
+        result.put("data",dailyAssessRecordDtoList);
+        result.put("total",dailyAssessRecordDtoList.size());
+        result.put("all",assessDao.queryDateHasAssessRecordsCount(params));
         return result;
     }
 
@@ -113,7 +157,31 @@ public class AssessService {
      * @return
      */
     public Map<String,Object> employeeQueryAllAssess(Map<String,Object> params)throws Exception{
-        List<ShowAssessDto> showAssessDtoList=assessDao.employeeQueryAllAssess(params);
+        List<WorkScheduleDto> workScheduleDtoList=workScheduleDao.querySchedulesHasAssess(params);
+        Map<String,Object> result=new HashMap<>();
+        if(workScheduleDtoList==null||workScheduleDtoList.size()<=0){
+            result.put("data",null);
+            result.put("total",0);
+            result.put("all",0);
+            return result;
+        }
+        List<Integer> scheduleIds=new ArrayList<>();
+        for(WorkScheduleDto workScheduleDto:workScheduleDtoList){
+            scheduleIds.add(workScheduleDto.getId());
+        }
+        params.put("scheduleIds",scheduleIds);
+        params.remove("pageStart");
+        params.remove("pageSize");
+        List<ShowAssessDto> showAssessDtoList=assessDao.queryAllAssess(params);
+        for(WorkScheduleDto workScheduleDto:workScheduleDtoList){
+            List<ShowAssessDto> showAssessDtoList1=new ArrayList<>();
+            for(ShowAssessDto showAssessDto:showAssessDtoList){
+                if(showAssessDto.getScheduleId().equals(workScheduleDto.getId())){
+                    showAssessDtoList1.add(showAssessDto);
+                }
+            }
+            workScheduleDto.setShowAssessDtoList(showAssessDtoList1);
+        }
         for(ShowAssessDto showAssessDto:showAssessDtoList){
             Float workEfficiency=null;
             if(showAssessDto.getFinishTime()!=null){
@@ -130,15 +198,14 @@ public class AssessService {
                 showAssessDto.setWorkEfficiency(null);
             }
         }
-        Map<String,Object> result=new HashMap<>();
-        result.put("data",showAssessDtoList);
-        result.put("total",showAssessDtoList.size());
-        result.put("all",assessDao.employeeQueryAllAssessCount(params));
+        result.put("data",workScheduleDtoList);
+        result.put("total",workScheduleDtoList.size());
+        result.put("all",workScheduleDao.querySchedulesHasAssessCount(params));
         return result;
     }
 
     /**
-     * 考核单个员工工作
+     * 批量考核员工的工作
      * @param params
      * @return
      */
@@ -152,6 +219,7 @@ public class AssessService {
         String assessGrade= (String) params.get("assessGrade");
         String assessDesc= (String) params.get("assessDesc");
         params.remove("assessGrade");
+        params.put("isAssess",0);
         List<ShowAssessDto> showAssessDtoList=assessDao.queryAllAssess(params);
         if(showAssessDtoList!=null&&showAssessDtoList.size()>=0){
             List<WorkAssess> workAssessList=new ArrayList<>();

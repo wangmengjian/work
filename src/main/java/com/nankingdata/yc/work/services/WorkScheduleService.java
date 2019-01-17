@@ -72,22 +72,30 @@ public class WorkScheduleService {
      */
     public Map<String, Object> employeeQuerySchedules(Map<String, Object> params) {
         List<WorkScheduleDto> workScheduleDtoList = workScheduleDao.querySchedules(params);
+        Map<String, Object> result = new HashMap<>();
+        if(workScheduleDtoList==null||workScheduleDtoList.size()<=0){
+            result.put("data",null);
+            result.put("total",0);
+            result.put("all",0);
+            return result;
+        }
         List<Integer> scheduleIds = new ArrayList<>();
         for (WorkScheduleDto workScheduleDto : workScheduleDtoList) {
             scheduleIds.add(workScheduleDto.getId());
         }
         params.put("scheduleIds", scheduleIds);
         List<WorkScheduleDetailDto> workScheduleDetailDtoList = workScheduleDao.queryWorkScheduleDetail(params);
-        for (WorkScheduleDto workScheduleDto : workScheduleDtoList) {
-            List<WorkScheduleDetailDto> workScheduleDetailDtoList1 = new ArrayList<>();
-            for (WorkScheduleDetailDto workScheduleDetailDto : workScheduleDetailDtoList) {
-                if (workScheduleDetailDto.getScheduleId().equals(workScheduleDto.getId())) {
-                    workScheduleDetailDtoList1.add(workScheduleDetailDto);
+        if(workScheduleDetailDtoList!=null&&workScheduleDetailDtoList.size()>0) {
+            for (WorkScheduleDto workScheduleDto : workScheduleDtoList) {
+                List<WorkScheduleDetailDto> workScheduleDetailDtoList1 = new ArrayList<>();
+                for (WorkScheduleDetailDto workScheduleDetailDto : workScheduleDetailDtoList) {
+                    if (workScheduleDetailDto.getScheduleId().equals(workScheduleDto.getId())) {
+                        workScheduleDetailDtoList1.add(workScheduleDetailDto);
+                    }
                 }
+                workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList1);
             }
-            workScheduleDto.setWorkScheduleDetailDtoList(workScheduleDetailDtoList1);
         }
-        Map<String, Object> result = new HashMap<>();
         result.put("data", workScheduleDtoList);
         result.put("total", workScheduleDtoList.size());
         result.put("all", workScheduleDao.querySchedulesCount(params));
@@ -106,15 +114,14 @@ public class WorkScheduleService {
         /*判断是否有进行中*/
         Map<String, Object> params = new HashMap<>();
         params.put("scheduleId", workScheduleDto.getId());
-        List<WorkScheduleDetailDto> workScheduleDetailDtoList = workScheduleDao.queryWorkScheduleDetail(params);
-        if (workScheduleDetailDtoList.size() > 0) {
+        /*List<WorkScheduleDetailDto> workScheduleDetailDtoList = workScheduleDao.queryWorkScheduleDetail(params);*/
+        /*if (workScheduleDetailDtoList.size() > 0) {
             for (WorkScheduleDetailDto workScheduleDetailDto : workScheduleDetailDtoList) {
                 if (workScheduleDetailDto.getFinishStatus().equals("进行中")||workScheduleDetailDto.getFinishStatus().equals("未开始")) {
                     throw new MyException("请填写完成情况");
                 }
             }
-        }
-
+        }*/
         int result1 = workScheduleDao.updateSchedule(workScheduleDto.getId());
         if (result1 == 0) throw new RuntimeException("所选计划不允许提交");
         return result1;

@@ -1,5 +1,7 @@
 package com.nankingdata.yc.work.models.dto;
 
+import com.nankingdata.yc.work.common.FileUtils;
+
 /**
  * 显示员工各项工作的审核情况
  */
@@ -88,7 +90,7 @@ public class ShowWorkAuditConditionDto {
     }
 
     public String getWorkInstructor() {
-        return workInstructor;
+        return FileUtils.getFullPath(workInstructor);
     }
 
     public void setWorkInstructor(String workInstructor) {

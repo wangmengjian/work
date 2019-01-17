@@ -1,5 +1,6 @@
 package com.nankingdata.yc.work.models.dto;
 
+import com.nankingdata.yc.work.common.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
@@ -107,7 +108,7 @@ public class WorkScheduleDetailDto {
     }
 
     public String getWorkInstructor() {
-        return workInstructor;
+        return FileUtils.getFullPath(workInstructor);
     }
 
     public void setWorkInstructor(String workInstructor) {

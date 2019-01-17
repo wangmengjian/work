@@ -20,7 +20,7 @@ public class AssessCtrl extends BaseCtrl {
     private AssessService assessService;
 
     /**
-     * 查询待考核工作
+     * 部门领导查询分配给其他部门的待考核工作（不分计划）
      * @param workName
      * @param employeeId
      * @param beginTime
@@ -29,8 +29,8 @@ public class AssessCtrl extends BaseCtrl {
      * @param pageSize
      * @return
      */
-    @GetMapping("/queryAssessWork")
-    public Result queryAssessWork(@RequestParam(value = "workName",required = false)String workName,
+    @GetMapping("/queryOtherDeptAssess")
+    public Result queryOtherDeptAssess(@RequestParam(value = "workName",required = false)String workName,
                             @RequestParam(value = "employeeId",required = false)Integer employeeId,
                             @RequestParam(value = "beginTime",required = false)String beginTime,
                             @RequestParam(value = "endTime",required = false)String endTime,
@@ -38,7 +38,6 @@ public class AssessCtrl extends BaseCtrl {
                             @RequestParam(value = "pageSize",required = false)Integer pageSize,
                             @RequestParam(value = "finishStatus",required = false)String finishStatus,
                             @RequestParam(value = "workFrom",required = false)String workFrom,
-                            @RequestParam(value = "deptStatus",required = true)Integer deptStatus,
                             HttpSession session){
         Users users= (Users) session.getAttribute("user");
         Map<String,Object> params= ParamUtils.setPageInfo(pageNumber,pageSize);
@@ -48,10 +47,9 @@ public class AssessCtrl extends BaseCtrl {
         params.put("endTime",endTime);
         params.put("finishStatus",finishStatus);
         params.put("workFrom",workFrom);
-        params.put("deptStatus",deptStatus);
-        params.put("departmentId",users.getDepartmentId());
+        params.put("principalId",users.getId());
         try{
-            return this.send(assessService.queryWork(params));
+            return this.send(assessService.queryOtherDeptAssess(params));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }
@@ -86,7 +84,7 @@ public class AssessCtrl extends BaseCtrl {
      * @return
      */
     @GetMapping("/queryAssessRecords")
-    public Result leaderQueryAssessRecords(@RequestParam(value = "workName",required = false)String workName,
+    public Result queryAssessRecords(@RequestParam(value = "workName",required = false)String workName,
                                            @RequestParam(value = "employeeId",required = false)Integer employeeId,
                                            @RequestParam(value = "beginTime",required = false)String beginTime,
                                            @RequestParam(value = "endTime",required = false)String endTime,
@@ -107,7 +105,7 @@ public class AssessCtrl extends BaseCtrl {
         params.put("assessUserId",users.getId());
         params.put("departmentId",departmentId);
         try{
-            return this.send(assessService.leaderQueryAssessRecords(params));
+            return this.send(assessService.queryAssessRecords(params));
         }catch (Exception e){
             return this.send(-1,"操作失败");
         }
@@ -117,7 +115,7 @@ public class AssessCtrl extends BaseCtrl {
      * @param workName
      * @param assessGrade
      * @param beginTime
-     * @param finishTime
+     * @param endTime
      * @param pageNumber
      * @param pageSize
      * @param finishStatus
@@ -128,7 +126,7 @@ public class AssessCtrl extends BaseCtrl {
     public Result employeeQueryAssess(@RequestParam(value = "workName",required = false)String workName,
                                       @RequestParam(value = "assessGrade",required = false)String assessGrade,
                                       @RequestParam(value = "beginTime",required = false)String beginTime,
-                                      @RequestParam(value = "finishTime",required = false)String finishTime,
+                                      @RequestParam(value = "endTime",required = false)String endTime,
                                       @RequestParam(value = "pageNumber",required = false)Integer pageNumber,
                                       @RequestParam(value = "pageSize",required = false)Integer pageSize,
                                       @RequestParam(value = "finishStatus",required = false)String finishStatus,
@@ -139,12 +137,12 @@ public class AssessCtrl extends BaseCtrl {
         params.put("workName",workName);
         params.put("assessGrade",assessGrade);
         params.put("beginTime",beginTime);
-        params.put("finishTime",finishTime);
+        params.put("endTime",endTime);
         params.put("finishStatus",finishStatus);
         params.put("workFrom",workFrom);
-        params.put("assessStatus",assessStatus);
+        params.put("isAssess",assessStatus);
         Users users= (Users) session.getAttribute("user");
-        params.put("userId",users.getId());
+        params.put("employeeId",users.getId());
         try{
             return this.send(assessService.employeeQueryAllAssess(params));
         }catch (Exception e){

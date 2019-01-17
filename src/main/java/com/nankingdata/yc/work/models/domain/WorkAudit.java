@@ -1,6 +1,8 @@
 package com.nankingdata.yc.work.models.domain;
 
 
+import com.nankingdata.yc.work.common.FileUtils;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -86,7 +88,7 @@ public class WorkAudit {
     }
 
     public String getWorkInstructor() {
-        return workInstructor;
+        return FileUtils.getFullPath(workInstructor);
     }
 
     public void setWorkInstructor(String workInstructor) {

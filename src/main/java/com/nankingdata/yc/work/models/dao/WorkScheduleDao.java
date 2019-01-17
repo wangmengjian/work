@@ -43,4 +43,8 @@ public interface WorkScheduleDao {
     public List<WorkScheduleDetailDto> queryMoreWorkScheduleDetails(Map<String,Object> params);
     /*查询多个员工在指定日期的计划*/
     public List<WorkScheduleDto> queryMoreEmployeesSchedules(Map<String,Object> params);
+    /*按分页查询有未考核工作的计划*/
+    public List<WorkScheduleDto> querySchedulesHasAssess(Map<String,Object> params);
+    /*查询未考核工作计划的总数*/
+    public int querySchedulesHasAssessCount(Map<String,Object> params);
 }

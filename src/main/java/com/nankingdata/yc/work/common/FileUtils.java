@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class FileUtils {
@@ -43,7 +45,9 @@ public class FileUtils {
         System.out.println(accessKey+secretKey);
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
-        String key = Util.getVerifyRandom(12) + "/" + file.getOriginalFilename();
+        Map<String,Object> map=new HashMap<>();
+        String key=Util.getVerifyRandom(12)+"/"+file.getOriginalFilename();
+        Map<String,Object> result=new HashMap<>();
         try {
             Response response = uploadManager.put(file.getInputStream(), key, upToken, null, null);
         } catch (QiniuException e) {
@@ -51,7 +55,13 @@ public class FileUtils {
         }
         return key;
     }
-
+    public static String getFullPath(String key){
+        String result=null;
+        if(key!=null){
+            result=domain+"/"+key;
+        }
+        return result;
+    }
     public static void delete(String url)throws Exception{
         String[] strings=url.split("/");
         strings[4]=URLDecoder.decode(strings[4],"utf-8");

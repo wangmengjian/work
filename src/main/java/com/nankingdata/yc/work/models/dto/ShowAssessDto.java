@@ -1,5 +1,7 @@
 package com.nankingdata.yc.work.models.dto;
 
+import com.nankingdata.yc.work.common.FileUtils;
+
 /**
  * 显示考核的工作
  */
@@ -10,6 +12,7 @@ public class ShowAssessDto {
     private String workContent;
     private String workFrom;
     private Integer workMinutes;
+    private String workInstructor;
     private String beginTime;
     private String finishTime;
     private String assessGrade;
@@ -20,6 +23,23 @@ public class ShowAssessDto {
     private String workPriority;
     private String finishCondition;
     private String finishFeedback;
+    private Integer scheduleId;
+
+    public String getWorkInstructor() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructor(String workInstructor) {
+        this.workInstructor = workInstructor;
+    }
+
+    public Integer getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(Integer scheduleId) {
+        this.scheduleId = scheduleId;
+    }
 
     public String getFinishFeedback() {
         return finishFeedback;

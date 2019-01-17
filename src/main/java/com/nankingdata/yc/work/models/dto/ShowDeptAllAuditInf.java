@@ -1,5 +1,7 @@
 package com.nankingdata.yc.work.models.dto;
 
+import com.nankingdata.yc.work.common.FileUtils;
+
 /**
  * 显示部门中所有员工提交的审核详情
  */
@@ -64,7 +66,7 @@ public class ShowDeptAllAuditInf {
     }
 
     public String getWorkInstructor() {
-        return workInstructor;
+        return FileUtils.getFullPath(workInstructor);
     }
 
     public void setWorkInstructor(String workInstructor) {

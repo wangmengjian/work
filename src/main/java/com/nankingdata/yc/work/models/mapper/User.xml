@@ -8,7 +8,8 @@
         from usermanagement.users
         where id=#{id}
     </select>
-    <select id="queryDepartmentsInCompany" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.DepartmentDto">
+    <select id="queryDepartmentsInCompany" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.DepartmentDto">
         select *
         from usermanagement.department
         where company_id =#{companyId}
@@ -32,6 +33,9 @@
             <if test="employeeId!=null">
                 and users.id=#{employeeId}
             </if>
+            <if test="myself!=null">
+                and users.id &lt;&gt; #{myself}
+            </if>
         </where>
         order by department_id,real_name
     </select>
@@ -43,7 +47,8 @@
             #{item}
         </foreach>
     </select>
-    <select id="queryLeadDepartment" parameterType="java.util.Map" resultType="com.nankingdata.yc.work.models.dto.DepartmentDto">
+    <select id="queryLeadDepartment" parameterType="java.util.Map"
+            resultType="com.nankingdata.yc.work.models.dto.DepartmentDto">
         select *
         from usermanagement.department
         <where>
@@ -54,5 +59,15 @@
                 and id=#{departmentId}
             </if>
         </where>
+    </select>
+    <select id="queryLeaderId" resultType="Integer" parameterType="java.util.Map">
+        select leader_id
+        from usermanagement.department
+        <where>
+            <if test="companyId!=null">
+                company_id=#{companyId}
+            </if>
+        </where>
+
     </select>
 </mapper>

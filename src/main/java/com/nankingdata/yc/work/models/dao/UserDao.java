@@ -21,4 +21,6 @@ public interface UserDao {
     public List<UserDto> queryUsersInDepartment(Map<String,Object> params);
     /*查询管理的部门*/
     public List<DepartmentDto> queryLeadDepartment(Map<String,Object> params);
+    /*查询公司中所有的领导id*/
+    public List<Integer> queryLeaderId(Map<String,Object> params);
 }

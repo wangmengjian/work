@@ -64,6 +64,7 @@ public class CommonCtrl extends BaseCtrl{
         params.put("employeeId", employeeId);
         params.put("companyId", users.getCompanyId());
         params.put("departmentId", departmentId);
+        params.put("myself",users.getId());
         try {
             return this.send(commonService.queryAllEmployees(params));
         } catch (Exception e) {
@@ -87,6 +88,7 @@ public class CommonCtrl extends BaseCtrl{
         params.put("employeeId", employeeId);
         params.put("principalId", users.getId());
         params.put("departmentId", departmentId);
+        params.put("myself",users.getId());
         try {
             return this.send(commonService.queryLeadDepartment(params));
         } catch (Exception e) {

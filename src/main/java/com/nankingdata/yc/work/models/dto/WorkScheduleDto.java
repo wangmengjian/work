@@ -15,6 +15,15 @@ public class WorkScheduleDto {
     private Integer departmentId;
     @Valid
     private List<WorkScheduleDetailDto> workScheduleDetailDtoList;
+    private List<ShowAssessDto> showAssessDtoList;
+
+    public List<ShowAssessDto> getShowAssessDtoList() {
+        return showAssessDtoList;
+    }
+
+    public void setShowAssessDtoList(List<ShowAssessDto> showAssessDtoList) {
+        this.showAssessDtoList = showAssessDtoList;
+    }
 
     public Integer getDepartmentId() {
         return departmentId;
