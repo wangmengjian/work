@@ -71,6 +71,7 @@
         wp.work_content,
         wp.work_instructor,
         wp.work_minutes,
+        wp.work_from,
         sc.name as work_priority,
         wp.create_time,
         wp.update_time,

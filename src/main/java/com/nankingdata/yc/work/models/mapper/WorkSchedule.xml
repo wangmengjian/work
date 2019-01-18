@@ -72,6 +72,12 @@
             <if test="date!=null">
                 and date_format(ws.date,'%Y-%m-%d') = date_format(#{date}, '%Y-%m-%d')
             </if>
+            <if test="finishStatuss!=null">
+                and wsd.finish_status in
+                <foreach collection="finishStatuss" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
         </where>
         order by wsd.begin_time desc
         <if test="pageStart!=null and pageSize!=null">
@@ -88,7 +94,15 @@
         left join sys_config as sc
         on wsd.finish_status=sc.`code`
         <where>
-            schedule_id=#{scheduleId}
+            <if test="scheduleId!=null">
+                schedule_id=#{scheduleId}
+            </if>
+            <if test="scheduleIds!=null">
+                and schedule_id in
+                <foreach collection="scheduleIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
             <if test="workFrom!=null">
                 and wsd.work_from=#{workFrom}
             </if>
@@ -97,6 +111,24 @@
             </if>
             <if test="finishStatus!=null">
                 and wsd.finish_status like #{finishStatus}
+            </if>
+            <if test="departmentId!=null">
+                and users.department_id=#{departmentId}
+            </if>
+            <if test="companyId!=null">
+                and users.company_id=#{companyId}
+            </if>
+            <if test="employeeId!=null">
+                and ws.user_id=#{employeeId}
+            </if>
+            <if test="date!=null">
+                and date_format(ws.date,'%Y-%m-%d') = date_format(#{date}, '%Y-%m-%d')
+            </if>
+            <if test="finishStatuss!=null">
+                and wsd.finish_status in
+                <foreach collection="finishStatuss" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
             </if>
         </where>
     </select>

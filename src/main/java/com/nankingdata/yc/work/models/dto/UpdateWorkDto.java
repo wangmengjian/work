@@ -20,7 +20,16 @@ public class UpdateWorkDto {
     @NotNull(message="请选择工作优先级")
     private String workPriority;
     private String workInstructor;
+    private String workInstructorFullPath;
     private Integer originWorkId;
+
+    public String getWorkInstructorFullPath() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
 
     public String getWorkPriority() {
         return workPriority;
@@ -71,7 +80,7 @@ public class UpdateWorkDto {
     }
 
     public String getWorkInstructor() {
-        return FileUtils.getFullPath(workInstructor);
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

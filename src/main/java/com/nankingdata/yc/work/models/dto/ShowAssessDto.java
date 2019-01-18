@@ -13,6 +13,7 @@ public class ShowAssessDto {
     private String workFrom;
     private Integer workMinutes;
     private String workInstructor;
+    private String workInstructorFullPath;
     private String beginTime;
     private String finishTime;
     private String assessGrade;
@@ -25,8 +26,16 @@ public class ShowAssessDto {
     private String finishFeedback;
     private Integer scheduleId;
 
-    public String getWorkInstructor() {
+    public String getWorkInstructorFullPath() {
         return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
+
+    public String getWorkInstructor() {
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

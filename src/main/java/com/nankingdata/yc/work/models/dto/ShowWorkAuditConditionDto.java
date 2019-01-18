@@ -11,12 +11,21 @@ public class ShowWorkAuditConditionDto {
     private String workName;
     private String workContent;
     private String workInstructor;
+    private String workInstructorFullPath;
     private Integer workMinutes;
     private String workPriority;
     private String time;
     private String auditFailReason;
     private String workFrom;
     private Integer originWorkId;
+
+    public String getWorkInstructorFullPath() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
 
     public String getWorkPriority() {
         return workPriority;
@@ -90,7 +99,7 @@ public class ShowWorkAuditConditionDto {
     }
 
     public String getWorkInstructor() {
-        return FileUtils.getFullPath(workInstructor);
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

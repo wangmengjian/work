@@ -13,6 +13,7 @@ public class WorkScheduleDetailDto {
     private String workName;
     private String workContent;
     private String workInstructor;
+    private String workInstructorFullPath;
     private Integer workMinutes;
     private String workFrom;
     private String workPriority;
@@ -26,6 +27,13 @@ public class WorkScheduleDetailDto {
     private String empName;
     private Integer scheduleId;
 
+    public String getWorkInstructorFullPath() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
 
     public String getWorkPriority() {
         return workPriority;
@@ -108,7 +116,7 @@ public class WorkScheduleDetailDto {
     }
 
     public String getWorkInstructor() {
-        return FileUtils.getFullPath(workInstructor);
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

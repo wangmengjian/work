@@ -18,6 +18,7 @@ public class WorkPool {
     @NotNull(message="请填写工作内容工作内容")
     private String workContent;
     private String workInstructor;
+    private String workInstructorFullPath;
     @NotNull(message="请填写标准工时")
     @Min(value=1,message = "标准时间有误")
     @Max(value=720,message = "标准时间有误")
@@ -32,6 +33,14 @@ public class WorkPool {
     private Integer isDoing=0;
     private Integer[] employeeIds;
     private Integer departmentId;
+
+    public String getWorkInstructorFullPath() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
 
     public Integer getDepartmentId() {
         return departmentId;
@@ -148,7 +157,7 @@ public class WorkPool {
     }
 
     public String getWorkInstructor() {
-        return FileUtils.getFullPath(workInstructor);
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

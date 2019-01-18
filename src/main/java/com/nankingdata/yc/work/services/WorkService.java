@@ -250,6 +250,7 @@ public class WorkService {
      */
     @Transactional
     public int addWorkToEmployees(WorkPool workPool, Integer allotUserId) {
+        if(workPool==null)return 0;
         Integer[] employeeIds = workPool.getEmployeeIds();
         if (workPool == null || employeeIds == null || employeeIds.length <= 0) return 0;
         List<WorkPool> workPoolList = new ArrayList<>();
@@ -266,7 +267,7 @@ public class WorkService {
             workPool1.setAllotUserId(allotUserId);
             workPoolList.add(workPool1);
         }
-        workDao.addWork(workPoolList);
+        int result=workDao.addWork(workPoolList);
         //查询已经有工作计划的员工
         List<Integer> employeeIdList = Arrays.asList(employeeIds);
         List<WorkSchedule> workScheduleList = workScheduleDao.queryMoreWorkScheduleByEmployeeIds(employeeIdList);
@@ -294,6 +295,7 @@ public class WorkService {
             }
         }
         List<WorkScheduleDetail> workScheduleDetailList = new ArrayList<>();
+
         for (WorkPool workPool1 : workPoolList) {
             if(workPool1.getWorkFrom().equals("w2")) {
                 WorkScheduleDetail workScheduleDetail = new WorkScheduleDetail();
@@ -310,7 +312,10 @@ public class WorkService {
                 workScheduleDetailList.add(workScheduleDetail);
             }
         }
-        return workScheduleDao.addWorkScheduleDetails(workScheduleDetailList);
+        if(workScheduleDetailList!=null&&workScheduleDetailList.size()>0) {
+            workScheduleDao.addWorkScheduleDetails(workScheduleDetailList);
+        }
+        return result;
     }
 
     /**

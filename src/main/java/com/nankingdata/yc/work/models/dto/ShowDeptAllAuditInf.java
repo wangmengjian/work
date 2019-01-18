@@ -11,11 +11,20 @@ public class ShowDeptAllAuditInf {
     private String workContent;
     private String submitter;
     private String workInstructor;
+    private String workInstructorFullPath;
     private Integer workMinutes;
     private String workFrom;
     private String auditSubmitTime;
     private String auditStatus;
     private String workPriority;
+
+    public String getWorkInstructorFullPath() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
 
     public String getWorkPriority() {
         return workPriority;
@@ -66,7 +75,7 @@ public class ShowDeptAllAuditInf {
     }
 
     public String getWorkInstructor() {
-        return FileUtils.getFullPath(workInstructor);
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

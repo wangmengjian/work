@@ -13,6 +13,7 @@ public class AssessRecordDto {
     private String workName;
     private String workContent;
     private String workInstructor;
+    private String workInstructorFullPath;
     private Integer workMinutes;
     private String workFrom;
     private String workPriority;
@@ -22,6 +23,14 @@ public class AssessRecordDto {
     private String finishStatus;
     private Float workEfficiency;
     private String date;
+
+    public String getWorkInstructorFullPath() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
 
     public String getDate() {
         return date;
@@ -112,7 +121,7 @@ public class AssessRecordDto {
     }
 
     public String getWorkInstructor() {
-        return FileUtils.getFullPath(workInstructor);
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

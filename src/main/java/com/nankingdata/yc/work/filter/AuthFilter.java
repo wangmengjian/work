@@ -46,7 +46,6 @@ public class AuthFilter implements Filter {
         user.setCompanyId(6);
         session.setAttribute("user",user);
 
-
         Users users= (Users) session.getAttribute("user");
         if(url.startsWith("/work")&&users==null){
             sentMsg(res,"-2","用户未登录");
@@ -68,6 +67,5 @@ public class AuthFilter implements Filter {
             return this.openUrl.split(";");
         }
     }
-
 }
 

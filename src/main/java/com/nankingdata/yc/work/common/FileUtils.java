@@ -39,7 +39,7 @@ public class FileUtils {
         FileUtils.bucket = bucket;
     }
 
-    public static String upload(MultipartFile file) throws Exception {
+    public static Map<String,Object> upload(MultipartFile file) throws Exception {
         Configuration cfg = new Configuration(Zone.autoZone());
         UploadManager uploadManager = new UploadManager(cfg);
         System.out.println(accessKey+secretKey);
@@ -50,10 +50,12 @@ public class FileUtils {
         Map<String,Object> result=new HashMap<>();
         try {
             Response response = uploadManager.put(file.getInputStream(), key, upToken, null, null);
+            result.put("key",key);
+            result.put("filePath",domain+"/"+key);
         } catch (QiniuException e) {
             e.printStackTrace();
         }
-        return key;
+        return result;
     }
     public static String getFullPath(String key){
         String result=null;

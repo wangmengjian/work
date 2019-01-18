@@ -221,7 +221,7 @@ public class AssessService {
         params.remove("assessGrade");
         params.put("isAssess",0);
         List<ShowAssessDto> showAssessDtoList=assessDao.queryAllAssess(params);
-        if(showAssessDtoList!=null&&showAssessDtoList.size()>=0){
+        if(showAssessDtoList!=null&&showAssessDtoList.size()>0){
             List<WorkAssess> workAssessList=new ArrayList<>();
             for(ShowAssessDto showAssessDto:showAssessDtoList){
                 WorkAssess workAssess=new WorkAssess();
@@ -231,7 +231,9 @@ public class AssessService {
                 workAssess.setScheduleDetailId(showAssessDto.getId());
                 workAssessList.add(workAssess);
             }
-            return assessDao.assessWork(workAssessList);
+            if(workAssessList!=null&&workAssessList.size()>0) {
+                return assessDao.assessWork(workAssessList);
+            }
         }
         return 0;
     }

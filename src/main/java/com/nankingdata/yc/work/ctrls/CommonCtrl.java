@@ -3,7 +3,6 @@ package com.nankingdata.yc.work.ctrls;
 import com.nankingdata.yc.common.Authority;
 import com.nankingdata.yc.common.Users;
 import com.nankingdata.yc.work.common.FileUtils;
-import com.nankingdata.yc.work.common.ParamUtils;
 import com.nankingdata.yc.work.common.Result;
 import com.nankingdata.yc.work.services.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +63,7 @@ public class CommonCtrl extends BaseCtrl{
         params.put("employeeId", employeeId);
         params.put("companyId", users.getCompanyId());
         params.put("departmentId", departmentId);
-        params.put("myself",users.getId());
+        /*params.put("myself",users.getId());*/
         try {
             return this.send(commonService.queryAllEmployees(params));
         } catch (Exception e) {
@@ -88,7 +87,7 @@ public class CommonCtrl extends BaseCtrl{
         params.put("employeeId", employeeId);
         params.put("principalId", users.getId());
         params.put("departmentId", departmentId);
-        params.put("myself",users.getId());
+        /*params.put("myself",users.getId());*/
         try {
             return this.send(commonService.queryLeadDepartment(params));
         } catch (Exception e) {

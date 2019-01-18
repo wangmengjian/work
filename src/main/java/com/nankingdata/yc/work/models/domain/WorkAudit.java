@@ -17,6 +17,7 @@ public class WorkAudit {
     @NotNull(message="请填写工作内容工作内容")
     private String workContent;
     private String workInstructor;
+    private String workInstructorFullPath;
     @NotNull(message="请填写标准工时")
     @Max(message = "标准工时有误，请重新输入",value = 720)
     @Min(message = "标准工时有误，请重新输入",value = 0)
@@ -29,6 +30,14 @@ public class WorkAudit {
     private Integer originWorkId;
     @NotNull(message = "请选择工作优先级")
     private String workPriority;
+
+    public String getWorkInstructorFullPath() {
+        return FileUtils.getFullPath(workInstructor);
+    }
+
+    public void setWorkInstructorFullPath(String workInstructorFullPath) {
+        this.workInstructorFullPath = workInstructorFullPath;
+    }
 
     public String getWorkPriority() {
         return workPriority;
@@ -88,7 +97,7 @@ public class WorkAudit {
     }
 
     public String getWorkInstructor() {
-        return FileUtils.getFullPath(workInstructor);
+        return workInstructor;
     }
 
     public void setWorkInstructor(String workInstructor) {

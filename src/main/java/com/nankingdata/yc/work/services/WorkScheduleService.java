@@ -84,6 +84,12 @@ public class WorkScheduleService {
             scheduleIds.add(workScheduleDto.getId());
         }
         params.put("scheduleIds", scheduleIds);
+        params.remove("pageStart");
+        params.remove("pageSize");
+        List<String> finishStatuss=new ArrayList<>();
+        finishStatuss.add("completed");
+        finishStatuss.add("uncompleted");
+        params.put("finishStatuss",finishStatuss);
         List<WorkScheduleDetailDto> workScheduleDetailDtoList = workScheduleDao.queryWorkScheduleDetail(params);
         if(workScheduleDetailDtoList!=null&&workScheduleDetailDtoList.size()>0) {
             for (WorkScheduleDto workScheduleDto : workScheduleDtoList) {
