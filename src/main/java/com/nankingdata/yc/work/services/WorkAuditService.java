@@ -104,6 +104,7 @@ public class WorkAuditService {
                 workPool.setWorkFrom(workAudit.getWorkFrom());
                 workPool.setWorkMinutes(workAudit.getWorkMinutes());
                 workPool.setAuditRecordId(workAudit.getId());
+                workPool.setCreateTime(workAudit.getAuditSubmitTime());
                 if (workAudit.getOriginWorkId() != null) {
                     workPool.setId(workAudit.getOriginWorkId());
                     updateWorkPool.add(workPool);

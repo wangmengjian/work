@@ -37,7 +37,7 @@ public class WorkScheduleService {
     private UserDao userDao;
 
     /**
-     * 员工查询日计划
+     * 员工查询今日计划
      *
      * @param params
      * @return

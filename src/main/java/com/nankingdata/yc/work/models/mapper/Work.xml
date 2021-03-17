@@ -119,7 +119,7 @@
         work_pool(user_id,work_name,work_content,work_instructor,work_minutes,work_from,create_time,update_time)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},NOW(),NOW())
+            (#{item.userId},#{item.workName},#{item.workContent},#{item.workInstructor},#{item.workMinutes},#{item.workFrom},#{item.createTime},NOW())
         </foreach>
     </insert>
     <update id="updateAgreeWork" parameterType="com.nankingdata.yc.work.models.domain.WorkPool">

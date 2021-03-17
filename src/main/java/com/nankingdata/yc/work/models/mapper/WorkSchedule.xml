@@ -87,12 +87,12 @@
     <select id="queryWorkScheduleDetailCount" parameterType="java.util.Map" resultType="Integer">
         select count(*)
         from work_schedule_detail as wsd
-        left join sys_config as sc1
-        on wsd.work_from=sc1.`code`
         left join work_pool as wp
         on wsd.work_id=wp.id
-        left join sys_config as sc
-        on wsd.finish_status=sc.`code`
+        left join usermanagement.`users`
+        on users.id=wp.user_id
+        left join work_schedule as ws
+        on ws.id=wsd.schedule_id
         <where>
             <if test="scheduleId!=null">
                 schedule_id=#{scheduleId}
